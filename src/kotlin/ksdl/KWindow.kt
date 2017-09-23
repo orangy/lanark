@@ -4,7 +4,6 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 class KWindow(val windowPtr: CPointer<SDL_Window>) {
-
     fun destroy() {
         SDL_DestroyWindow(windowPtr)
     }

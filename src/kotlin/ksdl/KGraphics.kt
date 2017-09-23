@@ -66,6 +66,11 @@ object KGraphics {
         return KSurface(surface)
     }
 
+    fun createSurface(size: KSize, bitsPerPixel: Int): KSurface {
+        val surface = SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).checkSDLError("SDL_CreateRGBSurface")
+        return KSurface(surface)
+    }
+
     fun createWindow(caption: String, x: Int, y: Int, width: Int, height: Int, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
         val window = SDL_CreateWindow(caption, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
         return KWindow(window)

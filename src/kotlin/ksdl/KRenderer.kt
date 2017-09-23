@@ -1,6 +1,9 @@
 package ksdl
 
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.pointed
+import kotlinx.cinterop.usePointer
 import sdl2.*
 
 class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
@@ -26,9 +29,23 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
         SDL_RenderCopy(rendererPtr, texture.texturePtr, null, null)
     }
 
+    fun draw(texture: KTexture, sourceRect: KRect, destinationRect: KRect) = memScoped {
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, SDL_Rect(sourceRect), SDL_Rect(destinationRect))
+    }
+
+    fun draw(texture: KTexture, destinationRect: KRect) = memScoped {
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect))
+    }
+
     fun createTexture(surface: KSurface): KTexture {
         val texturePtr = SDL_CreateTextureFromSurface(rendererPtr, surface.surfacePtr).checkSDLError("SDL_CreateTextureFromSurface")
         return KTexture(texturePtr)
     }
+
+    fun loadTexture(path: String): KTexture {
+        val texture = IMG_LoadTexture(rendererPtr, path).checkSDLError("IMG_LoadTexture")
+        return KTexture(texture)
+    }
 }
 
+fun KSurface.toTexture(renderer: KRenderer) = renderer.createTexture(this)
