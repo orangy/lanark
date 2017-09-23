@@ -1,0 +1,19 @@
+
+SDL_CreateRGBSurface
+SDL_SetSurfaceBlendMode
+SDL_BlitSurface
+SDL_BlitScaled
+SDL_FillRect
+SDL_MapRGBA
+
+SDL_GL_SetSwapInterval
+SDL_GL_SetAttribute
+SDL_GL_CreateContext
+SDL_GL_SwapWindow
+
+SDL_PollEvent
+SDL_WaitEvent
+SDL_GetKeyboardState
+
+IMG_Load (sdl2_image)
+
