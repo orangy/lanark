@@ -1,5 +1,6 @@
 package kdsl
 
+import eventNames
 import kotlinx.cinterop.*
 import ksdl.*
 import sdl2.*
@@ -15,7 +16,7 @@ class KEventLoop() {
     private var queueHead = 0
     private var queueTail = 0
 
-    val windowEvents = KEventSource<SDL_WindowEvent>(SDL_WINDOWEVENT)
+    val windowEvents = KEventSource<KEventWindow>(SDL_WINDOWEVENT)
 
     fun submitSelf() {
         val task = currentTask
@@ -33,10 +34,10 @@ class KEventLoop() {
                 queue[index + 1] = queue[index]
             }
             queueHead++
-            logger.trace("Expanded queue: ${queue.size} [$queueHead, $queueTail]")
+            logger.trace("Expanded queue: ${queue.size} ")
         } else if (queueHead == 0 && queueTail == queue.lastIndex) {
             queue.add(null)
-            logger.trace("Expanded queue: ${queue.size} [$queueHead, $queueTail]")
+            logger.trace("Expanded queue: ${queue.size} ")
         }
 
         if (queueTail == queue.lastIndex) {
@@ -45,7 +46,7 @@ class KEventLoop() {
         } else {
             queue[queueTail++] = task
         }
-        logger.trace("Submitted task: ${queue.size} [$queueHead, $queueTail]")
+        //logger.trace("Submitted task: ${queue.size} [$queueHead, $queueTail]")
     }
 
     fun peek(): (() -> Unit)? {
@@ -56,7 +57,7 @@ class KEventLoop() {
             queueHead = 0
         else
             queueHead++
-        logger.trace("Peeked task: ${queue.size} [$queueHead, $queueTail]")
+        //logger.trace("Peeked task: ${queue.size} [$queueHead, $queueTail]")
         return task
     }
 
@@ -79,14 +80,24 @@ class KEventLoop() {
     }
 
     private fun processEvent(event: SDL_Event) {
-        logger.trace("Received event: ${event.type}")
+        val eventName = eventNames[event.type]
         when (event.type) {
             SDL_QUIT -> {
                 quit = true
+                logger.trace("Event: SDL_QUIT")
                 return
             }
-            SDL_WINDOWEVENT -> windowEvents.raise(event.window)
-            else -> logger.trace("Unknown event type: ${event.type}")
+            SDL_WINDOWEVENT -> {
+                val eventWindow = KEventWindow.createEventWindow(event.window)
+                logger.trace("Event: $eventWindow")
+                windowEvents.raise(eventWindow)
+            }
+            else -> {
+                if (eventName == null)
+                    logger.trace("Unknown event type: ${event.type}")
+                else
+                    logger.trace("Event: $eventName (${event.type})")
+            }
         }
     }
 

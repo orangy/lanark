@@ -10,6 +10,9 @@ object KGraphics {
     private var displayWidth: Int = 0
     private var displayHeight: Int = 0
     private var refreshRate: Int = 0
+    private var cpus: Int = 0
+    private var memorySize: Int = 0
+    private val windows = mutableMapOf<Int, KWindow>()
 
     init {
         version = memScoped {
@@ -20,54 +23,18 @@ object KGraphics {
     }
 
     fun init(configure: Configuration.() -> Unit) {
-        val configuration = Configuration().apply(configure)
-        init(configuration)
-    }
-
-    class Configuration {
-        internal var flags = 0
-        var logger: KLogger = KLoggerNone
-
-        fun enableEverything() {
-            flags = flags or SDL_INIT_EVERYTHING
-        }
-
-        fun enableTimer() {
-            flags = flags or SDL_INIT_TIMER
-        }
-
-        fun enableAudio() {
-            flags = flags or SDL_INIT_AUDIO
-        }
-
-        fun enableEvents() {
-            flags = flags or SDL_INIT_EVENTS
-        }
-
-        fun enableController() {
-            flags = flags or SDL_INIT_GAMECONTROLLER
-        }
-
-        fun enableHaptic() {
-            flags = flags or SDL_INIT_HAPTIC
-        }
-
-        fun enableJoystick() {
-            flags = flags or SDL_INIT_JOYSTICK
-        }
-
-        fun enableVideo() {
-            flags = flags or SDL_INIT_VIDEO
-        }
-    }
-
-
-    fun init(configuration: Configuration) {
-        logger = configuration.logger
-        logger.log(KLogger.Category.Trace, "Initializing SDL v$version ...")
-        SDL_Init(configuration.flags).checkSDLError("SDL_Init")
         platform = SDL_GetPlatform()!!.toKString()
-        logger.log(KLogger.Category.Trace, "Initialized '$platform', enabled: ${enabledSubsystems()}")
+        cpus = SDL_GetCPUCount()
+        memorySize = SDL_GetSystemRAM()
+
+        val configuration = Configuration(platform, cpus, version).apply(configure)
+        logger = configuration.logger
+
+        logger.log(KLogger.Category.Trace, "$platform with $cpus CPUs, $memorySize MB RAM...")
+        logger.log(KLogger.Category.Trace, "Initializing SDL v$version")
+        SDL_Init(configuration.flags).checkSDLError("SDL_Init")
+        logger.log(KLogger.Category.Trace, "Enabled SDL subsystems: ${enabledSubsystems()}")
+
         memScoped {
             val displayMode = alloc<SDL_DisplayMode>()
             // TODO: Support multiply displays
@@ -75,7 +42,7 @@ object KGraphics {
             displayWidth = displayMode.w
             displayHeight = displayMode.h
             refreshRate = displayMode.refresh_rate
-            logger.log(KLogger.Category.Trace, "Display mode: ${displayWidth}x$displayHeight,  $refreshRate Hz")
+            logger.log(KLogger.Category.Trace, "Display mode: ${displayWidth}x$displayHeight, $refreshRate Hz")
         }
     }
 
@@ -91,6 +58,7 @@ object KGraphics {
 
     fun destroy() {
         SDL_Quit()
+        logger.trace("Quit SDL")
     }
 
     val isVideoEnabled get() = SDL_WasInit(SDL_INIT_VIDEO) != 0
@@ -152,6 +120,16 @@ object KGraphics {
         return KWindow(window)
     }
 
+    internal fun registerWindow(windowID: Int, window: KWindow) {
+        windows[windowID] = window
+    }
+
+    internal fun unregisterWindow(windowID: Int, window: KWindow) {
+        windows.remove(windowID)
+    }
+
+    fun findWindow(windowID: Int) = windows[windowID]
+
     fun createCursor(systemCursor: SDL_SystemCursor): KCursor {
         val cursor = SDL_CreateSystemCursor(systemCursor).checkSDLError("SDL_CreateSystemCursor")
         return KCursor(cursor)
@@ -165,11 +143,48 @@ object KGraphics {
     enum class MessageBoxIcon {
         Information, Warning, Error
     }
+
+    class Configuration(val platform: String, val cpus: Int, val version: KVersion) {
+        internal var flags = 0
+        var logger: KLogger = KLoggerNone
+
+        fun enableEverything() {
+            flags = flags or SDL_INIT_EVERYTHING
+        }
+
+        fun enableTimer() {
+            flags = flags or SDL_INIT_TIMER
+        }
+
+        fun enableAudio() {
+            flags = flags or SDL_INIT_AUDIO
+        }
+
+        fun enableEvents() {
+            flags = flags or SDL_INIT_EVENTS
+        }
+
+        fun enableController() {
+            flags = flags or SDL_INIT_GAMECONTROLLER
+        }
+
+        fun enableHaptic() {
+            flags = flags or SDL_INIT_HAPTIC
+        }
+
+        fun enableJoystick() {
+            flags = flags or SDL_INIT_JOYSTICK
+        }
+
+        fun enableVideo() {
+            flags = flags or SDL_INIT_VIDEO
+        }
+    }
 }
 
 class KVersion(val major: Int, val minor: Int, val patch: Int, val revision: String) {
     override fun toString(): String = "$major.$minor.$patch [$revision]"
 }
 
-val logger : KLogger
+val logger: KLogger
     inline get() = KGraphics.logger

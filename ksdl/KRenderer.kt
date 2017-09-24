@@ -5,6 +5,7 @@ import sdl2.*
 
 class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
     init {
+        logger.trace("Created renderer ${rendererPtr.rawValue} for window #${window.id}")
         val size = window.size
         SDL_RenderSetLogicalSize(rendererPtr, size.width, size.height)
     }
@@ -20,6 +21,7 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
 
     fun destroy() {
         SDL_DestroyRenderer(rendererPtr)
+        logger.trace("Destroyed renderer ${rendererPtr.rawValue}")
     }
 
     fun draw(texture: KTexture) {

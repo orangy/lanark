@@ -4,8 +4,18 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 class KWindow(val windowPtr: CPointer<SDL_Window>) {
+    val id: Int get() = SDL_GetWindowID(windowPtr)
+
+    init {
+        logger.trace("Created window #$id")
+        KGraphics.registerWindow(id, this)
+    }
+
     fun destroy() {
+        KGraphics.unregisterWindow(id, this)
+        val captureId = id
         SDL_DestroyWindow(windowPtr)
+        logger.trace("Destroyed window #$captureId")
     }
 
     fun setBordered(enable: Boolean) {

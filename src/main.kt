@@ -45,6 +45,12 @@ fun main(args: Array<String>) {
             loop.submitSelf()
         }
     }
+    loop.windowEvents.subscribe { event ->
+        when (event) {
+            is KEventWindowGotFocus -> logger.trace("Got focus!")
+            is KEventWindowLostFocus -> logger.trace("Lost focus!")
+        }
+    }
     loop.submit(renderTask)
     loop.submit(moveTask)
     loop.run()
