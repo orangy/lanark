@@ -3,7 +3,7 @@ package ksdl
 import sdl2.*
 
 abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected val sdlWindowEventType: SDL_WindowEventID) : KEvent(sdlEvent.type) {
-    val window get() = KGraphics.findWindow(sdlEvent.windowID)
+    val window get() = KPlatform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
 
     companion object {
@@ -39,7 +39,7 @@ abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected v
         }
     }
 
-    override fun toString() = "#${sdlEvent.windowID} ${super.toString()} ${sdlWindowEventType.name}"
+    override fun toString() = "#${sdlEvent.windowID} ${sdlWindowEventType.name}"
 }
 
 class KEventWindowShown(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN)

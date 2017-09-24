@@ -43,6 +43,7 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
 
     fun loadTexture(path: String): KTexture {
         val texture = IMG_LoadTexture(rendererPtr, path).checkSDLError("IMG_LoadTexture")
+        logger.trace("Loaded image into texture: $path")
         return KTexture(texture)
     }
 }

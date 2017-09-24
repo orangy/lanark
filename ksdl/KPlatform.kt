@@ -3,7 +3,7 @@ package ksdl
 import kotlinx.cinterop.*
 import sdl2.*
 
-object KGraphics {
+object KPlatform {
     private val version: KVersion
     private lateinit var platform: String
     lateinit var logger: KLogger
@@ -80,8 +80,8 @@ object KGraphics {
             if (value == null) {
                 SDL_ShowCursor(SDL_DISABLE)
             } else {
-                SDL_SetCursor(value.cursorPtr)
                 SDL_ShowCursor(SDL_ENABLE)
+                SDL_SetCursor(value.cursorPtr)
             }
         }
 
@@ -107,6 +107,7 @@ object KGraphics {
 
     fun loadSurface(path: String): KSurface {
         val surface = IMG_Load(path).checkSDLError("IMG_Load")
+        logger.trace("Loaded image into surface: $path")
         return KSurface(surface)
     }
 
@@ -187,4 +188,4 @@ class KVersion(val major: Int, val minor: Int, val patch: Int, val revision: Str
 }
 
 val logger: KLogger
-    inline get() = KGraphics.logger
+    inline get() = KPlatform.logger

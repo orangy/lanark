@@ -66,13 +66,19 @@ class KEventLoop() {
     fun run() {
         logger.trace("Running event loop")
         while (!quit) {
-            memScoped {
-                val event = alloc<SDL_Event>()
-                val hasEvent = SDL_PollEvent(event.ptr) == 1
-                if (hasEvent)
-                    processEvent(event)
-            }
             while (true) {
+                memScoped {
+                    val event = alloc<SDL_Event>()
+                    while (SDL_PollEvent(event.ptr) == 1) {
+                        processEvent(event)
+                        if (quit)
+                            break
+                    }
+                }
+
+                if (quit)
+                    break
+
                 currentTask = peek()
                 (currentTask ?: break)()
                 currentTask = null

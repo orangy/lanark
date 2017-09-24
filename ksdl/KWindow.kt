@@ -8,11 +8,11 @@ class KWindow(val windowPtr: CPointer<SDL_Window>) {
 
     init {
         logger.trace("Created window #$id")
-        KGraphics.registerWindow(id, this)
+        KPlatform.registerWindow(id, this)
     }
 
     fun destroy() {
-        KGraphics.unregisterWindow(id, this)
+        KPlatform.unregisterWindow(id, this)
         val captureId = id
         SDL_DestroyWindow(windowPtr)
         logger.trace("Destroyed window #$captureId")
@@ -20,6 +20,10 @@ class KWindow(val windowPtr: CPointer<SDL_Window>) {
 
     fun setBordered(enable: Boolean) {
         SDL_SetWindowBordered(windowPtr, enable.toSDLBoolean())
+    }
+
+    fun setResizable(enable: Boolean) {
+        SDL_SetWindowResizable(windowPtr, enable.toSDLBoolean())
     }
 
     fun setWindowMode(mode: Mode) {
@@ -89,8 +93,8 @@ class KWindow(val windowPtr: CPointer<SDL_Window>) {
         return KRenderer(this, renderer)
     }
 
-    fun messageBox(title: String, message: String, icon: KGraphics.MessageBoxIcon) {
-        KGraphics.messageBox(title, message, icon, this)
+    fun messageBox(title: String, message: String, icon: KPlatform.MessageBoxIcon) {
+        KPlatform.messageBox(title, message, icon, this)
     }
 
 

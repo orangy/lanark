@@ -4,6 +4,15 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 class KSurface(val surfacePtr: CPointer<SDL_Surface>) {
+    init {
+        logger.trace("Created surface ${surfacePtr.rawValue}")
+    }
+
+    fun destroy() {
+        SDL_FreeSurface(surfacePtr)
+        logger.trace("Destroyed surface ${surfacePtr.rawValue}")
+    }
+
     var blendMode: BlendMode
         get() = memScoped {
             val mode = alloc<IntVar>()
@@ -59,8 +68,5 @@ class KSurface(val surfacePtr: CPointer<SDL_Surface>) {
         return SDL_MapRGBA(surfacePtr.pointed.format, red.toByte(), green.toByte(), blue.toByte(), alpha.toByte())
     }
 
-    fun destroy() {
-        SDL_FreeSurface(surfacePtr)
-    }
 }
 

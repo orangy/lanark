@@ -1,5 +1,6 @@
 import kdsl.KEventLoop
 import ksdl.*
+import sdl2.*
 
 /*
  * Copyright 2010-2017 JetBrains s.r.o.
@@ -18,45 +19,77 @@ import ksdl.*
  */
 
 fun main(args: Array<String>) {
-    KGraphics.init {
+    KPlatform.init {
         logger = KLoggerConsole()
         enableEverything()
     }
 
-    val window = KGraphics.createWindow("Kotlin SDL2 Demo", 100, 100, 800, 600)
+    val sword = KPlatform.loadSurface("sword.png")
+    KPlatform.activeCursor = KPlatform.createCursor(sword, 0, 0)
+    sword.destroy()
+
+    val window = KPlatform.createWindow("Kotlin SDL2 Demo", 100, 100, 800, 600)
+    window.minimumSize = KSize(200, 200)
+    window.maximumSize = KSize(1200, 800)
     window.setBordered(true)
+    window.setResizable(true)
+
     val renderer = window.renderer()
-    val sfc = KGraphics.createSurface(KSize(200, 200), 32)
+
+    val sfc = KPlatform.createSurface(KSize(200, 200), 32)
     sfc.fill(Colors.BLUE)
     val tx2 = sfc.toTexture(renderer)
+    sfc.destroy()
+
     val texture = renderer.loadTexture("tetris_all.bmp")
     val loop = KEventLoop()
     var x = 20
     var y = 20
     val renderTask = {
         renderer.clear(Colors.BLACK)
-        renderer.draw(tx2, KRect(x, y, 50, 50))
+        renderer.draw(texture)
+        //renderer.draw(tx2, KRect(x, y, 50, 50))
         renderer.present()
     }
-    val moveTask = {
-        if (x < 200) {
-            x++
+    loop.windowEvents.subscribe {
+        if (it is KEventWindowExposed)
             loop.submit(renderTask)
-            loop.submitSelf()
-        }
     }
-    loop.windowEvents.subscribe { event ->
-        when (event) {
-            is KEventWindowGotFocus -> logger.trace("Got focus!")
-            is KEventWindowLostFocus -> logger.trace("Lost focus!")
+    loop.keyEvents.subscribe { event ->
+        if (event is KEventKeyDown) {
+            when (event.scanCode) {
+                SDL_SCANCODE_LEFT -> {
+                    if (x > 0) {
+                        x--
+                        loop.submit(renderTask)
+                    }
+                }
+                SDL_SCANCODE_UP -> {
+                    if (y > 0) {
+                        y--
+                        loop.submit(renderTask)
+                    }
+                }
+                SDL_SCANCODE_RIGHT -> {
+                    if (x < 200) {
+                        x++
+                        loop.submit(renderTask)
+                    }
+                }
+                SDL_SCANCODE_DOWN -> {
+                    if (y < 200) {
+                        y++
+                        loop.submit(renderTask)
+                    }
+                }
+            }
         }
     }
     loop.submit(renderTask)
-    loop.submit(moveTask)
     loop.run()
     renderer.destroy()
     window.destroy()
-    KGraphics.destroy()
+    KPlatform.destroy()
 }
 
 fun mainTetris(args: Array<String>) {
