@@ -4,26 +4,93 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 object KGraphics {
-    private val platform: String
+    private lateinit var platform: String
+    private lateinit var log: KLog
     private var displayWidth: Int = 0
     private var displayHeight: Int = 0
     private var refreshRate: Int = 0
 
-    init {
-        SDL_Init(SDL_INIT_EVERYTHING).checkSDLError("SDL_Init")
+    fun init(configure: Configuration.() -> Unit) {
+        val configuration = Configuration().apply(configure)
+        init(configuration)
+    }
+
+    class Configuration {
+        internal var flags = 0
+        var log: KLog = KLogNone
+
+        fun enableEverything() {
+            flags = flags or SDL_INIT_EVERYTHING
+        }
+
+        fun enableTimer() {
+            flags = flags or SDL_INIT_TIMER
+        }
+
+        fun enableAudio() {
+            flags = flags or SDL_INIT_AUDIO
+        }
+
+        fun enableEvents() {
+            flags = flags or SDL_INIT_EVENTS
+        }
+
+        fun enableController() {
+            flags = flags or SDL_INIT_GAMECONTROLLER
+        }
+
+        fun enableHaptic() {
+            flags = flags or SDL_INIT_HAPTIC
+        }
+
+        fun enableJoystick() {
+            flags = flags or SDL_INIT_JOYSTICK
+        }
+
+        fun enableVideo() {
+            flags = flags or SDL_INIT_VIDEO
+        }
+    }
+
+
+    fun init(configuration: Configuration) {
+        log = configuration.log
+        log.log(KLog.Category.Trace, "Initializing SDL…")
+        SDL_Init(configuration.flags).checkSDLError("SDL_Init")
         platform = SDL_GetPlatform()!!.toKString()
+        log.log(KLog.Category.Trace, "Initialized '$platform', enabled: ${enabledSubsystems()}")
         memScoped {
             val displayMode = alloc<SDL_DisplayMode>()
+            // TODO: Support multiply displays
             SDL_GetCurrentDisplayMode(0, displayMode.ptr.reinterpret()).checkSDLError("SDL_GetCurrentDisplayMode")
             displayWidth = displayMode.w
             displayHeight = displayMode.h
             refreshRate = displayMode.refresh_rate
+            log.log(KLog.Category.Trace, "Display mode: ${displayWidth}x$displayHeight,  $refreshRate Hz")
         }
+    }
+
+    private fun enabledSubsystems(): List<String> = mutableListOf<String>().apply {
+        if (isVideoEnabled) add("Video")
+        if (isAudioEnabled) add("Audio")
+        if (isEventsEnabled) add("Events")
+        if (isControllerEnabled) add("Controller")
+        if (isHapticEnabled) add("Haptic")
+        if (isJoystickEnabled) add("Joystick")
+        if (isTimerEnabled) add("Timer")
     }
 
     fun destroy() {
         SDL_Quit()
     }
+
+    val isVideoEnabled get() = SDL_WasInit(SDL_INIT_VIDEO) != 0
+    val isAudioEnabled get() = SDL_WasInit(SDL_INIT_AUDIO) != 0
+    val isTimerEnabled get() = SDL_WasInit(SDL_INIT_TIMER) != 0
+    val isEventsEnabled get() = SDL_WasInit(SDL_INIT_EVENTS) != 0
+    val isControllerEnabled get() = SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 0
+    val isJoystickEnabled get() = SDL_WasInit(SDL_INIT_JOYSTICK) != 0
+    val isHapticEnabled get() = SDL_WasInit(SDL_INIT_HAPTIC) != 0
 
     var activeCursor: KCursor?
         get() {

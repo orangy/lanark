@@ -21,6 +21,11 @@ import sdl2.SDL_QUIT
  */
 
 fun main(args: Array<String>) {
+    KGraphics.init {
+        log = KLogConsole()
+        enableEverything()
+    }
+
     val window = KGraphics.createWindow("Kotlin SDL2 Demo", 100, 100, 800, 600)
     window.setBordered(true)
     val renderer = window.renderer()

@@ -22,7 +22,7 @@ cinterop(
 
 kotlinc(
         NAME KotlinSDL2
-        SOURCES src ksdl
+        SOURCES src ksdl kgfx
         LIBRARIES sdl2
         LINKER_OPTS "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -lsdl2 -lsdl2_image"
 )
