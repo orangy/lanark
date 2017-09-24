@@ -1,5 +1,3 @@
-package kotlin
-
 import kotlinx.cinterop.*
 import ksdl.getSDLErrorText
 import sdl2.*
