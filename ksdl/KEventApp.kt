@@ -1,6 +1,5 @@
 package ksdl
 
-import eventNames
 import sdl2.*
 
 abstract class KEventApp(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {

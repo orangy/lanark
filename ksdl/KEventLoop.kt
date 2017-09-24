@@ -1,6 +1,5 @@
 package kdsl
 
-import eventNames
 import kotlinx.cinterop.*
 import ksdl.*
 import sdl2.*
@@ -88,7 +87,7 @@ class KEventLoop() {
     }
 
     private fun processEvent(event: SDL_Event) {
-        val eventName = eventNames[event.type]
+        val eventName = KConstantNames.events[event.type]
         when (event.type) {
             SDL_QUIT -> {
                 quit = true
