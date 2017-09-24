@@ -2,39 +2,44 @@ package ksdl
 
 import sdl2.*
 
-abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected val sdlEventID: SDL_WindowEventID) : KEvent(SDL_WINDOWEVENT) {
+abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected val sdlWindowEventType: SDL_WindowEventID) : KEvent(sdlEvent.type) {
     val window get() = KGraphics.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
 
     companion object {
-        fun createEventWindow(sdlEvent: SDL_WindowEvent): KEventWindow {
-            val eventKind = SDL_WindowEventID.byValue(sdlEvent.event.toInt())
+        fun createEvent(sdlEvent: SDL_Event): KEventWindow {
+            if (sdlEvent.type != SDL_WINDOWEVENT) {
+                throw KGraphicsException("KEventWindow.createEvent was called with wrong type of SDL_Event")
+            }
+
+            val windowEvent = sdlEvent.window
+            val eventKind = SDL_WindowEventID.byValue(windowEvent.event.toInt())
             val kevent = when (eventKind) {
                 SDL_WindowEventID.SDL_WINDOWEVENT_NONE -> throw KGraphicsException("SDL_WINDOWEVENT_NONE shouldn't be sent")
-                SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN -> KEventWindowShown(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN -> KEventWindowHidden(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED -> KEventWindowExposed(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_MOVED -> KEventWindowMoved(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED -> KEventWindowResized(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED -> KEventWindowSizeChanged(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED -> KEventWindowMinimized(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_MAXIMIZED -> KEventWindowMaximized(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED -> KEventWindowRestored(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_ENTER -> KEventWindowMouseEntered(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE -> KEventWindowMouseLeft(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED -> KEventWindowGotFocus(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST -> KEventWindowLostFocus(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE -> KEventWindowClose(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_TAKE_FOCUS -> KEventWindowOfferedFocus(sdlEvent)
-                SDL_WindowEventID.SDL_WINDOWEVENT_HIT_TEST -> KEventWindowHitTest(sdlEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN -> KEventWindowShown(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN -> KEventWindowHidden(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED -> KEventWindowExposed(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_MOVED -> KEventWindowMoved(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED -> KEventWindowResized(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED -> KEventWindowSizeChanged(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED -> KEventWindowMinimized(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_MAXIMIZED -> KEventWindowMaximized(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED -> KEventWindowRestored(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_ENTER -> KEventWindowMouseEntered(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE -> KEventWindowMouseLeft(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED -> KEventWindowGotFocus(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST -> KEventWindowLostFocus(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE -> KEventWindowClose(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_TAKE_FOCUS -> KEventWindowOfferedFocus(windowEvent)
+                SDL_WindowEventID.SDL_WINDOWEVENT_HIT_TEST -> KEventWindowHitTest(windowEvent)
             }
-            if (kevent.sdlEventID.value != sdlEvent.event.toInt())
-                logger.error("Posted window event ${kevent.sdlEventID.name} is not the same as in created KWindowEvent instance")
+            if (kevent.sdlWindowEventType.value != windowEvent.event.toInt())
+                logger.error("Posted window event ${kevent.sdlWindowEventType.name} is not the same as in created KWindowEvent instance")
             return kevent
         }
     }
 
-    override fun toString() = "${sdlEventID.name} #${sdlEvent.windowID}"
+    override fun toString() = "#${sdlEvent.windowID} ${super.toString()} ${sdlWindowEventType.name}"
 }
 
 class KEventWindowShown(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN)

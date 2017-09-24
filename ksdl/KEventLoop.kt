@@ -16,7 +16,9 @@ class KEventLoop() {
     private var queueHead = 0
     private var queueTail = 0
 
-    val windowEvents = KEventSource<KEventWindow>(SDL_WINDOWEVENT)
+    val windowEvents = KEventSource<KEventWindow>("Window")
+    val appEvents = KEventSource<KEventApp>("App")
+    val keyEvents = KEventSource<KEventKey>("Key")
 
     fun submitSelf() {
         val task = currentTask
@@ -87,16 +89,27 @@ class KEventLoop() {
                 logger.trace("Event: SDL_QUIT")
                 return
             }
+            SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
+            SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> {
+                val eventApp = KEventApp.createEvent(event)
+                logger.trace("Event: $eventApp")
+                appEvents.raise(eventApp)
+            }
             SDL_WINDOWEVENT -> {
-                val eventWindow = KEventWindow.createEventWindow(event.window)
+                val eventWindow = KEventWindow.createEvent(event)
                 logger.trace("Event: $eventWindow")
                 windowEvents.raise(eventWindow)
             }
+            SDL_KEYUP, SDL_KEYDOWN -> {
+                val eventWindow = KEventKey.createEvent(event)
+                logger.trace("Event: $eventWindow")
+                keyEvents.raise(eventWindow)
+            }
             else -> {
                 if (eventName == null)
-                    logger.trace("Unknown event type: ${event.type}")
+                    logger.trace("Unknown event eventType: ${event.type}")
                 else
-                    logger.trace("Event: $eventName (${event.type})")
+                    logger.trace("Event: $eventName")
             }
         }
     }

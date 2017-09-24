@@ -3,7 +3,7 @@ package kdsl
 import ksdl.*
 import sdl2.*
 
-class KEventSource<T>(val type: SDL_EventType) {
+class KEventSource<T>(val tag: String) {
     private val handlers = mutableListOf<(T) -> Unit>()
 
     fun subscribe(handler: (T) -> Unit) {
@@ -15,7 +15,7 @@ class KEventSource<T>(val type: SDL_EventType) {
             try {
                 it(event)
             } catch (e: Throwable) {
-                logger.error("Error handling event $type: $e")
+                logger.error("Error handling $tag event $event: $e")
             }
         }
     }
