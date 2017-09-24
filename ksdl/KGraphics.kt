@@ -4,11 +4,20 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 object KGraphics {
+    private val version: KVersion
     private lateinit var platform: String
     private lateinit var log: KLog
     private var displayWidth: Int = 0
     private var displayHeight: Int = 0
     private var refreshRate: Int = 0
+
+    init {
+        version = memScoped {
+            val version = alloc<SDL_version>()
+            SDL_GetVersion(version.ptr)
+            KVersion(version.major.toInt(), version.minor.toInt(), version.patch.toInt(), SDL_GetRevision()?.toKString() ?: "null")
+        }
+    }
 
     fun init(configure: Configuration.() -> Unit) {
         val configuration = Configuration().apply(configure)
@@ -55,7 +64,7 @@ object KGraphics {
 
     fun init(configuration: Configuration) {
         log = configuration.log
-        log.log(KLog.Category.Trace, "Initializing SDL…")
+        log.log(KLog.Category.Trace, "Initializing SDL v$version ...")
         SDL_Init(configuration.flags).checkSDLError("SDL_Init")
         platform = SDL_GetPlatform()!!.toKString()
         log.log(KLog.Category.Trace, "Initialized '$platform', enabled: ${enabledSubsystems()}")
@@ -156,5 +165,9 @@ object KGraphics {
     enum class MessageBoxIcon {
         Information, Warning, Error
     }
+}
+
+class KVersion(val major: Int, val minor: Int, val patch: Int, val revision: String) {
+    override fun toString(): String = "$major.$minor.$patch [$revision]"
 }
 

@@ -1,7 +1,6 @@
 package ksdl
 
-import kotlinx.cinterop.*
-import sdl2.*
+// TODO: May be use SDL_Log: https://wiki.libsdl.org/SDL_Log
 
 interface KLog {
     fun log(category: Category, message: String) = log(category) { message }
