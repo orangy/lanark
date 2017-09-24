@@ -116,8 +116,8 @@ object KPlatform {
         return KSurface(surface)
     }
 
-    fun createWindow(caption: String, x: Int, y: Int, width: Int, height: Int, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
-        val window = SDL_CreateWindow(caption, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
+    fun createWindow(title: String, x: Int, y: Int, width: Int, height: Int, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
+        val window = SDL_CreateWindow(title, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
         return KWindow(window)
     }
 

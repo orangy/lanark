@@ -15,6 +15,8 @@ class KEventLoop() {
     private var queueHead = 0
     private var queueTail = 0
 
+    var currentTask: (() -> Unit)? = null
+
     val windowEvents = KEventSource<KEventWindow>("Window")
     val appEvents = KEventSource<KEventApp>("App")
     val keyEvents = KEventSource<KEventKey>("Key")
@@ -118,7 +120,5 @@ class KEventLoop() {
             }
         }
     }
-
-    var currentTask: (() -> Unit)? = null
 }
 
