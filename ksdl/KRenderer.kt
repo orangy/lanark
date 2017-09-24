@@ -1,9 +1,6 @@
 package ksdl
 
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.pointed
-import kotlinx.cinterop.usePointer
+import kotlinx.cinterop.*
 import sdl2.*
 
 class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {

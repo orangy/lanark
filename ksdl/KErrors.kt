@@ -1,9 +1,7 @@
 package ksdl
 
-import kotlinx.cinterop.CPointed
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.toKString
-import sdl2.SDL_GetError
+import kotlinx.cinterop.*
+import sdl2.*
 
 class KGraphicsException(message: String) : Exception(message)
 

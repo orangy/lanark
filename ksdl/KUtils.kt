@@ -1,6 +1,5 @@
 package ksdl
 
-import sdl2.SDL_FALSE
-import sdl2.SDL_TRUE
+import sdl2.*
 
 fun Boolean.toSDLBoolean() = if (this) SDL_TRUE else SDL_FALSE

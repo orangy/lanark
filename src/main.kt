@@ -1,8 +1,5 @@
-import sdl2.SDL_PollEvent
-import kotlinx.cinterop.*
+import kdsl.KEventLoop
 import ksdl.*
-import sdl2.SDL_Event
-import sdl2.SDL_QUIT
 
 /*
  * Copyright 2010-2017 JetBrains s.r.o.
@@ -22,7 +19,7 @@ import sdl2.SDL_QUIT
 
 fun main(args: Array<String>) {
     KGraphics.init {
-        log = KLogConsole()
+        logger = KLoggerConsole()
         enableEverything()
     }
 
@@ -33,19 +30,24 @@ fun main(args: Array<String>) {
     sfc.fill(Colors.BLUE)
     val tx2 = sfc.toTexture(renderer)
     val texture = renderer.loadTexture("tetris_all.bmp")
-    while (true) {
-        val quit = memScoped {
-            val event = alloc<SDL_Event>()
-            SDL_PollEvent(event.ptr)
-            event.type == SDL_QUIT
-        }
-        if (quit)
-            break
-
+    val loop = KEventLoop()
+    var x = 20
+    var y = 20
+    val renderTask = {
         renderer.clear(Colors.BLACK)
-        renderer.draw(tx2, KRect(20, 20, 50, 50))
+        renderer.draw(tx2, KRect(x, y, 50, 50))
         renderer.present()
     }
+    val moveTask = {
+        if (x < 200) {
+            x++
+            loop.submit(renderTask)
+            loop.submitSelf()
+        }
+    }
+    loop.submit(renderTask)
+    loop.submit(moveTask)
+    loop.run()
     renderer.destroy()
     window.destroy()
     KGraphics.destroy()

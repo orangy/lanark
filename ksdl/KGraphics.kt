@@ -6,7 +6,7 @@ import sdl2.*
 object KGraphics {
     private val version: KVersion
     private lateinit var platform: String
-    private lateinit var log: KLog
+    lateinit var logger: KLogger
     private var displayWidth: Int = 0
     private var displayHeight: Int = 0
     private var refreshRate: Int = 0
@@ -26,7 +26,7 @@ object KGraphics {
 
     class Configuration {
         internal var flags = 0
-        var log: KLog = KLogNone
+        var logger: KLogger = KLoggerNone
 
         fun enableEverything() {
             flags = flags or SDL_INIT_EVERYTHING
@@ -63,11 +63,11 @@ object KGraphics {
 
 
     fun init(configuration: Configuration) {
-        log = configuration.log
-        log.log(KLog.Category.Trace, "Initializing SDL v$version ...")
+        logger = configuration.logger
+        logger.log(KLogger.Category.Trace, "Initializing SDL v$version ...")
         SDL_Init(configuration.flags).checkSDLError("SDL_Init")
         platform = SDL_GetPlatform()!!.toKString()
-        log.log(KLog.Category.Trace, "Initialized '$platform', enabled: ${enabledSubsystems()}")
+        logger.log(KLogger.Category.Trace, "Initialized '$platform', enabled: ${enabledSubsystems()}")
         memScoped {
             val displayMode = alloc<SDL_DisplayMode>()
             // TODO: Support multiply displays
@@ -75,7 +75,7 @@ object KGraphics {
             displayWidth = displayMode.w
             displayHeight = displayMode.h
             refreshRate = displayMode.refresh_rate
-            log.log(KLog.Category.Trace, "Display mode: ${displayWidth}x$displayHeight,  $refreshRate Hz")
+            logger.log(KLogger.Category.Trace, "Display mode: ${displayWidth}x$displayHeight,  $refreshRate Hz")
         }
     }
 
@@ -171,3 +171,5 @@ class KVersion(val major: Int, val minor: Int, val patch: Int, val revision: Str
     override fun toString(): String = "$major.$minor.$patch [$revision]"
 }
 
+val logger : KLogger
+    inline get() = KGraphics.logger

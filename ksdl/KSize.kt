@@ -1,11 +1,7 @@
 package ksdl
 
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.MemScope
-import kotlinx.cinterop.alloc
-import kotlinx.cinterop.ptr
-import sdl2.SDL_Point
-import sdl2.SDL_Rect
+import kotlinx.cinterop.*
+import sdl2.*
 
 data class KSize(val width: Int, val height: Int)
 data class KPoint(val x: Int, val y: Int)
