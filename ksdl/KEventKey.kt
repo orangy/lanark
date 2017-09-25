@@ -5,7 +5,7 @@ import sdl2.*
 abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdlEvent.type) {
     val window get() = KPlatform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
-    val state get() = KKeyState.fromState(sdlEvent.state)
+    val state get() = KButtonState.fromValue(sdlEvent.state.toInt())
     val repeat get() = sdlEvent.repeat.toInt() != 0
     val keyCode get() = sdlEvent.keysym.sym
     val scanCode get() = sdlEvent.keysym.scancode
@@ -25,14 +25,14 @@ abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdl
 class KEventKeyDown(sdlEvent: SDL_KeyboardEvent) : KEventKey(sdlEvent)
 class KEventKeyUp(sdlEvent: SDL_KeyboardEvent) : KEventKey(sdlEvent)
 
-enum class KKeyState {
+enum class KButtonState {
     Pressed, Released;
 
     companion object {
-        fun fromState(state: Uint8) = when (state.toInt()) {
+        fun fromValue(value: Int) = when (value) {
             SDL_PRESSED -> Pressed
             SDL_RELEASED -> Released
-            else -> throw KGraphicsException("Unknown key state: $state")
+            else -> throw KGraphicsException("Unknown key state: $value")
         }
     }
 }

@@ -1,4 +1,3 @@
-import kdsl.KEventLoop
 import kotlinx.cinterop.*
 import ksdl.*
 import sdl2.*
@@ -72,6 +71,14 @@ fun main(args: Array<String>) {
                 SDL_SCANCODE_UP -> if (y > 0) y--
                 SDL_SCANCODE_RIGHT -> if (x < 200) x++
                 SDL_SCANCODE_DOWN -> if (y < 200) y++
+            }
+        }
+    }
+    loop.mouseEvents.subscribe {
+        when (it) {
+            is KEventMouseWheel -> {
+                x += it.scrollX
+                y += it.scrollY
             }
         }
     }

@@ -60,19 +60,19 @@ class KEventWindowMoved(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_
     val x get() = sdlEvent.data1
     val y get() = sdlEvent.data2
 
-    override fun toString() = super.toString() + " ($x, $y)"
+    override fun toString() = "${super.toString()} ($x, $y)"
 }
 
 class KEventWindowResized(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED) {
     val width get() = sdlEvent.data1
     val height get() = sdlEvent.data2
 
-    override fun toString() = super.toString() + " ($width, $height)"
+    override fun toString() = "${super.toString()} ($width, $height)"
 }
 
 class KEventWindowSizeChanged(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED) {
     val width get() = sdlEvent.data1
     val height get() = sdlEvent.data2
 
-    override fun toString() = super.toString() + " ($width, $height)"
+    override fun toString() = "${super.toString()} ($width, $height)"
 }

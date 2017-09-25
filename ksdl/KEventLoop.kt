@@ -1,4 +1,4 @@
-package kdsl
+package ksdl
 
 import kotlinx.cinterop.*
 import ksdl.*
@@ -20,6 +20,7 @@ class KEventLoop() {
     val windowEvents = KEventSource<KEventWindow>("Window")
     val appEvents = KEventSource<KEventApp>("App")
     val keyEvents = KEventSource<KEventKey>("Key")
+    val mouseEvents = KEventSource<KEventMouse>("Mouse")
 
     fun submitSelf() {
         val task = currentTask
@@ -98,19 +99,25 @@ class KEventLoop() {
             }
             SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
             SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> {
-                val eventApp = KEventApp.createEvent(event)
-                logger.trace("Event: $eventApp")
-                appEvents.raise(eventApp)
+                val kevent = KEventApp.createEvent(event)
+                logger.trace("Event: $kevent")
+                appEvents.raise(kevent)
             }
             SDL_WINDOWEVENT -> {
-                val eventWindow = KEventWindow.createEvent(event)
-                logger.trace("Event: $eventWindow")
-                windowEvents.raise(eventWindow)
+                val kevent = KEventWindow.createEvent(event)
+                logger.trace("Event: $kevent")
+                windowEvents.raise(kevent)
             }
             SDL_KEYUP, SDL_KEYDOWN -> {
-                val eventWindow = KEventKey.createEvent(event)
-                logger.trace("Event: $eventWindow")
-                keyEvents.raise(eventWindow)
+                val kevent = KEventKey.createEvent(event)
+                logger.trace("Event: $kevent")
+                keyEvents.raise(kevent)
+            }
+            SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> {
+                val kevent = KEventMouse.createEvent(event)
+                logger.trace("Event: $kevent")
+                mouseEvents.raise(kevent)
+
             }
             else -> {
                 if (eventName == null)
