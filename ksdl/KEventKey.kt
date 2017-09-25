@@ -1,6 +1,7 @@
 package ksdl
 
 import sdl2.*
+import kotlinx.cinterop.*
 
 abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdlEvent.type) {
     val window get() = KPlatform.findWindow(sdlEvent.windowID)
@@ -19,7 +20,10 @@ abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdl
         }
     }
 
-    override fun toString() = "#${sdlEvent.windowID} ${super.toString()} '${KConstantNames.scanCodes[scanCode]}' $state ${if (repeat) "Repeated" else ""}"
+    override fun toString() = "#${sdlEvent.windowID} ${super.toString()} '${getScanCodeName(scanCode)}' $state ${if (repeat) "Repeated" else ""}"
+
+    private fun getScanCodeName(scanCode: SDL_Scancode) =
+            SDL_GetScancodeName(scanCode)?.toKString() ?: "Unknown"
 }
 
 class KEventKeyDown(sdlEvent: SDL_KeyboardEvent) : KEventKey(sdlEvent)
