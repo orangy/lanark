@@ -1,3 +1,5 @@
+package ksdl.system
+
 import sdl2.*
 
 object KConstantNames {

@@ -1,6 +1,7 @@
-package ksdl
+package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.system.*
 import sdl2.*
 
 object KPlatform {
@@ -30,10 +31,14 @@ object KPlatform {
         val configuration = Configuration(platform, cpus, version).apply(configure)
         logger = configuration.logger
 
-        logger.log(KLogger.Category.Trace, "$platform with $cpus CPUs, $memorySize MB RAM...")
-        logger.log(KLogger.Category.Trace, "Initializing SDL v$version")
+        logger.trace("Test trace")
+        logger.warn("Test warn")
+        logger.error("Test err")
+
+        logger.info("$platform with $cpus CPUs, $memorySize MB RAM...")
+        logger.info("Initializing SDL v$version")
         SDL_Init(configuration.flags).checkSDLError("SDL_Init")
-        logger.log(KLogger.Category.Trace, "Enabled SDL subsystems: ${enabledSubsystems()}")
+        logger.info("Enabled SDL subsystems: ${enabledSubsystems()}")
 
         memScoped {
             val displayMode = alloc<SDL_DisplayMode>()
@@ -42,7 +47,7 @@ object KPlatform {
             displayWidth = displayMode.w
             displayHeight = displayMode.h
             refreshRate = displayMode.refresh_rate
-            logger.log(KLogger.Category.Trace, "Display mode: ${displayWidth}x$displayHeight, $refreshRate Hz")
+            logger.info("Display mode: ${displayWidth}x${displayHeight}, $refreshRate Hz")
         }
     }
 
@@ -58,7 +63,7 @@ object KPlatform {
 
     fun destroy() {
         SDL_Quit()
-        logger.trace("Quit SDL")
+        logger.info("Quit SDL")
     }
 
     val isVideoEnabled get() = SDL_WasInit(SDL_INIT_VIDEO) != 0
@@ -89,13 +94,13 @@ object KPlatform {
         SDL_Delay(millis)
     }
 
-    fun messageBox(title: String, message: String, icon: MessageBoxIcon, parentWindow: KWindow? = null) {
+    fun messageBox(title: String, message: String, icon: MessageBoxIcon, parentWindow: CPointer<SDL_Window>? = null) {
         val flags = when (icon) {
             MessageBoxIcon.Information -> SDL_MESSAGEBOX_INFORMATION
             MessageBoxIcon.Warning -> SDL_MESSAGEBOX_WARNING
             MessageBoxIcon.Error -> SDL_MESSAGEBOX_ERROR
         }
-        SDL_ShowSimpleMessageBox(flags, title, message, parentWindow?.windowPtr).checkSDLError("SDL_ShowSimpleMessageBox")
+        SDL_ShowSimpleMessageBox(flags, title, message, parentWindow).checkSDLError("SDL_ShowSimpleMessageBox")
     }
 
     fun setScreenSaver(enabled: Boolean) {
@@ -107,7 +112,7 @@ object KPlatform {
 
     fun loadSurface(path: String): KSurface {
         val surface = IMG_Load(path).checkSDLError("IMG_Load")
-        logger.trace("Loaded image into surface: $path")
+        logger.system("Loaded image into surface: $path")
         return KSurface(surface)
     }
 
@@ -116,7 +121,7 @@ object KPlatform {
         return KSurface(surface)
     }
 
-    fun createWindow(title: String, x: Int, y: Int, width: Int, height: Int, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
+    fun createWindow(title: String, width: Int, height: Int, x: Int = SDL_WINDOWPOS_UNDEFINED, y: Int = SDL_WINDOWPOS_UNDEFINED, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
         val window = SDL_CreateWindow(title, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
         return KWindow(window)
     }

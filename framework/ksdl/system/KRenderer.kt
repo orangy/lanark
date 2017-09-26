@@ -1,11 +1,11 @@
-package ksdl
+package ksdl.system
 
 import kotlinx.cinterop.*
 import sdl2.*
 
-class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
+class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Renderer>) {
     init {
-        logger.trace("Created renderer ${rendererPtr.rawValue} for window #${window.id}")
+        logger.system("Created renderer ${rendererPtr.rawValue} for window #${window.id}")
         val size = window.size
         SDL_RenderSetLogicalSize(rendererPtr, size.width, size.height)
     }
@@ -21,7 +21,7 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
 
     fun destroy() {
         SDL_DestroyRenderer(rendererPtr)
-        logger.trace("Destroyed renderer ${rendererPtr.rawValue}")
+        logger.system("Destroyed renderer ${rendererPtr.rawValue}")
     }
 
     fun draw(texture: KTexture) {
@@ -43,7 +43,7 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) {
 
     fun loadTexture(path: String): KTexture {
         val texture = IMG_LoadTexture(rendererPtr, path).checkSDLError("IMG_LoadTexture")
-        logger.trace("Loaded image into texture: $path")
+        logger.system("Loaded image into texture: $path")
         return KTexture(texture)
     }
 }

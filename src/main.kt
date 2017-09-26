@@ -1,6 +1,5 @@
-import kotlinx.cinterop.*
-import ksdl.*
 import sdl2.*
+import ksdl.system.*
 
 /*
  * Copyright 2010-2017 JetBrains s.r.o.
@@ -29,11 +28,12 @@ fun main(args: Array<String>) {
     sword.destroy()
 
     val title = "Kotlin SDL2 Demo"
-    val window = KPlatform.createWindow(title, 100, 100, 800, 600)
-    window.minimumSize = KSize(200, 200)
-    window.maximumSize = KSize(1200, 800)
-    window.setBordered(true)
-    window.setResizable(true)
+    val window = KPlatform.createWindow(title, 800, 600).apply {
+        minimumSize = KSize(200, 200)
+        maximumSize = KSize(1200, 800)
+        setBordered(true)
+        setResizable(true)
+    }
 
     val renderer = window.renderer()
 

@@ -1,4 +1,4 @@
-package ksdl
+package ksdl.system
 
 class KEventSource<T>(val tag: String) {
     private val handlers = mutableListOf<(T) -> Unit>()

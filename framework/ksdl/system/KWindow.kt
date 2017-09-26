@@ -1,13 +1,13 @@
-package ksdl
+package ksdl.system
 
 import kotlinx.cinterop.*
 import sdl2.*
 
-class KWindow(val windowPtr: CPointer<SDL_Window>) {
+class KWindow(private val windowPtr: CPointer<SDL_Window>) {
     val id: Int get() = SDL_GetWindowID(windowPtr)
 
     init {
-        logger.trace("Created window #$id")
+        logger.system("Created window #$id")
         KPlatform.registerWindow(id, this)
     }
 
@@ -15,7 +15,7 @@ class KWindow(val windowPtr: CPointer<SDL_Window>) {
         KPlatform.unregisterWindow(id, this)
         val captureId = id
         SDL_DestroyWindow(windowPtr)
-        logger.trace("Destroyed window #$captureId")
+        logger.system("Destroyed window #$captureId")
     }
 
     fun setBordered(enable: Boolean) {
@@ -94,7 +94,7 @@ class KWindow(val windowPtr: CPointer<SDL_Window>) {
     }
 
     fun messageBox(title: String, message: String, icon: KPlatform.MessageBoxIcon) {
-        KPlatform.messageBox(title, message, icon, this)
+        KPlatform.messageBox(title, message, icon, windowPtr)
     }
 
 

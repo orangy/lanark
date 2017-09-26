@@ -1,5 +1,5 @@
 import kotlinx.cinterop.*
-import ksdl.getSDLErrorText
+import ksdl.system.*
 import sdl2.*
 
 typealias Field = Array<ByteArray>

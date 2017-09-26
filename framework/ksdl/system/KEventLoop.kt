@@ -1,7 +1,7 @@
-package ksdl
+package ksdl.system
 
 import kotlinx.cinterop.*
-import ksdl.*
+import ksdl.system.*
 import sdl2.*
 
 class KEventLoop() {
@@ -38,10 +38,10 @@ class KEventLoop() {
                 queue[index + 1] = queue[index]
             }
             queueHead++
-            logger.trace("Expanded queue: ${queue.size} ")
+            logger.system("Expanded queue: ${queue.size} ")
         } else if (queueHead == 0 && queueTail == queue.lastIndex) {
             queue.add(null)
-            logger.trace("Expanded queue: ${queue.size} ")
+            logger.system("Expanded queue: ${queue.size} ")
         }
 
         if (queueTail == queue.lastIndex) {
@@ -50,7 +50,7 @@ class KEventLoop() {
         } else {
             queue[queueTail++] = task
         }
-        //logger.trace("Submitted task: ${queue.size} [$queueHead, $queueTail]")
+        //logger.system("Submitted task: ${queue.size} [$queueHead, $queueTail]")
     }
 
     fun peek(): (() -> Unit)? {
@@ -61,12 +61,12 @@ class KEventLoop() {
             queueHead = 0
         else
             queueHead++
-        //logger.trace("Peeked task: ${queue.size} [$queueHead, $queueTail]")
+        //logger.system("Peeked task: ${queue.size} [$queueHead, $queueTail]")
         return task
     }
 
     fun run() {
-        logger.trace("Running event loop")
+        logger.system("Running event loop")
         while (!quit) {
             while (true) {
                 memScoped {
@@ -86,7 +86,7 @@ class KEventLoop() {
                 currentTask = null
             }
         }
-        logger.trace("Stopped event loop")
+        logger.system("Stopped event loop")
     }
 
     private fun processEvent(event: SDL_Event) {
@@ -94,36 +94,36 @@ class KEventLoop() {
         when (event.type) {
             SDL_QUIT -> {
                 quit = true
-                logger.trace("Event: SDL_QUIT")
+                logger.system("Event: SDL_QUIT")
                 return
             }
             SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
             SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> {
                 val kevent = KEventApp.createEvent(event)
-                logger.trace("Event: $kevent")
+                logger.system("Event: $kevent")
                 appEvents.raise(kevent)
             }
             SDL_WINDOWEVENT -> {
                 val kevent = KEventWindow.createEvent(event)
-                logger.trace("Event: $kevent")
+                logger.system("Event: $kevent")
                 windowEvents.raise(kevent)
             }
             SDL_KEYUP, SDL_KEYDOWN -> {
                 val kevent = KEventKey.createEvent(event)
-                logger.trace("Event: $kevent")
+                logger.system("Event: $kevent")
                 keyEvents.raise(kevent)
             }
             SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> {
                 val kevent = KEventMouse.createEvent(event)
-                logger.trace("Event: $kevent")
+                logger.system("Event: $kevent")
                 mouseEvents.raise(kevent)
 
             }
             else -> {
                 if (eventName == null)
-                    logger.trace("Unknown event eventType: ${event.type}")
+                    logger.system("Unknown event eventType: ${event.type}")
                 else
-                    logger.trace("Event: $eventName")
+                    logger.system("Event: $eventName")
             }
         }
     }

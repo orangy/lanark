@@ -1,5 +1,6 @@
-package ksdl
+package ksdl.system
 
+import ksdl.system.*
 import sdl2.*
 
 abstract class KEvent(val eventType: SDL_EventType) {

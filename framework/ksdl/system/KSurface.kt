@@ -1,16 +1,16 @@
-package ksdl
+package ksdl.system
 
 import kotlinx.cinterop.*
 import sdl2.*
 
-class KSurface(val surfacePtr: CPointer<SDL_Surface>) {
+class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {
     init {
-        logger.trace("Created surface ${surfacePtr.rawValue}")
+        logger.system("Created surface ${surfacePtr.rawValue}")
     }
 
     fun destroy() {
         SDL_FreeSurface(surfacePtr)
-        logger.trace("Destroyed surface ${surfacePtr.rawValue}")
+        logger.system("Destroyed surface ${surfacePtr.rawValue}")
     }
 
     var blendMode: BlendMode

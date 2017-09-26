@@ -8,3 +8,13 @@ SDL_PollEvent
 SDL_WaitEvent
 SDL_GetKeyboardState
 
+Small todos:
+
+
+Medium todos:
+* initial layer system
+
+Big todos:
+* resource leak detection
+* modal loop
+
