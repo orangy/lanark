@@ -142,23 +142,32 @@ function(kotlinc)
     endif()
     separate_arguments(ADDITIONAL_KOTLINC_FLAGS)
 
+    set(KOTLINC_ABS_SOURCES "")
+    foreach (folder ${KOTLINC_SOURCES})
+        list(APPEND KOTLINC_ABS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${folder})
+        file(GLOB_RECURSE KT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/${folder}/*.kt)
+        foreach (file ${KT_FILES})
+            list(APPEND KOTLINC_ABS_SOURCES ${file})
+        endforeach (file ${KT_FILES})
+    endforeach (folder ${KOTLINC_SOURCES})
+
     add_custom_command(
             OUTPUT ${KOTLINC_${KOTLINC_NAME}_EXECUTABLE_PATH}_TEMP.kexe
-            DEPENDS ${KOTLINC_SOURCES}
-            COMMAND ${CMAKE_Kotlin_COMPILER} ${ADDITIONAL_KOTLINC_FLAGS} ${KOTLINC_SOURCES} ${LIBRARY_PATH} ${TARGET_FLAG} ${LINKER_OPTS_FLAG} -o ${KOTLINC_${KOTLINC_NAME}_EXECUTABLE_PATH}_TEMP
+            DEPENDS ${KOTLINC_ABS_SOURCES}
+            COMMAND ${CMAKE_Kotlin_COMPILER} ${ADDITIONAL_KOTLINC_FLAGS} ${KOTLINC_ABS_SOURCES} ${LIBRARY_PATH} ${TARGET_FLAG} ${LINKER_OPTS_FLAG} -o ${KOTLINC_${KOTLINC_NAME}_EXECUTABLE_PATH}_TEMP
             COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/${KOTLINC_NAME}.kexe
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    add_custom_target(${KOTLINC_NAME}.compile
+    add_custom_target(${KOTLINC_NAME}.compile ALL
             DEPENDS ${KOTLINC_${KOTLINC_NAME}_EXECUTABLE_PATH}_TEMP.kexe
-            SOURCES ${KOTLINC_SOURCES})
+            SOURCES ${KOTLINC_ABS_SOURCES})
 
     foreach (KOTLINC_LIBRARY ${KOTLINC_LIBRARIES})
         add_dependencies(${KOTLINC_NAME}.compile ${KOTLINC_LIBRARY})
     endforeach ()
 
-    add_executable(${KOTLINC_NAME}.kexe ${KOTLINC_SOURCES})
+    add_executable(${KOTLINC_NAME}.kexe ${KOTLINC_ABS_SOURCES})
     add_dependencies(${KOTLINC_NAME}.kexe ${KOTLINC_NAME}.compile)
     set_target_properties(${KOTLINC_NAME}.kexe PROPERTIES LINKER_LANGUAGE Kotlin)
     add_custom_command(TARGET ${KOTLINC_NAME}.kexe
