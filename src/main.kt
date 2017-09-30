@@ -23,37 +23,34 @@ fun main(args: Array<String>) {
         enableEverything()
     }
 
-    val sword = KPlatform.loadSurface("sword.png")
-    KPlatform.activeCursor = KPlatform.createCursor(sword, 0, 0)
-    sword.destroy()
+    val cursor = KPlatform.loadSurface("cursor.png")
+    KPlatform.activeCursor = KPlatform.createCursor(cursor, 0, 0)
+    cursor.destroy()
+
 
     val title = "Kotlin SDL2 Demo"
-    val window = KPlatform.createWindow(title, 800, 600).apply {
-        minimumSize = KSize(200, 200)
-        maximumSize = KSize(1200, 800)
+    val window = KPlatform.createWindow(title, 800, 600, windowFlags = SDL_WINDOW_ALLOW_HIGHDPI or SDL_WINDOW_SHOWN).apply {
+        minimumSize = KSize(800, 600)
         setBordered(true)
         setResizable(true)
     }
 
     val renderer = window.renderer()
+    val background = renderer.loadTexture("fortress.png")
 
-    val sfc = KPlatform.createSurface(KSize(200, 200), 32)
-    sfc.fill(Colors.BLUE)
-    val tx2 = sfc.toTexture(renderer)
-    sfc.destroy()
-
-    val texture = renderer.loadTexture("tetris_all.bmp")
     val loop = KEventLoop()
-    var x = 20
-    var y = 20
-
     var frames = 0
     var start = KTime.now()
     val renderTask = {
         frames++
         renderer.clear(Colors.BLACK)
-        renderer.draw(texture)
-        renderer.draw(tx2, KRect(x, y, 50, 50))
+        val vscale = window.size.height.toDouble() / background.size.height
+        val hscale = window.size.width.toDouble() / background.size.width
+        val scale = maxOf(vscale, hscale)
+        val destinationRect = KRect(0, 0, (background.size.width * scale).toInt(), (background.size.height * scale).toInt())
+
+        // logger.trace("BG: ${background.size}, WND: ${window.size} RND: ${renderer.size}: $scale -> $destinationRect")
+        renderer.draw(background, destinationRect)
         renderer.present()
         loop.submitSelf()
         val seconds = KTime.now().value - start.value
@@ -64,50 +61,14 @@ fun main(args: Array<String>) {
         }
     }
 
-    loop.keyEvents.subscribe { event ->
-        if (event is KEventKeyDown) {
-            when (event.scanCode) {
-                SDL_SCANCODE_LEFT -> if (x > 0) x--
-                SDL_SCANCODE_UP -> if (y > 0) y--
-                SDL_SCANCODE_RIGHT -> if (x < 200) x++
-                SDL_SCANCODE_DOWN -> if (y < 200) y++
-            }
-        }
-    }
-    loop.mouseEvents.subscribe {
-        when (it) {
-            is KEventMouseWheel -> {
-                x += it.scrollX
-                y += it.scrollY
-            }
-        }
-    }
     loop.submit(renderTask)
+    loop.windowEvents.subscribe {
+        if (it is KEventWindowResized) {
+            renderer.size = KSize(it.width, it.height)
+        }
+    }
     loop.run()
     renderer.destroy()
     window.destroy()
     KPlatform.destroy()
-}
-
-fun mainTetris(args: Array<String>) {
-    var startLevel = 0
-    var width = 10
-    var height = 20
-    when (args.size) {
-        1 -> startLevel = args[0].toInt()
-        2 -> {
-            width = args[0].toInt()
-            height = args[1].toInt()
-        }
-        3 -> {
-            width = args[0].toInt()
-            height = args[1].toInt()
-            startLevel = args[2].toInt()
-        }
-    }
-    val visualizer = SDL_Visualizer(width, height)
-    val game = Game(width, height, visualizer, visualizer)
-    game.startNewGame(startLevel)
-
-    return
 }
