@@ -1,3 +1,4 @@
+import ksdl.resources.*
 import sdl2.*
 import ksdl.system.*
 
@@ -36,7 +37,14 @@ fun main(args: Array<String>) {
     }
 
     val renderer = window.renderer()
-    val background = renderer.loadTexture("fortress.png")
+
+    val resources = KResourceScope {
+        scope("welcome") {
+            image("background", "fortress.png")
+        }
+    }
+
+    val background = resources.getImage("welcome/background").toTexture(renderer)
 
     val loop = KEventLoop()
     var frames = 0
