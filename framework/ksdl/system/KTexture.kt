@@ -4,7 +4,15 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 class KTexture(val texturePtr: CPointer<SDL_Texture>) {
+    val size: KSize
+
     init {
+        size = memScoped {
+            val width = alloc<IntVar>()
+            val height = alloc<IntVar>()
+            SDL_QueryTexture(texturePtr, null, null, width.ptr, height.ptr)
+            KSize(width.value, height.value)
+        }
         logger.system("Created texture ${texturePtr.rawValue}")
     }
 

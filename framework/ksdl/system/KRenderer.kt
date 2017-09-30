@@ -4,10 +4,21 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Renderer>) {
+    var size: KSize
+        get() = memScoped {
+            val w = alloc<IntVar>()
+            val h = alloc<IntVar>()
+            SDL_GetRendererOutputSize(rendererPtr, w.ptr, h.ptr)
+            KSize(w.value, h.value)
+        }
+        set(value) {
+            SDL_RenderSetLogicalSize(rendererPtr, value.width, value.height)
+            logger.system("Resized renderer ${rendererPtr.rawValue} for window #${window.id}: $size")
+        }
+
     init {
-        logger.system("Created renderer ${rendererPtr.rawValue} for window #${window.id}")
-        val size = window.size
-        SDL_RenderSetLogicalSize(rendererPtr, size.width, size.height)
+        size = window.size
+        logger.system("Created renderer ${rendererPtr.rawValue} for window #${window.id}: $size")
     }
 
     fun clear(color: KColor = Colors.BLACK) {

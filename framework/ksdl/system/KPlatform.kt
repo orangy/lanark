@@ -31,10 +31,6 @@ object KPlatform {
         val configuration = Configuration(platform, cpus, version).apply(configure)
         logger = configuration.logger
 
-        logger.trace("Test trace")
-        logger.warn("Test warn")
-        logger.error("Test err")
-
         logger.info("$platform with $cpus CPUs, $memorySize MB RAM...")
         logger.info("Initializing SDL v$version")
         SDL_Init(configuration.flags).checkSDLError("SDL_Init")

@@ -3,13 +3,21 @@ package ksdl.system
 import kotlinx.cinterop.*
 import sdl2.*
 
-data class KSize(val width: Int, val height: Int)
-data class KPoint(val x: Int, val y: Int)
+data class KSize(val width: Int, val height: Int) {
+    override fun toString() = "($width x $height)"
+}
+
+data class KPoint(val x: Int, val y: Int) {
+    override fun toString() = "($x, $y)"
+}
+
 data class KRect(val x: Int, val y: Int, val width: Int, val height: Int) {
     val origin get() = KPoint(x, y)
     val size get() = KSize(width, height)
 
     constructor(origin: KPoint, size: KSize) : this(origin.x, origin.y, size.width, size.height)
+
+    override fun toString() = "R($x, $y, $width, $height)"
 }
 
 data class KMargins(val top: Int, val left: Int, val bottom: Int, val right: Int)
