@@ -1,7 +1,8 @@
-package ksdl.system
+package ksdl.events
 
 import sdl2.*
 import kotlinx.cinterop.*
+import ksdl.system.*
 
 abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdlEvent.type) {
     val window get() = KPlatform.findWindow(sdlEvent.windowID)

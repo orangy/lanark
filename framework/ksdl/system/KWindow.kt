@@ -88,7 +88,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) {
         }
 
 
-    fun renderer(rendererFlags: Int = SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC): KRenderer {
+    fun createRenderer(rendererFlags: Int = SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC): KRenderer {
         val renderer = SDL_CreateRenderer(windowPtr, -1, rendererFlags).checkSDLError("SDL_CreateRenderer")
         return KRenderer(this, renderer)
     }

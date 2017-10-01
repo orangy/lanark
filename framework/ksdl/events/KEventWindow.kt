@@ -1,5 +1,6 @@
-package ksdl.system
+package ksdl.events
 
+import ksdl.system.*
 import sdl2.*
 
 abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected val sdlWindowEventType: SDL_WindowEventID) : KEvent(sdlEvent.type) {
@@ -39,7 +40,7 @@ abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected v
         }
     }
 
-    override fun toString() = "#${sdlEvent.windowID} ${sdlWindowEventType.name}"
+    override fun toString() = "${sdlWindowEventType.name} Window #${sdlEvent.windowID}"
 }
 
 class KEventWindowShown(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN)
@@ -60,19 +61,19 @@ class KEventWindowMoved(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_
     val x get() = sdlEvent.data1
     val y get() = sdlEvent.data2
 
-    override fun toString() = "${super.toString()} ($x, $y)"
+    override fun toString() = "${super.toString()} to ($x, $y)"
 }
 
 class KEventWindowResized(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED) {
     val width get() = sdlEvent.data1
     val height get() = sdlEvent.data2
 
-    override fun toString() = "${super.toString()} ($width, $height)"
+    override fun toString() = "${super.toString()} to ($width, $height)"
 }
 
 class KEventWindowSizeChanged(sdlEvent: SDL_WindowEvent) : KEventWindow(sdlEvent, SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED) {
     val width get() = sdlEvent.data1
     val height get() = sdlEvent.data2
 
-    override fun toString() = "${super.toString()} ($width, $height)"
+    override fun toString() = "${super.toString()} to ($width, $height)"
 }

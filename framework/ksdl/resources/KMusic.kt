@@ -16,8 +16,8 @@ class KMusic(val musicPtr: CPointer<Mix_Music>) {
 
     override fun toString() = "Music ${musicPtr.rawValue}"
 
-    fun play() {
-        Mix_PlayMusic(musicPtr, -1)
+    fun play(repeat: Int = -1) {
+        Mix_PlayMusic(musicPtr, repeat)
     }
 
     fun stop() {

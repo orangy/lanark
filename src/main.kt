@@ -1,6 +1,7 @@
+import ksdl.composition.*
 import ksdl.resources.*
-import sdl2.*
 import ksdl.system.*
+import sdl2.*
 
 fun main(args: Array<String>) {
     KPlatform.init {
@@ -16,12 +17,17 @@ fun main(args: Array<String>) {
         setResizable(true)
     }
 
-    val renderer = window.renderer()
+    val renderer = window.createRenderer()
+    val executor = KTaskExecutorIterative()
 
     val resources = KResourceScope() {
-        image("cursor", "cursor.png")
+        scope("cursors") {
+            cursor("normal", "cursor.png", 0, 0)
+            cursor("hot", "cursor-outline-red.png", 0, 0)
+        }
         scope("welcome") {
             image("background-image", "welcome-background.png")
+            image("item", "object.png")
             music("background-music", "welcome-music.ogg")
         }
         scope("ui") {
@@ -32,46 +38,11 @@ fun main(args: Array<String>) {
         }
     }
 
-    KPlatform.activeCursor = KPlatform.createCursor(resources.loadImage("cursor"), 0, 0)
-    resources.release("cursor")
-    val background = resources.loadImage("welcome/background-image").toTexture(renderer)
-    val backgroundMusic = resources.loadMusic("welcome/background-music")
-
-    val executor = KTaskExecutorIterative()
-    val events = KEvents().apply {
-        windowEvents.subscribe {
-            if (it is KEventWindowResized) {
-                renderer.size = KSize(it.width, it.height)
-            }
-        }
-        appEvents.subscribe {
-            if (it is KEventAppQuit)
-                executor.stop()
-        }
-    }
-
-    executor.beforeIteration.subscribe {
-        events.pollEvents()
-    }
-
-    executor.submit {
-        backgroundMusic.play()
-    }
 
     var frames = 0
     val clock = KClock()
-    executor.afterIteration.subscribe {
+    executor.after.subscribe {
         frames++
-        renderer.clear(Colors.BLACK)
-        val vscale = window.size.height.toDouble() / background.size.height
-        val hscale = window.size.width.toDouble() / background.size.width
-        val scale = maxOf(vscale, hscale)
-        val destinationRect = KRect(0, 0, (background.size.width * scale).toInt(), (background.size.height * scale).toInt())
-
-        // logger.trace("BG: ${background.size}, WND: ${window.size} RND: ${renderer.size}: $scale -> $destinationRect")
-        renderer.draw(background, destinationRect)
-        renderer.present()
-
         val seconds = clock.elapsedMillis()
         if (seconds > 1000) {
             clock.reset()
@@ -80,7 +51,9 @@ fun main(args: Array<String>) {
         }
     }
 
-    executor.run()
+    val composer = KComposer(executor, renderer)
+    composer.scene = WelcomeScene(resources)
+    composer.run()
 
     resources.release()
     renderer.release()

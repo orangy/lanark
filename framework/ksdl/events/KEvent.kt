@@ -1,4 +1,4 @@
-package ksdl.system
+package ksdl.events
 
 import ksdl.system.*
 import sdl2.*

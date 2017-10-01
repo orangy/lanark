@@ -4,6 +4,8 @@ interface KTaskExecutor {
     fun submit(task: () -> Unit)
 
     fun run()
+    val before: KSignal<Unit>
+    val after: KSignal<Unit>
     fun stop()
 }
 
@@ -19,8 +21,8 @@ class KTaskExecutorIterative() : KTaskExecutor {
     private var queueHead = 0
     private var queueTail = 0
 
-    val beforeIteration = KEventSource<Unit>("BeforeIteration")
-    val afterIteration = KEventSource<Unit>("AfterIteration")
+    override val before = KSignal<Unit>("BeforeIteration")
+    override val after = KSignal<Unit>("AfterIteration")
 
     override fun stop() {
         running = false
@@ -66,29 +68,31 @@ class KTaskExecutorIterative() : KTaskExecutor {
         running = true
         while (running) {
             beforeIteration()
+            if (!running)
+                break
             runIteration()
+            if (!running)
+                break
             afterIteration()
         }
         logger.system("Stopped $this")
     }
 
     private fun runIteration() {
-        while (true) {
+        while (running) {
             val taskToExecute = peek() ?: break
             taskToExecute()
         }
     }
 
     private fun beforeIteration() {
-        beforeIteration.raise(Unit)
+        before.raise(Unit)
     }
 
     private fun afterIteration() {
-        afterIteration.raise(Unit)
+        after.raise(Unit)
     }
 
-    override fun toString(): String {
-        return "TaskExecutor(Iterative)"
-    }
+    override fun toString(): String = "TaskExecutor(Iterative)"
 }
 

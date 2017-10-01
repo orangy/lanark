@@ -56,3 +56,4 @@ class KResourceScope(name: String = "", val fileSystem: KFileSystem = KFileSyste
         resource.release()
     }
 }
+

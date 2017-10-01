@@ -1,13 +1,14 @@
-package ksdl.system
+package ksdl.events
 
 import kotlinx.cinterop.*
+import ksdl.system.*
 import sdl2.*
 
 class KEvents {
-    val windowEvents = KEventSource<KEventWindow>("Window")
-    val appEvents = KEventSource<KEventApp>("App")
-    val keyEvents = KEventSource<KEventKey>("Key")
-    val mouseEvents = KEventSource<KEventMouse>("Mouse")
+    val window = KSignal<KEventWindow>("Window")
+    val application = KSignal<KEventApp>("App")
+    val keyboard = KSignal<KEventKey>("Key")
+    val mouse = KSignal<KEventMouse>("Mouse")
 
     fun pollEvents() = memScoped {
         val event = alloc<SDL_Event>()
@@ -24,23 +25,25 @@ class KEvents {
             SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> {
                 val kevent = KEventApp.createEvent(event)
                 logger.event(kevent.toString())
-                appEvents.raise(kevent)
+                application.raise(kevent)
             }
             SDL_WINDOWEVENT -> {
                 val kevent = KEventWindow.createEvent(event)
                 logger.event(kevent.toString())
-                windowEvents.raise(kevent)
+                window.raise(kevent)
             }
             SDL_KEYUP, SDL_KEYDOWN -> {
                 val kevent = KEventKey.createEvent(event)
                 logger.event(kevent.toString())
-                keyEvents.raise(kevent)
+                keyboard.raise(kevent)
             }
             SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> {
                 val kevent = KEventMouse.createEvent(event)
                 logger.event(kevent.toString())
-                mouseEvents.raise(kevent)
-
+                mouse.raise(kevent)
+            }
+            SDL_FINGERMOTION, SDL_FINGERDOWN, SDL_FINGERUP -> {
+                // ignore event and don't log it
             }
             else -> {
                 if (eventName == null)

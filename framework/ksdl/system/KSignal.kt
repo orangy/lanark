@@ -1,10 +1,14 @@
 package ksdl.system
 
-class KEventSource<T>(val tag: String) {
+class KSignal<T>(val tag: String) {
     private val handlers = mutableListOf<(T) -> Unit>()
 
     fun subscribe(handler: (T) -> Unit) {
         handlers.add(handler)
+    }
+
+    fun unsubscribe(handler: (T) -> Unit) {
+        handlers.remove(handler)
     }
 
     fun raise(event: T) {

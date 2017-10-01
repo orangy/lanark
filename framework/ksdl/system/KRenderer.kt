@@ -8,7 +8,7 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         get() = memScoped {
             val w = alloc<IntVar>()
             val h = alloc<IntVar>()
-            SDL_GetRendererOutputSize(rendererPtr, w.ptr, h.ptr)
+            SDL_RenderGetLogicalSize(rendererPtr, w.ptr, h.ptr)
             KSize(w.value, h.value)
         }
         set(value) {
@@ -45,6 +45,10 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
 
     fun draw(texture: KTexture, destinationRect: KRect) = memScoped {
         SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect))
+    }
+
+    fun draw(texture: KTexture, position: KPoint) = memScoped {
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(KRect(position, texture.size)))
     }
 
     fun createTexture(surface: KSurface): KTexture {
