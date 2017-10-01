@@ -37,12 +37,30 @@ fun main(args: Array<String>) {
     val background = resources.loadImage("welcome/background-image").toTexture(renderer)
     val backgroundMusic = resources.loadMusic("welcome/background-music")
 
-    backgroundMusic.play()
+    val executor = KTaskExecutorIterative()
+    val events = KEvents().apply {
+        windowEvents.subscribe {
+            if (it is KEventWindowResized) {
+                renderer.size = KSize(it.width, it.height)
+            }
+        }
+        appEvents.subscribe {
+            if (it is KEventAppQuit)
+                executor.quit()
+        }
+    }
 
-    val loop = KEventLoop()
+    executor.beforeIteration.subscribe {
+        events.pollEvents()
+    }
+
+    executor.submit {
+        backgroundMusic.play()
+    }
+
     var frames = 0
     var start = KTime.now()
-    val renderTask = {
+    executor.afterIteration.subscribe {
         frames++
         renderer.clear(Colors.BLACK)
         val vscale = window.size.height.toDouble() / background.size.height
@@ -53,7 +71,6 @@ fun main(args: Array<String>) {
         // logger.trace("BG: ${background.size}, WND: ${window.size} RND: ${renderer.size}: $scale -> $destinationRect")
         renderer.draw(background, destinationRect)
         renderer.present()
-        loop.submitSelf()
         val seconds = KTime.now().value - start.value
         if (seconds > 0) {
             start = KTime.now()
@@ -62,13 +79,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    loop.submit(renderTask)
-    loop.windowEvents.subscribe {
-        if (it is KEventWindowResized) {
-            renderer.size = KSize(it.width, it.height)
-        }
-    }
-    loop.run()
+    executor.run()
 
     resources.release()
     renderer.release()

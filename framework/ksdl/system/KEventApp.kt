@@ -7,6 +7,7 @@ abstract class KEventApp(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {
         fun createEvent(sdlEvent: SDL_Event): KEventApp {
             val type = sdlEvent.type
             return when (type) {
+                SDL_QUIT -> KEventAppQuit(type)
                 SDL_APP_TERMINATING -> KEventAppTerminating(type)
                 SDL_APP_LOWMEMORY -> KEventAppLowMemory(type)
                 SDL_APP_DIDENTERBACKGROUND -> KEventAppEnteredBackground(type)
@@ -19,6 +20,7 @@ abstract class KEventApp(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {
     }
 }
 
+class KEventAppQuit(sdlEvent: SDL_EventType) : KEventApp(sdlEvent)
 class KEventAppTerminating(sdlEvent: SDL_EventType) : KEventApp(sdlEvent)
 class KEventAppLowMemory(sdlEvent: SDL_EventType) : KEventApp(sdlEvent)
 class KEventAppEnteredBackground(sdlEvent: SDL_EventType) : KEventApp(sdlEvent)
