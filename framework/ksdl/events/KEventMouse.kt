@@ -25,6 +25,8 @@ abstract class KEventMouseButton(val sdlEvent: SDL_MouseButtonEvent) : KEventMou
     val x get() = sdlEvent.x
     val y get() = sdlEvent.y
 
+    val position get() = KPoint(x, y)
+
     override fun toString() = "#${sdlEvent.windowID} ${super.toString()} $button${if (touch) "[T]" else ""} Button $state ($x, $y)"
 }
 
@@ -40,6 +42,8 @@ class KEventMouseMotion(val sdlEvent: SDL_MouseMotionEvent) : KEventMouse(sdlEve
     val y get() = sdlEvent.y
     val deltaX get() = sdlEvent.xrel
     val deltaY get() = sdlEvent.yrel
+
+    val position get() = KPoint(x, y)
 
     override fun toString() = "#${sdlEvent.windowID} ${super.toString()} ${if (touch) "[T]" else ""} $state ($x, $y) by ($deltaX, $deltaY)"
 
