@@ -1,10 +1,12 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.resources.*
 import sdl2.*
 
 object KPlatform {
     private val version: KVersion
+    private val mixVersion: KVersion
     private lateinit var platform: String
     lateinit var logger: KLogger
     private var displayWidth: Int = 0
@@ -19,6 +21,11 @@ object KPlatform {
             val version = alloc<SDL_version>()
             SDL_GetVersion(version.ptr)
             KVersion(version.major.toInt(), version.minor.toInt(), version.patch.toInt(), SDL_GetRevision()?.toKString() ?: "null")
+        }
+        mixVersion = memScoped {
+            val mixApiVersion = Mix_Linked_Version().checkSDLError("Mix_Linked_Version")
+            val version = mixApiVersion.pointed
+            KVersion(version.major.toInt(), version.minor.toInt(), version.patch.toInt())
         }
     }
 
@@ -44,6 +51,12 @@ object KPlatform {
             refreshRate = displayMode.refresh_rate
             logger.info("Display mode: ${displayWidth}x${displayHeight}, $refreshRate Hz")
         }
+
+        logger.info("Initializing MIX v$mixVersion")
+        val initialized = Mix_Init(MIX_INIT_OGG)
+        if (initialized == 0) {
+            throw KPlatformException("Mix_Init Error: ${getSDLErrorText()}")
+        }
     }
 
     private fun enabledSubsystems(): List<String> = mutableListOf<String>().apply {
@@ -57,6 +70,8 @@ object KPlatform {
     }
 
     fun quit() {
+        Mix_Quit()
+        logger.info("Quit MIX")
         SDL_Quit()
         logger.info("Quit SDL")
     }
@@ -120,6 +135,15 @@ object KPlatform {
             logger.system("Loaded $it from $path at $fileSystem")
         }
     }
+
+    fun loadMusic(path: String, fileSystem: KFileSystem): KMusic {
+        val file = fileSystem.open(path)
+        val audio = Mix_LoadMUS_RW(file.handle, 0).checkSDLError("Mix_LoadMUS_RW")
+        return KMusic(audio).also {
+            logger.system("Loaded $it from $path at $fileSystem")
+        }
+    }
+
 
     fun createSurface(size: KSize, bitsPerPixel: Int): KSurface {
         val surface = SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).checkSDLError("SDL_CreateRGBSurface")
@@ -193,8 +217,8 @@ object KPlatform {
     }
 }
 
-class KVersion(val major: Int, val minor: Int, val patch: Int, val revision: String) {
-    override fun toString(): String = "$major.$minor.$patch [$revision]"
+class KVersion(val major: Int, val minor: Int, val patch: Int, val revision: String? = null) {
+    override fun toString(): String = "$major.$minor.$patch${revision?.let { " [$it]" } ?: ""}"
 }
 
 val logger: KLogger

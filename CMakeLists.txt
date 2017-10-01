@@ -7,24 +7,26 @@ project(KotlinSDL2)
 include_directories(
         "/usr/local/opt/sdl2/include"
         "/usr/local/opt/sdl2_image/include"
+        "/usr/local/opt/sdl2_mixer/include"
 )
 link_directories(
         "/usr/local/opt/sdl2/lib"
         "/usr/local/opt/sdl2_image/lib"
+        "/usr/local/opt/sdl2_mixer/lib"
 )
 
 enable_language(Kotlin)
 cinterop(
         NAME sdl2
         DEF_FILE c_interop/sdl2.def
-        COMPILER_OPTS "-I/usr/local/opt/sdl2/include/SDL2 -I/usr/local/opt/sdl2_image/include/SDL2"
+        COMPILER_OPTS "-I/usr/local/opt/sdl2/include/SDL2 -I/usr/local/opt/sdl2_image/include/SDL2 -I/usr/local/opt/sdl2_mixer/include/SDL2"
 )
 
 kotlinc(
         NAME KotlinSDL2
         SOURCES src framework
         LIBRARIES sdl2
-        LINKER_OPTS "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -lsdl2 -lsdl2_image"
+        LINKER_OPTS "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
 )
 
 add_custom_command(TARGET KotlinSDL2.kexe PRE_BUILD

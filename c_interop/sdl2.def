@@ -1,4 +1,4 @@
-headers = SDL.h SDL_image.h stdlib.h time.h
+headers = SDL.h SDL_image.h SDL_mixer.h stdlib.h time.h
 entryPoint = SDL_main
 
 headerFilter = SDL* stdlib.h time.h

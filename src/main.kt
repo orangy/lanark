@@ -7,6 +7,7 @@ fun main(args: Array<String>) {
         logger = KLoggerConsole()
         enableEverything()
     }
+    Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT.toShort(), 1, 4096).checkSDLError("Mix_OpenAudio")
 
     val title = "Kotlin SDL2 Demo"
     val window = KPlatform.createWindow(title, 800, 600, windowFlags = SDL_WINDOW_ALLOW_HIGHDPI or SDL_WINDOW_SHOWN).apply {
@@ -20,7 +21,8 @@ fun main(args: Array<String>) {
     val resources = KResourceScope() {
         image("cursor", "cursor.png")
         scope("welcome") {
-            image("background", "fortress.png")
+            image("background-image", "welcome-background.png")
+            music("background-music", "welcome-music.ogg")
         }
         scope("ui") {
             image("background", "ui-background.png")
@@ -32,7 +34,10 @@ fun main(args: Array<String>) {
 
     KPlatform.activeCursor = KPlatform.createCursor(resources.loadImage("cursor"), 0, 0)
     resources.release("cursor")
-    val background = resources.loadImage("welcome/background").toTexture(renderer)
+    val background = resources.loadImage("welcome/background-image").toTexture(renderer)
+    val backgroundMusic = resources.loadMusic("welcome/background-music")
+
+    backgroundMusic.play()
 
     val loop = KEventLoop()
     var frames = 0

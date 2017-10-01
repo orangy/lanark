@@ -26,9 +26,7 @@ class KResourceImage(name: String, val file: String) : KResource(name, resourceT
 fun KResourceScope.image(name: String, file: String) = KResourceImage(name, file).also { register(it) }
 
 fun KResourceScope.loadImage(path: String): KSurface {
-    val resource = findResource(path)
-    if (resource.resourceType != KResourceImage.resourceType)
-        throw KPlatformException("Resource '$resource' is not an Image")
+    val resource = findResource(path, KResourceImage.resourceType)
     return (resource as KResourceImage).load(fileSystem)
 }
 
