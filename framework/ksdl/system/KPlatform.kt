@@ -1,7 +1,6 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
-import ksdl.system.*
 import sdl2.*
 
 object KPlatform {
@@ -57,7 +56,7 @@ object KPlatform {
         if (isTimerEnabled) add("Timer")
     }
 
-    fun destroy() {
+    fun quit() {
         SDL_Quit()
         logger.info("Quit SDL")
     }
@@ -108,8 +107,18 @@ object KPlatform {
 
     fun loadSurface(path: String): KSurface {
         val surface = IMG_Load(path).checkSDLError("IMG_Load")
-        logger.system("Loaded image into surface: $path")
-        return KSurface(surface)
+        return KSurface(surface).also {
+            logger.system("Loaded $it from $path")
+        }
+    }
+
+    fun loadSurface(path: String, fileSystem: KFileSystem): KSurface {
+        val file = fileSystem.open(path)
+        val surface = IMG_Load_RW(file.handle, 0).checkSDLError("IMG_Load")
+        file.close()
+        return KSurface(surface).also {
+            logger.system("Loaded $it from $path at $fileSystem")
+        }
     }
 
     fun createSurface(size: KSize, bitsPerPixel: Int): KSurface {

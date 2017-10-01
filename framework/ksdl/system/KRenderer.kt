@@ -13,12 +13,12 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         }
         set(value) {
             SDL_RenderSetLogicalSize(rendererPtr, value.width, value.height)
-            logger.system("Resized renderer ${rendererPtr.rawValue} for window #${window.id}: $size")
+            logger.system("Resized $this for window #${window.id} to $size")
         }
 
     init {
         size = window.size
-        logger.system("Created renderer ${rendererPtr.rawValue} for window #${window.id}: $size")
+        logger.system("Created $this for window #${window.id}")
     }
 
     fun clear(color: KColor = Colors.BLACK) {
@@ -30,9 +30,9 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         SDL_RenderPresent(rendererPtr)
     }
 
-    fun destroy() {
+    fun release() {
         SDL_DestroyRenderer(rendererPtr)
-        logger.system("Destroyed renderer ${rendererPtr.rawValue}")
+        logger.system("Released $this")
     }
 
     fun draw(texture: KTexture) {
@@ -57,6 +57,9 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         logger.system("Loaded image into texture: $path")
         return KTexture(texture)
     }
+
+    override fun toString() = "Renderer ${rendererPtr.rawValue}"
+
 }
 
 fun KSurface.toTexture(renderer: KRenderer) = renderer.createTexture(this)

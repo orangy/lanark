@@ -9,13 +9,13 @@ abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected v
     companion object {
         fun createEvent(sdlEvent: SDL_Event): KEventWindow {
             if (sdlEvent.type != SDL_WINDOWEVENT) {
-                throw KGraphicsException("KEventWindow.createEvent was called with wrong type of SDL_Event")
+                throw KPlatformException("KEventWindow.createEvent was called with wrong type of SDL_Event")
             }
 
             val windowEvent = sdlEvent.window
             val eventKind = SDL_WindowEventID.byValue(windowEvent.event.toInt())
             val kevent = when (eventKind) {
-                SDL_WindowEventID.SDL_WINDOWEVENT_NONE -> throw KGraphicsException("SDL_WINDOWEVENT_NONE shouldn't be sent")
+                SDL_WindowEventID.SDL_WINDOWEVENT_NONE -> throw KPlatformException("SDL_WINDOWEVENT_NONE shouldn't be sent")
                 SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN -> KEventWindowShown(windowEvent)
                 SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN -> KEventWindowHidden(windowEvent)
                 SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED -> KEventWindowExposed(windowEvent)

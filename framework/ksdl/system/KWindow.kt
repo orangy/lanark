@@ -7,15 +7,15 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) {
     val id: Int get() = SDL_GetWindowID(windowPtr)
 
     init {
-        logger.system("Created window #$id")
+        logger.system("Created $this")
         KPlatform.registerWindow(id, this)
     }
 
-    fun destroy() {
+    fun release() {
         KPlatform.unregisterWindow(id, this)
         val captureId = id
         SDL_DestroyWindow(windowPtr)
-        logger.system("Destroyed window #$captureId")
+        logger.system("Released $this")
     }
 
     fun setBordered(enable: Boolean) {
@@ -104,6 +104,5 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) {
         FullScreenDesktop,
     }
 
+    override fun toString() = "Window #$id ${windowPtr.rawValue}"
 }
-
-

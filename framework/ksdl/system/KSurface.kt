@@ -5,12 +5,12 @@ import sdl2.*
 
 class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {
     init {
-        logger.system("Created surface ${surfacePtr.rawValue}")
+        logger.system("Created $this")
     }
 
-    fun destroy() {
+    fun release() {
         SDL_FreeSurface(surfacePtr)
-        logger.system("Destroyed surface ${surfacePtr.rawValue}")
+        logger.system("Released $this")
     }
 
     var blendMode: BlendMode
@@ -22,7 +22,7 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {
                 SDL_BLENDMODE_MOD -> BlendMode.Mod
                 SDL_BLENDMODE_ADD -> BlendMode.Add
                 SDL_BLENDMODE_BLEND -> BlendMode.Blend
-                else -> throw KGraphicsException("Unknown blend mode ${mode.value}")
+                else -> throw KPlatformException("Unknown blend mode ${mode.value}")
             }
         }
         set(value) {
@@ -68,5 +68,6 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {
         return SDL_MapRGBA(surfacePtr.pointed.format, red.toByte(), green.toByte(), blue.toByte(), alpha.toByte())
     }
 
+    override fun toString() = "Surface ${surfacePtr.rawValue}"
 }
 

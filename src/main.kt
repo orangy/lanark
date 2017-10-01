@@ -2,32 +2,11 @@ import ksdl.resources.*
 import sdl2.*
 import ksdl.system.*
 
-/*
- * Copyright 2010-2017 JetBrains s.r.o.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 fun main(args: Array<String>) {
     KPlatform.init {
         logger = KLoggerConsole()
         enableEverything()
     }
-
-    val cursor = KPlatform.loadSurface("cursor.png")
-    KPlatform.activeCursor = KPlatform.createCursor(cursor, 0, 0)
-    cursor.destroy()
-
 
     val title = "Kotlin SDL2 Demo"
     val window = KPlatform.createWindow(title, 800, 600, windowFlags = SDL_WINDOW_ALLOW_HIGHDPI or SDL_WINDOW_SHOWN).apply {
@@ -38,13 +17,22 @@ fun main(args: Array<String>) {
 
     val renderer = window.renderer()
 
-    val resources = KResourceScope {
+    val resources = KResourceScope() {
+        image("cursor", "cursor.png")
         scope("welcome") {
             image("background", "fortress.png")
         }
+        scope("ui") {
+            image("background", "ui-background.png")
+            tiles("elements", "ui-tileset") {
+                tile("upper-left", 856, 189, 24, 24)
+            }
+        }
     }
 
-    val background = resources.getImage("welcome/background").toTexture(renderer)
+    KPlatform.activeCursor = KPlatform.createCursor(resources.loadImage("cursor"), 0, 0)
+    resources.release("cursor")
+    val background = resources.loadImage("welcome/background").toTexture(renderer)
 
     val loop = KEventLoop()
     var frames = 0
@@ -76,7 +64,9 @@ fun main(args: Array<String>) {
         }
     }
     loop.run()
-    renderer.destroy()
-    window.destroy()
-    KPlatform.destroy()
+
+    resources.release()
+    renderer.release()
+    window.release()
+    KPlatform.quit()
 }

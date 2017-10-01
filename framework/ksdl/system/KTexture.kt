@@ -13,11 +13,13 @@ class KTexture(val texturePtr: CPointer<SDL_Texture>) {
             SDL_QueryTexture(texturePtr, null, null, width.ptr, height.ptr)
             KSize(width.value, height.value)
         }
-        logger.system("Created texture ${texturePtr.rawValue}")
+        logger.system("Created $this")
     }
 
-    fun destroy() {
+    fun release() {
         SDL_DestroyTexture(texturePtr)
-        logger.system("Destroyed texture ${texturePtr.rawValue}")
+        logger.system("Released $this")
     }
+
+    override fun toString() = "Texture ${texturePtr.rawValue}"
 }

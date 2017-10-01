@@ -3,7 +3,7 @@ package ksdl.system
 import kotlinx.cinterop.*
 import sdl2.*
 
-class KGraphicsException(message: String) : Exception(message)
+class KPlatformException(message: String) : Exception(message)
 
 fun getSDLErrorText() = SDL_GetError()!!.toKString()
 
@@ -11,7 +11,7 @@ fun getSDLErrorText() = SDL_GetError()!!.toKString()
 inline fun <T : CPointed> CPointer<T>?.checkSDLError(context: String = "SDL"): CPointer<T> {
     if (this == null) {
         val message = "$context Error: ${getSDLErrorText()}"
-        throw KGraphicsException(message)
+        throw KPlatformException(message)
     }
     return this
 }
@@ -20,6 +20,6 @@ inline fun <T : CPointed> CPointer<T>?.checkSDLError(context: String = "SDL"): C
 inline fun Int.checkSDLError(context: String = "SDL") {
     if (this != 0) {
         val message = "$context Error: ${getSDLErrorText()}"
-        throw KGraphicsException(message)
+        throw KPlatformException(message)
     }
 }

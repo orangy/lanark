@@ -5,11 +5,14 @@ import sdl2.*
 
 class KCursor(val cursorPtr: CPointer<SDL_Cursor>) {
     init {
-        logger.system("Created cursor ${cursorPtr.rawValue}")
+        logger.system("Created $this")
     }
 
-    fun destroy() {
+    fun release() {
         SDL_FreeCursor(cursorPtr)
-        logger.system("Destroyed cursor ${cursorPtr.rawValue}")
+        logger.system("Released $this")
     }
+
+    override fun toString() = "Cursor ${cursorPtr.rawValue}"
+
 }

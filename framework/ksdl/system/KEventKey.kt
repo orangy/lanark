@@ -16,7 +16,7 @@ abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdl
         fun createEvent(sdlEvent: SDL_Event) = when (sdlEvent.type) {
             SDL_KEYDOWN -> KEventKeyDown(sdlEvent.key)
             SDL_KEYUP -> KEventKeyUp(sdlEvent.key)
-            else -> throw KGraphicsException("KEventKey.createEvent was called with wrong type of SDL_Event")
+            else -> throw KPlatformException("KEventKey.createEvent was called with wrong type of SDL_Event")
         }
     }
 
@@ -36,7 +36,7 @@ enum class KButtonState {
         fun fromValue(value: Int) = when (value) {
             SDL_PRESSED -> Pressed
             SDL_RELEASED -> Released
-            else -> throw KGraphicsException("Unknown key state: $value")
+            else -> throw KPlatformException("Unknown key state: $value")
         }
     }
 }

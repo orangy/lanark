@@ -9,7 +9,7 @@ abstract class KEventMouse(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {
             SDL_MOUSEBUTTONUP -> KEventMouseUp(sdlEvent.button)
             SDL_MOUSEMOTION -> KEventMouseMotion(sdlEvent.motion)
             SDL_MOUSEWHEEL -> KEventMouseWheel(sdlEvent.wheel)
-            else -> throw KGraphicsException("KEventKey.createEvent was called with wrong type of SDL_Event")
+            else -> throw KPlatformException("KEventKey.createEvent was called with wrong type of SDL_Event")
         }
     }
 }
@@ -65,7 +65,7 @@ enum class KMouseButton {
             SDL_BUTTON_MIDDLE -> Middle
             SDL_BUTTON_X1 -> X1
             SDL_BUTTON_X2 -> X2
-            else -> throw KGraphicsException("MouseButton.fromValue was called with unknown value $value")
+            else -> throw KPlatformException("MouseButton.fromValue was called with unknown value $value")
         }
     }
 }

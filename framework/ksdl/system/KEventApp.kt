@@ -13,7 +13,7 @@ abstract class KEventApp(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {
                 SDL_APP_DIDENTERFOREGROUND -> KEventAppEnteredForeground(type)
                 SDL_APP_WILLENTERBACKGROUND -> KEventAppEnteringBackground(type)
                 SDL_APP_WILLENTERFOREGROUND -> KEventAppEnteringForeground(type)
-                else -> throw KGraphicsException("KEventApp.createEvent was called with wrong type of SDL_Event")
+                else -> throw KPlatformException("KEventApp.createEvent was called with wrong type of SDL_Event")
             }
         }
     }
