@@ -13,6 +13,8 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {
         logger.system("Released $this")
     }
 
+    val size : KSize get() = KSize(surfacePtr.pointed.w, surfacePtr.pointed.h)
+
     var blendMode: BlendMode
         get() = memScoped {
             val mode = alloc<IntVar>()

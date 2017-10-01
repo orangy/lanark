@@ -18,6 +18,17 @@ data class KRect(val x: Int, val y: Int, val width: Int, val height: Int) {
     constructor(origin: KPoint, size: KSize) : this(origin.x, origin.y, size.width, size.height)
 
     override fun toString() = "R($x, $y, $width, $height)"
+    operator fun contains(point: KPoint): Boolean = memScoped {
+        SDL_PointInRect(SDL_Point(point), SDL_Rect(this@KRect)).toBoolean()
+    }
+
+    fun intersects(other: KRect): Boolean = memScoped {
+        SDL_HasIntersection(SDL_Rect(other), SDL_Rect(this@KRect)).toBoolean()
+    }
+
+    fun isEmpty(): Boolean = memScoped {
+        SDL_RectEmpty(SDL_Rect(this@KRect)).toBoolean()
+    }
 }
 
 data class KMargins(val top: Int, val left: Int, val bottom: Int, val right: Int)
