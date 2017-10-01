@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
     val resources = KResourceScope() {
         scope("cursors") {
             cursor("normal", "cursor.png", 0, 0)
-            cursor("hot", "cursor-outline-red.png", 0, 0)
+            cursor("hot", "cursor_outline_red.png", 0, 0)
         }
         scope("welcome") {
             image("background-image", "welcome-background.png")
