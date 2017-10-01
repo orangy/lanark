@@ -23,7 +23,7 @@ class KTime(val value: time_t) {
         val hour = tm.pointed.tm_hour.toZeroPadding(2)
         val minute = tm.pointed.tm_min.toZeroPadding(2)
         val seconds = tm.pointed.tm_sec.toZeroPadding(2)
-        "$year.$month.$day $hour:$minute:$seconds"
+        "$year/$month/$day $hour:$minute:$seconds"
     }
 
     private fun Int.toZeroPadding(size: Int): String {

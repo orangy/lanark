@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
         }
         appEvents.subscribe {
             if (it is KEventAppQuit)
-                executor.quit()
+                executor.stop()
         }
     }
 
@@ -59,7 +59,7 @@ fun main(args: Array<String>) {
     }
 
     var frames = 0
-    var start = KTime.now()
+    val clock = KClock()
     executor.afterIteration.subscribe {
         frames++
         renderer.clear(Colors.BLACK)
@@ -71,9 +71,10 @@ fun main(args: Array<String>) {
         // logger.trace("BG: ${background.size}, WND: ${window.size} RND: ${renderer.size}: $scale -> $destinationRect")
         renderer.draw(background, destinationRect)
         renderer.present()
-        val seconds = KTime.now().value - start.value
-        if (seconds > 0) {
-            start = KTime.now()
+
+        val seconds = clock.elapsedMillis()
+        if (seconds > 1000) {
+            clock.reset()
             window.title = "$title / FPS: ${frames}"
             frames = 0
         }

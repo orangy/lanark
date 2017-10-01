@@ -1,17 +1,15 @@
 package ksdl.system
 
-import kotlinx.cinterop.*
-import sdl2.*
-
 interface KTaskExecutor {
-    fun quit()
-    fun submitSelf()
     fun submit(task: () -> Unit)
+
     fun run()
+    fun stop()
 }
 
 class KTaskExecutorIterative() : KTaskExecutor {
-    private var quit = false
+    var running = false
+        private set
 
     private var queue = ArrayList<(() -> Unit)?>(2).apply {
         add(null)
@@ -20,21 +18,12 @@ class KTaskExecutorIterative() : KTaskExecutor {
 
     private var queueHead = 0
     private var queueTail = 0
-    private var currentTask: (() -> Unit)? = null
 
     val beforeIteration = KEventSource<Unit>("BeforeIteration")
     val afterIteration = KEventSource<Unit>("AfterIteration")
 
-    override fun quit() {
-        quit = true
-    }
-
-    override fun submitSelf() {
-        val task = currentTask
-        if (task == null)
-            logger.error("submitSelf should be called from within executing task only")
-        else
-            submit(task)
+    override fun stop() {
+        running = false
     }
 
     override fun submit(task: () -> Unit) {
@@ -73,21 +62,20 @@ class KTaskExecutorIterative() : KTaskExecutor {
     }
 
     override fun run() {
-        logger.system("Running event loop")
-        while (!quit) {
+        logger.system("Running $this")
+        running = true
+        while (running) {
             beforeIteration()
             runIteration()
             afterIteration()
         }
-        logger.system("Stopped event loop")
+        logger.system("Stopped $this")
     }
 
     private fun runIteration() {
         while (true) {
             val taskToExecute = peek() ?: break
-            currentTask = taskToExecute
             taskToExecute()
-            currentTask = null
         }
     }
 
@@ -97,6 +85,10 @@ class KTaskExecutorIterative() : KTaskExecutor {
 
     private fun afterIteration() {
         afterIteration.raise(Unit)
+    }
+
+    override fun toString(): String {
+        return "TaskExecutor(Iterative)"
     }
 }
 
