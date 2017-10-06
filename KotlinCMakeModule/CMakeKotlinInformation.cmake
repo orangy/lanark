@@ -59,7 +59,7 @@ function(cinterop)
     endif ()
 
     if (CINTEROP_TARGET)
-        set(TARGET_FLAG -target CINTEROP_TARGET)
+        set(TARGET_FLAG -target ${CINTEROP_TARGET})
     elseif (APPLE)
         set(TARGET_FLAG -target macbook)
     elseif (UNIX)
@@ -85,7 +85,7 @@ function(cinterop)
             DEPENDS ${CINTEROP_DEF_FILE} ${CINTEROP_LIBRARIES}
             COMMAND ${CMAKE_Kotlin_CINTEROP} ${COMPILER_OPTS_FLAG} ${LIBRARY_FLAG}
             -def ${CMAKE_CURRENT_SOURCE_DIR}/${CINTEROP_DEF_FILE} ${TARGET_FLAG}
-            -r ${CMAKE_Kotlin_LIBRARY_DIR} -o ${LIBRARY_OUTPUT}
+             -o ${LIBRARY_OUTPUT}
     )
     add_custom_target(${CINTEROP_NAME}
             DEPENDS ${LIBRARY_OUTPUT}
@@ -117,7 +117,7 @@ macro(prepare_konanc_args)
     endif ()
 
     if (KONANC_TARGET)
-        set(TARGET_FLAG -target KONANC_TARGET)
+        set(TARGET_FLAG -target ${KONANC_TARGET})
     elseif (APPLE)
         set(TARGET_FLAG -target macbook)
     elseif (UNIX)

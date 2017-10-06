@@ -1,7 +1,7 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
-import sdl2.*
+import time.*
 
 class KTime(val value: time_t) {
     companion object {

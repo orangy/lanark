@@ -23,10 +23,15 @@ cinterop(
         COMPILER_OPTS "-I/usr/local/opt/sdl2/include/SDL2 -I/usr/local/opt/sdl2_image/include/SDL2 -I/usr/local/opt/sdl2_mixer/include/SDL2"
 )
 
+cinterop(
+        NAME time
+        DEF_FILE c_interop/time.def
+)
+
 konanc_executable(
         NAME KotlinSDL2
         SOURCES src framework
-        LIBRARIES sdl2
+        LIBRARIES sdl2 time
         LINKER_OPTS "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
 )
 
