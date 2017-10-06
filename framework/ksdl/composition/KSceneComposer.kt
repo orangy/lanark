@@ -4,7 +4,8 @@ import ksdl.events.*
 import ksdl.resources.*
 import ksdl.system.*
 
-class KComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
+// TODO: find better name, it doesn't compose scenes, it runs them
+class KSceneComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
     private val events = KEvents()
 
     var scene: KScene? = null
@@ -75,4 +76,4 @@ class KComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 }
 
-fun KLogger.composer(message: String) = log(KComposer.logCategory, message)
+fun KLogger.composer(message: String) = log(KSceneComposer.logCategory, message)

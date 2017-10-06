@@ -27,8 +27,9 @@ fun main(args: Array<String>) {
         }
         scope("welcome") {
             image("background-image", "welcome-background.png")
-            image("item", "object.png")
             music("background-music", "welcome-music.ogg")
+
+            image("item", "object.png")
         }
         scope("ui") {
             image("background", "ui-background.png")
@@ -51,7 +52,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    val composer = KComposer(executor, renderer)
+    val composer = KSceneComposer(executor, renderer)
     composer.scene = WelcomeScene(resources)
     composer.run()
 
