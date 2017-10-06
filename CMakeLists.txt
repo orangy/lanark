@@ -22,7 +22,7 @@ cinterop(
         COMPILER_OPTS "-I/usr/local/opt/sdl2/include/SDL2 -I/usr/local/opt/sdl2_image/include/SDL2 -I/usr/local/opt/sdl2_mixer/include/SDL2"
 )
 
-kotlinc(
+konanc_executable(
         NAME KotlinSDL2
         SOURCES src framework
         LIBRARIES sdl2
