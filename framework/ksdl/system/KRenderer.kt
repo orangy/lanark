@@ -60,6 +60,14 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(KRect(position, texture.size))).checkSDLError("SDL_RenderCopy")
     }
 
+    fun draw(texture: KTexture, position: KPoint, size: KSize) = memScoped {
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(KRect(position, size))).checkSDLError("SDL_RenderCopy")
+    }
+
+    fun scale(scale: Float) {
+        SDL_RenderSetScale(rendererPtr, scale, scale).checkSDLError("SDL_RenderSetScale")
+    }
+
     fun createTexture(surface: KSurface): KTexture {
         val texturePtr = SDL_CreateTextureFromSurface(rendererPtr, surface.surfacePtr).checkSDLError("SDL_CreateTextureFromSurface")
         return KTexture(texturePtr)

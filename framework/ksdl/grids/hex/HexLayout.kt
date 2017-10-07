@@ -3,19 +3,26 @@ package ksdl.grids.hex
 import ksdl.system.*
 import sdl2.*
 
-data class HexLayout(val orientation: Double, val size: KSize, val origin: KPoint) {
-    val cornerVectors = (0..5).map { index ->
-        val angle = KMath.pi * (orientation + index) / 3
-        val x = size.width * cos(angle)
-        val y = size.height * sin(angle)
+fun HexLayout(orientation: Double, radius: Int, origin: KPoint): HexLayout {
+    val cornerVectors = (0 until 6).map { index ->
+        val angle = 2 * KMath.pi * (orientation + index) / 6
+        val x = radius * cos(angle)
+        val y = radius * sin(angle)
         KVector(round(x).toInt(), round(y).toInt())
     }
+    return HexLayout(cornerVectors, origin)
+}
 
-    private val qVector = cornerVectors[0] - cornerVectors[4]
-    private val rVector = cornerVectors[1] - cornerVectors[5]
+data class HexLayout(val vectors: List<KVector>, val origin: KPoint) {
+    private val qVector = vectors[0] - vectors[4]
+    private val rVector = vectors[1] - vectors[5]
 
     private val qBackTransform = 1.0 / (qVector.y * rVector.x - qVector.x * rVector.y)
     private val rBackTransform = 1.0 / (rVector.y * qVector.x - rVector.x * qVector.y)
+
+    init {
+        logger.trace("HexLayout: $qVector / $rVector : $vectors")
+    }
 
     fun cellCenter(cell: HexCell): KPoint {
         val x = qVector.x * cell.q + rVector.x * cell.r
@@ -46,7 +53,7 @@ data class HexLayout(val orientation: Double, val size: KSize, val origin: KPoin
     }
 
     companion object {
-        val orientationVertical = 0.5
+        val orientationVertical = -0.5
         val orientationHorizontal = 0.0
     }
 }
