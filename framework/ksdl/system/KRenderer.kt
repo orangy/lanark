@@ -21,9 +21,14 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         logger.system("Created $this for window #${window.id}")
     }
 
-    fun clear(color: KColor = Colors.BLACK) {
-        SDL_SetRenderDrawColor(rendererPtr, color.red.toByte(), color.green.toByte(), color.blue.toByte(), color.alpha.toByte()).checkSDLError("SDL_SetRenderDrawColor")
+    fun clear(color: KColor? = null) {
+        if (color != null)
+            color(color)
         SDL_RenderClear(rendererPtr).checkSDLError("SDL_RenderClear")
+    }
+
+    fun color(color: KColor) {
+        SDL_SetRenderDrawColor(rendererPtr, color.red.toByte(), color.green.toByte(), color.blue.toByte(), color.alpha.toByte()).checkSDLError("SDL_SetRenderDrawColor")
     }
 
     fun present() {
@@ -35,20 +40,24 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         logger.system("Released $this")
     }
 
+    fun drawLine(from: KPoint, to: KPoint) {
+        SDL_RenderDrawLine(rendererPtr, from.x, from.y, to.x, to.y).checkSDLError("SDL_RenderDrawLine")
+    }
+
     fun draw(texture: KTexture) {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, null)
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, null).checkSDLError("SDL_RenderCopy")
     }
 
     fun draw(texture: KTexture, sourceRect: KRect, destinationRect: KRect) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, SDL_Rect(sourceRect), SDL_Rect(destinationRect))
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, SDL_Rect(sourceRect), SDL_Rect(destinationRect)).checkSDLError("SDL_RenderCopy")
     }
 
     fun draw(texture: KTexture, destinationRect: KRect) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect))
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect)).checkSDLError("SDL_RenderCopy")
     }
 
     fun draw(texture: KTexture, position: KPoint) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(KRect(position, texture.size)))
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(KRect(position, texture.size))).checkSDLError("SDL_RenderCopy")
     }
 
     fun createTexture(surface: KSurface): KTexture {

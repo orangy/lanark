@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
     }
 
     val composer = KSceneComposer(executor, renderer)
-    composer.scene = WelcomeScene(resources)
+    composer.scene = HexScene(resources)
     composer.run()
 
     resources.release()
@@ -61,3 +61,4 @@ fun main(args: Array<String>) {
     window.release()
     KPlatform.quit()
 }
+

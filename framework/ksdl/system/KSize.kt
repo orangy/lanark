@@ -4,10 +4,17 @@ import kotlinx.cinterop.*
 import sdl2.*
 
 data class KSize(val width: Int, val height: Int) {
-    override fun toString() = "($width x $height)"
+    override fun toString() = "{$width x $height}"
 }
 
 data class KPoint(val x: Int, val y: Int) {
+    operator fun plus(vector: KVector) = KPoint(x + vector.x, y + vector.y)
+    override fun toString() = "[$x, $y]"
+}
+
+data class KVector(val x: Int, val y: Int) {
+    operator fun plus(vector: KVector) = KPoint(x + vector.x, y + vector.y)
+    operator fun minus(vector: KVector) = KPoint(x - vector.x, y - vector.y)
     override fun toString() = "($x, $y)"
 }
 
