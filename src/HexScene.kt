@@ -5,7 +5,7 @@ import ksdl.resources.*
 import ksdl.system.*
 
 class HexScene(resources: KResourceScope) : KScene {
-    var layout = HexLayout(HexLayout.orientationHorizontal, KSize(32, 32), KPoint(400, 400))
+    var layout = HexLayout(HexLayout.orientationHorizontal, KSize(64, 64), KPoint(400, 400))
     val cornerIndices = listOf(1, 2, 3, 4, 5, 0)
 
     private var currentHex: HexCell = HexCell(0, 0)
@@ -34,8 +34,8 @@ class HexScene(resources: KResourceScope) : KScene {
 
         renderer.present()
 
-        if (rotate) {
-            layout = layout.copy(orientation = layout.orientation + 0.01)
+        if (rotate != 0.0) {
+            layout = layout.copy(orientation = layout.orientation + rotate)
         }
     }
 
@@ -53,7 +53,7 @@ class HexScene(resources: KResourceScope) : KScene {
     override fun keyboard(event: KEventKey, executor: KTaskExecutor) {
     }
 
-    private var rotate: Boolean = false
+    private var rotate: Double = 0.0
 
     override fun mouse(event: KEventMouse, executor: KTaskExecutor) {
         when (event) {
@@ -61,10 +61,13 @@ class HexScene(resources: KResourceScope) : KScene {
                 currentHex = layout.cellAt(event.position)
             }
             is KEventMouseDown -> {
-                rotate = true
+                when {
+                    event.button == KMouseButton.Left -> rotate = 0.01
+                    event.button == KMouseButton.Right -> rotate = -0.01
+                }
             }
             is KEventMouseUp -> {
-                rotate = false
+                rotate = 0.0
             }
         }
     }

@@ -3,30 +3,6 @@ package ksdl.grids.hex
 import ksdl.system.*
 import sdl2.*
 
-data class HexCell(val q: Int, val r: Int, val s: Int = -q - r) {
-    init {
-        require(q + r + s == 0) { "Invalid cube coordinates: $this" }
-    }
-
-    operator fun plus(other: HexCell) = HexCell(q + other.q, r + other.r, s + other.s)
-    operator fun minus(other: HexCell) = HexCell(q - other.q, r - other.r, s - other.s)
-    operator fun times(times: Int) = HexCell(q * times, r * times, s * times)
-
-    fun size() = abs(q) + abs(r) + abs(s) / 2
-    fun distance(other: HexCell) = minus(other).size()
-    fun neighbor(index: Int) = plus(directions[index])
-
-    override fun toString() = "Hex($q, $r, $s)"
-
-
-    companion object {
-        val directions = listOf(
-                HexCell(1, 0, -1), HexCell(1, -1, 0), HexCell(0, -1, 1),
-                HexCell(-1, 0, 1), HexCell(-1, 1, 0), HexCell(0, 1, -1)
-        )
-    }
-}
-
 data class HexLayout(val orientation: Double, val size: KSize, val origin: KPoint) {
     val cornerVectors = (0..5).map { index ->
         val angle = KMath.pi * (orientation + index) / 3
