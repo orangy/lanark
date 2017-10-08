@@ -17,12 +17,22 @@ class HexScene(resources: KResourceScope) : KScene {
     private val cornerIndices = listOf(1, 2, 3, 4, 5, 0)
 
     private val grass = resources.loadImage("terrain/grass")
+    private val tree = resources.loadImage("terrain/tree")
     private val select = resources.loadImage("terrain/selected")
     private val hover = resources.loadImage("terrain/hover")
 
     private var hoverHex: HexCell = HexCell(0, 0)
     private var selectedHex: HexCell = HexCell(0, 0)
     private var scale = 1.0f
+
+    private val map = HexMap.buildCircle(20, CellType.Grass).apply {
+        val trees = filter { random() % 10 > 8 }
+        trees.forEach { put(it.key, CellType.Tree) }
+    }
+
+    enum class CellType {
+        Grass, Tree
+    }
 
     override fun activate(executor: KTaskExecutor) {
 
@@ -33,22 +43,23 @@ class HexScene(resources: KResourceScope) : KScene {
 
     override fun render(renderer: KRenderer, cache: KTextureCache) {
         val grass = grass.toTexture(cache)
+        val tree = tree.toTexture(cache)
         val select = select.toTexture(cache)
         val hover = hover.toTexture(cache)
 
         renderer.clear(Colors.BLACK)
         renderer.color(Colors.BLUE)
         renderer.scale(scale)
-        for (q in -10..10)
-            for (r in -10..10) {
-                val hex = HexCell(q, r)
-                renderer.renderHex(hex, grass)
+
+        for (cell in map) {
+            when (cell.value) {
+                CellType.Grass -> renderer.renderHex(cell.key, grass)
+                CellType.Tree -> renderer.renderHex(cell.key, tree)
             }
+        }
 
         renderer.renderHex(hoverHex, hover)
-
         renderer.renderHex(selectedHex, select)
-
         renderer.present()
     }
 
