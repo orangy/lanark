@@ -13,6 +13,7 @@ data class HexCell(val q: Int, val r: Int, val s: Int = -q - r) {
 
     fun distance(other: HexCell) = minus(other).distanceFromZero()
     fun neighbor(index: Int) = plus(directions[index])
+    fun neighbors() = (0..5).map { plus(directions[it]) }
 
     private fun distanceFromZero() = (abs(q) + abs(r) + abs(s)) / 2
 

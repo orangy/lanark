@@ -13,26 +13,21 @@ class HexScene(resources: KResourceScope) : KScene {
             KVector(-60, 34),
             KVector(-60, -34),
             KVector(0, -69)
-    ), origin = KPoint(400, 400))
-    private val cornerIndices = listOf(1, 2, 3, 4, 5, 0)
+    ))
 
     private val grass = resources.loadImage("terrain/grass")
     private val tree = resources.loadImage("terrain/tree")
+    private val water = resources.loadImage("terrain/water")
     private val select = resources.loadImage("terrain/selected")
     private val hover = resources.loadImage("terrain/hover")
 
     private var hoverHex: HexCell = HexCell(0, 0)
     private var selectedHex: HexCell = HexCell(0, 0)
+
     private var scale = 1.0f
+    private var offset = KVector(0, 0)
 
-    private val map = HexMap.buildCircle(20, CellType.Grass).apply {
-        val trees = filter { random() % 10 > 8 }
-        trees.forEach { put(it.key, CellType.Tree) }
-    }
-
-    enum class CellType {
-        Grass, Tree
-    }
+    private val map = HexMap.buildCircle(20, HexCellDescriptor(HexLandType.Water)).buildLand(listOf(HexCell(0, 0)))
 
     override fun activate(executor: KTaskExecutor) {
 
@@ -43,7 +38,7 @@ class HexScene(resources: KResourceScope) : KScene {
 
     override fun render(renderer: KRenderer, cache: KTextureCache) {
         val grass = grass.toTexture(cache)
-        val tree = tree.toTexture(cache)
+        val water = water.toTexture(cache)
         val select = select.toTexture(cache)
         val hover = hover.toTexture(cache)
 
@@ -52,9 +47,9 @@ class HexScene(resources: KResourceScope) : KScene {
         renderer.scale(scale)
 
         for (cell in map) {
-            when (cell.value) {
-                CellType.Grass -> renderer.renderHex(cell.key, grass)
-                CellType.Tree -> renderer.renderHex(cell.key, tree)
+            when (cell.value.type) {
+                HexLandType.Water -> renderer.renderHex(cell.key, water)
+                HexLandType.Land -> renderer.renderHex(cell.key, grass)
             }
         }
 
@@ -66,18 +61,8 @@ class HexScene(resources: KResourceScope) : KScene {
     fun KRenderer.renderHex(hex: HexCell, texture: KTexture) {
         val textureSize = texture.size
         val shift = KVector(-textureSize.width / 2, -textureSize.height / 2)
-        val center = layout.cellCenter(hex) + shift
+        val center = layout.cellCenter(hex) + offset + shift
         draw(texture, center)
-    }
-
-    fun KRenderer.renderHexOutline(hex: HexCell) {
-        val center = layout.cellCenter(hex)
-        var previous = center + layout.vectors[0]
-        for (index in 0..5) {
-            val current = center + layout.vectors[cornerIndices[index]]
-            drawLine(previous, current)
-            previous = current
-        }
     }
 
     override fun keyboard(event: KEventKey, executor: KTaskExecutor) {
@@ -93,14 +78,17 @@ class HexScene(resources: KResourceScope) : KScene {
 
     override fun mouse(event: KEventMouse, executor: KTaskExecutor) {
         when (event) {
+            is KEventMouseWheel -> {
+                offset += KVector(-event.scrollX, event.scrollY) * 5.0
+            }
             is KEventMouseMotion -> {
-                hoverHex = layout.cellAt(event.position)
+                hoverHex = layout.cellAt(event.position - offset)
             }
             is KEventMouseDown -> {
                 when {
                     event.button == KMouseButton.Left -> selectedHex = hoverHex
                 }
-                logger.trace(layout.cellCenter(selectedHex).toString())
+                logger.trace((layout.cellCenter(selectedHex) + offset).toString())
             }
         }
     }

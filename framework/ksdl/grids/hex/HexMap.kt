@@ -12,6 +12,16 @@ class HexMap<T : Any>(val size: KSize) : Iterable<Map.Entry<HexCell, T>> {
     fun put(cell: HexCell, value: T) {
         cells.put(cell, value)
     }
+
+    fun neighbors(cell: HexCell): List<Pair<HexCell, T>> {
+        if (!cells.containsKey(cell))
+            return emptyList()
+
+        return cell.neighbors().mapNotNull { neighbor ->
+            val value = cells[neighbor]
+            value?.let { neighbor to it }
+        }
+    }
 }
 
 fun <T : Any> HexMap.Companion.buildCircle(radius: Int, value: T): HexMap<T> {
@@ -36,3 +46,4 @@ fun <T : Any> HexMap.Companion.buildRect(width: Int, height: Int, value: T): Hex
     }
     return map
 }
+

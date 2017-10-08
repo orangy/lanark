@@ -12,13 +12,14 @@ data class KSize(val width: Int, val height: Int) {
 
 data class KPoint(val x: Int, val y: Int) {
     operator fun plus(other: KVector) = KPoint(x + other.x, y + other.y)
-    operator fun minus(other: KVector) = KVector(x - other.x, y - other.y)
+    operator fun minus(other: KVector) = KPoint(x - other.x, y - other.y)
     override fun toString() = "[$x, $y]"
 }
 
 data class KVector(val x: Int, val y: Int) {
-    operator fun plus(other: KVector) = KPoint(x + other.x, y + other.y)
-    operator fun minus(other: KVector) = KPoint(x - other.x, y - other.y)
+    operator fun plus(other: KVector) = KVector(x + other.x, y + other.y)
+    operator fun minus(other: KVector) = KVector(x - other.x, y - other.y)
+    operator fun times(scale: Double) = KVector((x * scale).toInt(), (y * scale).toInt())
     override fun toString() = "($x, $y)"
 }
 

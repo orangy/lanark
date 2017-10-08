@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
         scope("terrain") {
             image("grass", "grass.png")
             image("tree", "grass-tree.png")
+            image("water", "water.png")
 
             image("selected", "tile-select.png")
             image("hover", "tile-hover.png")
