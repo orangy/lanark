@@ -200,7 +200,7 @@ function(konanc_executable)
         konanc_test(
                 NAME ${KONANC_NAME}_test
                 TARGET ${KONANC_TARGET}
-                SOURCES ${KONANC_ALL_SOURCES} ${KONANC_TEST_SOURCES}
+                SOURCES ${KONANC_SOURCES} ${KONANC_TEST_SOURCES}
                 LIBRARIES ${KONANC_LIBRARIES}
                 LINKER_OPTS ${KONANC_LINKER_OPTS}
         )
@@ -237,7 +237,7 @@ function(konanc_library)
         konanc_test(
                 NAME ${KONANC_NAME}_test
                 TARGET ${KONANC_TARGET}
-                SOURCES ${KONANC_ALL_SOURCES} ${KONANC_TEST_SOURCES}
+                SOURCES ${KONANC_SOURCES} ${KONANC_TEST_SOURCES}
                 LIBRARIES ${KONANC_LIBRARIES}
                 LINKER_OPTS ${KONANC_LINKER_OPTS}
         )

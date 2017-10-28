@@ -14,8 +14,10 @@ cinterop(
 
 konanc_library(
         NAME ksdl
-        SOURCES framework
+        SOURCES framework/src
+        TEST_SOURCES framework/test
         LIBRARIES sdl2
+        LINKER_OPTS "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
 )
 
 konanc_executable(
