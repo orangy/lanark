@@ -45,10 +45,7 @@ class WelcomeScene(private val resources: KResourceScope) : KScene {
         renderer.present()
     }
 
-    override fun keyboard(event: KEventKey, executor: KTaskExecutor) {
-    }
-
-    override fun mouse(event: KEventMouse, executor: KTaskExecutor) {
+    override fun event(event: KEvent, executor: KTaskExecutor) {
         when (event) {
             is KEventMouseMotion -> {
                 if (event.position in itemRect) {

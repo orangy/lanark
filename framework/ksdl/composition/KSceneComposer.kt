@@ -48,8 +48,8 @@ class KSceneComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
         executor.before.subscribe(beforeHandler)
         executor.after.subscribe(afterHandler)
 
-        events.keyboard.subscribe { activeScene?.keyboard(it, executor) }
-        events.mouse.subscribe { activeScene?.mouse(it, executor) }
+        events.keyboard.subscribe { activeScene?.event(it, executor) }
+        events.mouse.subscribe { activeScene?.event(it, executor) }
         events.window.subscribe {
             // TODO: Decide on automatic resizing?
             if (it is KEventWindowResized) {

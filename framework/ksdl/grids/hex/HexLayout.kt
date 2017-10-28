@@ -1,7 +1,7 @@
 package ksdl.grids.hex
 
 import ksdl.system.*
-import sdl2.*
+import platform.posix.*
 
 fun HexLayout(orientation: Double, radius: Int): HexLayout {
     val cornerVectors = (0 until 6).map { index ->

@@ -9,7 +9,6 @@ interface KScene {
     fun deactivate(executor: KTaskExecutor)
 
     fun render(renderer: KRenderer, cache: KTextureCache)
-    fun keyboard(event: KEventKey, executor: KTaskExecutor)
-    fun mouse(event: KEventMouse, executor: KTaskExecutor)
+    fun event(event: KEvent, executor: KTaskExecutor)
 }
 

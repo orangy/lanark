@@ -1,6 +1,6 @@
 package ksdl.grids.hex
 
-import sdl2.*
+import platform.posix.*
 
 data class HexCell(val q: Int, val r: Int, val s: Int = -q - r) {
     init {

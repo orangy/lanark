@@ -43,7 +43,6 @@ class HexScene(resources: KResourceScope) : KScene {
         val hover = hover.toTexture(cache)
 
         renderer.clear(Colors.BLACK)
-        renderer.color(Colors.BLUE)
         renderer.scale(scale)
 
         for (cell in map) {
@@ -65,7 +64,7 @@ class HexScene(resources: KResourceScope) : KScene {
         draw(texture, center)
     }
 
-    override fun keyboard(event: KEventKey, executor: KTaskExecutor) {
+    override fun event(event: KEvent, executor: KTaskExecutor) {
         when (event) {
             is KEventKeyDown -> {
                 when (event.keyCode) {
@@ -73,11 +72,6 @@ class HexScene(resources: KResourceScope) : KScene {
                     SDLK_DOWN -> scale -= 0.1f
                 }
             }
-        }
-    }
-
-    override fun mouse(event: KEventMouse, executor: KTaskExecutor) {
-        when (event) {
             is KEventMouseWheel -> {
                 offset += KVector(-event.scrollX, event.scrollY) * 5.0
             }
