@@ -33,7 +33,7 @@ set(CMAKE_Kotlin_FLAGS_RELEASE "-opt" CACHE STRING
 set(CMAKE_Kotlin_FLAGS_RELWITHDEBINFO "-opt -g" CACHE STRING
         "Flags used by the compiler during release builds with debug info.")
 
-set(CMAKE_Kotlin_LIBRARY_DIR  ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libs/)
+set(CMAKE_Kotlin_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libs/)
 
 mark_as_advanced(
         CMAKE_Kotlin_FLAGS
@@ -58,15 +58,18 @@ function(cinterop)
         message(FATAL_ERROR "You must provide def file location")
     endif ()
 
-    if (CINTEROP_TARGET)
-        set(TARGET_FLAG -target ${CINTEROP_TARGET})
-    elseif (APPLE)
-        set(TARGET_FLAG -target macbook)
-    elseif (UNIX)
-        set(TARGET_FLAG -target linux)
-    else ()
-        message(FATAL_ERROR "Unsupported host target")
+    if (NOT CINTEROP_TARGET)
+        if (APPLE)
+            set(CINTEROP_TARGET macbook)
+        elseif (UNIX)
+            set(CINTEROP_TARGET linux)
+        else ()
+            message(FATAL_ERROR "Unsupported host target")
+        endif ()
     endif ()
+
+    set(TARGET_FLAG -target ${CINTEROP_TARGET})
+    set(LIBRARY_${CINTEROP_NAME}_TARGET ${CINTEROP_TARGET} CACHE STRING "Library ${CINTEROP_NAME} target" FORCE)
 
     set(COMPILER_OPTS_FLAG)
     foreach (COMPILER_OPT ${CINTEROP_COMPILER_OPTS})
@@ -76,16 +79,16 @@ function(cinterop)
     set(LIBRARY_FLAG)
     foreach (LIBRARY ${CINTEROP_LIBRARIES})
         set(LIBRARY_FLAG ${LIBRARY_FLAG} -library ${LIBRARY})
-    endforeach()
+    endforeach ()
 
     set(LIBRARY_OUTPUT ${CMAKE_Kotlin_LIBRARY_DIR}/${CINTEROP_NAME}.klib)
-    set(LIBRARY_${CINTEROP_NAME}_OUTPUT ${LIBRARY_OUTPUT} CACHE PATH "Library ${CINTEROP_NAME}")
+    set(LIBRARY_${CINTEROP_NAME}_OUTPUT ${LIBRARY_OUTPUT} CACHE PATH "Library ${CINTEROP_NAME}" FORCE)
     add_custom_command(
             OUTPUT ${LIBRARY_OUTPUT}
             DEPENDS ${CINTEROP_DEF_FILE} ${CINTEROP_LIBRARIES}
             COMMAND ${CMAKE_Kotlin_CINTEROP} ${COMPILER_OPTS_FLAG} ${LIBRARY_FLAG}
             -def ${CMAKE_CURRENT_SOURCE_DIR}/${CINTEROP_DEF_FILE} ${TARGET_FLAG}
-             -o ${LIBRARY_OUTPUT}
+            -r ${CMAKE_Kotlin_LIBRARY_DIR} -o ${LIBRARY_OUTPUT}
     )
     add_custom_target(${CINTEROP_NAME}
             DEPENDS ${LIBRARY_OUTPUT}
@@ -93,7 +96,7 @@ function(cinterop)
 
     foreach (LIBRARY ${CINTEROP_LIBRARIES})
         add_dependencies(${CINTEROP_NAME} ${LIBRARY})
-    endforeach()
+    endforeach ()
 
 endfunction()
 
@@ -104,7 +107,7 @@ macro(prepare_konanc_args)
             KONANC
             ""
             "NAME;TARGET"
-            "SOURCES;LIBRARIES;LINKER_OPTS"
+            "SOURCES;TEST_SOURCES;LIBRARIES;LINKER_OPTS"
             ${ARGN}
     )
 
@@ -116,15 +119,18 @@ macro(prepare_konanc_args)
         message(FATAL_ERROR "You must provide list of sources")
     endif ()
 
-    if (KONANC_TARGET)
-        set(TARGET_FLAG -target ${KONANC_TARGET})
-    elseif (APPLE)
-        set(TARGET_FLAG -target macbook)
-    elseif (UNIX)
-        set(TARGET_FLAG -target linux)
-    else ()
-        message(FATAL_ERROR "Unsupported host target")
+    if (NOT KONANC_TARGET)
+        if (APPLE)
+            set(KONANC_TARGET macbook)
+        elseif (UNIX)
+            set(KONANC_TARGET linux)
+        else ()
+            message(FATAL_ERROR "Unsupported host target")
+        endif ()
     endif ()
+
+    set(TARGET_FLAG -target ${KONANC_TARGET})
+    set(LIBRARY_${KONANC_NAME}_TARGET ${KONANC_TARGET} CACHE STRING "Konanc ${KONANC_NAME} target" FORCE)
 
     set(LINKER_OPTS_FLAG)
     if (KONANC_LINKER_OPTS)
@@ -147,15 +153,15 @@ macro(prepare_konanc_args)
         string(APPEND ADDITIONAL_KONANC_FLAGS " ${CMAKE_Kotlin_FLAGS_RELEASE}")
     elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
         string(APPEND ADDITIONAL_KONANC_FLAGS " ${CMAKE_Kotlin_FLAGS_RELWITHDEBINFO}")
-    endif()
+    endif ()
     separate_arguments(ADDITIONAL_KONANC_FLAGS)
 
-    set(KOTLINC_ABS_SOURCES "")
+    set(KONANC_ALL_SOURCES "")
     foreach (folder ${KONANC_SOURCES})
-        list(APPEND KOTLINC_ABS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${folder})
+        list(APPEND KONANC_ALL_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${folder})
         file(GLOB_RECURSE KT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/${folder}/*.kt)
         foreach (file ${KT_FILES})
-            list(APPEND KOTLINC_ABS_SOURCES ${file})
+            list(APPEND KONANC_ALL_SOURCES ${file})
         endforeach (file ${KT_FILES})
     endforeach (folder ${KONANC_SOURCES})
 endmacro()
@@ -167,23 +173,102 @@ function(konanc_executable)
 
     add_custom_command(
             OUTPUT ${KONANC_${KONANC_NAME}_EXECUTABLE_PATH}_TEMP.kexe
-            DEPENDS ${KOTLINC_ABS_SOURCES}
-            COMMAND ${CMAKE_Kotlin_COMPILER} ${ADDITIONAL_KONANC_FLAGS} ${KOTLINC_ABS_SOURCES}
+            DEPENDS ${KONANC_ALL_SOURCES}
+            COMMAND ${CMAKE_Kotlin_COMPILER} ${ADDITIONAL_KONANC_FLAGS} ${KONANC_ALL_SOURCES}
             ${LIBRARY_PATH} ${TARGET_FLAG} ${LINKER_OPTS_FLAG} -r ${CMAKE_Kotlin_LIBRARY_DIR}
             -o ${KONANC_${KONANC_NAME}_EXECUTABLE_PATH}_TEMP
             COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/${KONANC_NAME}.kexe
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    add_custom_target(${KONANC_NAME}.compile ALL
+    add_custom_target(${KONANC_NAME}.compile
             DEPENDS ${KONANC_${KONANC_NAME}_EXECUTABLE_PATH}_TEMP.kexe
-            SOURCES ${KOTLINC_ABS_SOURCES})
+            SOURCES ${KONANC_ALL_SOURCES})
 
     foreach (KONANC_LIBRARY ${KONANC_LIBRARIES})
         add_dependencies(${KONANC_NAME}.compile ${KONANC_LIBRARY})
     endforeach ()
 
-    add_executable(${KONANC_NAME}.kexe ${KOTLINC_ABS_SOURCES})
+    add_executable(${KONANC_NAME}.kexe ${KONANC_ALL_SOURCES})
+    add_dependencies(${KONANC_NAME}.kexe ${KONANC_NAME}.compile)
+    set_target_properties(${KONANC_NAME}.kexe PROPERTIES LINKER_LANGUAGE Kotlin)
+    add_custom_command(TARGET ${KONANC_NAME}.kexe
+            PRE_LINK
+            COMMAND ${CMAKE_COMMAND} -E copy ${KONANC_${KONANC_NAME}_EXECUTABLE_PATH}_TEMP.kexe ${CMAKE_CURRENT_BINARY_DIR}/${KONANC_NAME}.kexe)
+
+    if (KONANC_TEST_SOURCES)
+        konanc_test(
+                NAME ${KONANC_NAME}_test
+                TARGET ${KONANC_TARGET}
+                SOURCES ${KONANC_ALL_SOURCES} ${KONANC_TEST_SOURCES}
+                LIBRARIES ${KONANC_LIBRARIES}
+                LINKER_OPTS ${KONANC_LINKER_OPTS}
+        )
+    endif ()
+
+endfunction()
+
+function(konanc_library)
+    prepare_konanc_args(${ARGV})
+
+    set(LIBRARY_OUTPUT ${CMAKE_Kotlin_LIBRARY_DIR}/${KONANC_NAME}.klib)
+    set(LIBRARY_${KONANC_NAME}_OUTPUT ${LIBRARY_OUTPUT} CACHE PATH "Library ${KONANC_NAME}" FORCE)
+    add_custom_command(
+            OUTPUT ${LIBRARY_OUTPUT}
+            DEPENDS ${KONANC_ALL_SOURCES}
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_Kotlin_LIBRARY_DIR}
+            COMMAND ${CMAKE_Kotlin_COMPILER} -produce library ${ADDITIONAL_KONANC_FLAGS}
+            ${KONANC_ALL_SOURCES} ${LIBRARY_PATH} ${TARGET_FLAG} ${LINKER_OPTS_FLAG}
+            -r ${CMAKE_Kotlin_LIBRARY_DIR} -o ${LIBRARY_OUTPUT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+
+    add_custom_target(${KONANC_NAME}
+            DEPENDS ${LIBRARY_OUTPUT}
+            SOURCES ${KONANC_ALL_SOURCES})
+
+    foreach (KONANC_LIBRARY ${KONANC_LIBRARIES})
+        add_dependencies(${KONANC_NAME} ${KONANC_LIBRARY})
+    endforeach ()
+
+    set_target_properties(${KONANC_NAME} PROPERTIES LINKER_LANGUAGE Kotlin)
+
+    if (KONANC_TEST_SOURCES)
+        konanc_test(
+                NAME ${KONANC_NAME}_test
+                TARGET ${KONANC_TARGET}
+                SOURCES ${KONANC_ALL_SOURCES} ${KONANC_TEST_SOURCES}
+                LIBRARIES ${KONANC_LIBRARIES}
+                LINKER_OPTS ${KONANC_LINKER_OPTS}
+        )
+    endif ()
+
+endfunction()
+
+function(konanc_test)
+    prepare_konanc_args(${ARGV})
+
+    set(KONANC_${KONANC_NAME}_EXECUTABLE_PATH ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${KONANC_NAME})
+
+    add_custom_command(
+            OUTPUT ${KONANC_${KONANC_NAME}_EXECUTABLE_PATH}_TEMP.kexe
+            DEPENDS ${KONANC_ALL_SOURCES}
+            COMMAND ${CMAKE_Kotlin_COMPILER} -tr ${ADDITIONAL_KONANC_FLAGS} ${KONANC_ALL_SOURCES}
+            ${LIBRARY_PATH} ${TARGET_FLAG} ${LINKER_OPTS_FLAG} -r ${CMAKE_Kotlin_LIBRARY_DIR}
+            -o ${KONANC_${KONANC_NAME}_EXECUTABLE_PATH}_TEMP
+            COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/${KONANC_NAME}.kexe
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+
+    add_custom_target(${KONANC_NAME}.compile
+            DEPENDS ${KONANC_${KONANC_NAME}_EXECUTABLE_PATH}_TEMP.kexe
+            SOURCES ${KONANC_ALL_SOURCES})
+
+    foreach (KONANC_LIBRARY ${KONANC_LIBRARIES})
+        add_dependencies(${KONANC_NAME}.compile ${KONANC_LIBRARY})
+    endforeach ()
+
+    add_executable(${KONANC_NAME}.kexe ${KONANC_ALL_SOURCES})
     add_dependencies(${KONANC_NAME}.kexe ${KONANC_NAME}.compile)
     set_target_properties(${KONANC_NAME}.kexe PROPERTIES LINKER_LANGUAGE Kotlin)
     add_custom_command(TARGET ${KONANC_NAME}.kexe
@@ -192,28 +277,28 @@ function(konanc_executable)
 
 endfunction()
 
-function(konanc_library)
-    prepare_konanc_args(${ARGV})
+function(konanc_library_search LIB_NAME INCLUDE_FILE)
+    #TODO REMOVE ME(!)
+    if (UNIX AND NOT APPLE)
+        enable_language(C)
+    endif()
+    string(TOUPPER ${LIB_NAME} UPPER_LIB_NAME)
 
-    set(LIBRARY_OUTPUT ${CMAKE_Kotlin_LIBRARY_DIR}/${KONANC_NAME}.klib)
-    set(LIBRARY_${KONANC_NAME}_OUTPUT ${LIBRARY_OUTPUT} CACHE PATH "Library ${CINTEROP_NAME}")
-    add_custom_command(
-            OUTPUT ${LIBRARY_OUTPUT}
-            DEPENDS ${KOTLINC_ABS_SOURCES}
-            COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_Kotlin_LIBRARY_DIR}
-            COMMAND ${CMAKE_Kotlin_COMPILER} -produce library ${ADDITIONAL_KONANC_FLAGS}
-            ${KOTLINC_ABS_SOURCES} ${LIBRARY_PATH} ${TARGET_FLAG} ${LINKER_OPTS_FLAG}
-            -r ${CMAKE_Kotlin_LIBRARY_DIR} -o ${LIBRARY_OUTPUT}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
+    find_library(${UPPER_LIB_NAME}_LIBRARY ${LIB_NAME})
+    if (NOT ${UPPER_LIB_NAME}_LIBRARY)
+        message(WARNING "Library ${LIB_NAME} not found")
+        return()
+    endif()
 
-    add_custom_target(${KONANC_NAME} ALL
-            DEPENDS ${LIBRARY_OUTPUT}
-            SOURCES ${KOTLINC_ABS_SOURCES})
+    message(STATUS "Library ${LIB_NAME} found as ${${UPPER_LIB_NAME}_LIBRARY}")
 
-    foreach (KONANC_LIBRARY ${KONANC_LIBRARIES})
-        add_dependencies(${KONANC_NAME} ${KONANC_LIBRARY})
-    endforeach ()
+    find_file(${UPPER_LIB_NAME}_INCLUDE_FILE ${INCLUDE_FILE})
+    get_filename_component(${UPPER_LIB_NAME}_INCLUDE_DIR ${${UPPER_LIB_NAME}_INCLUDE_FILE} DIRECTORY)
 
-    set_target_properties(${KONANC_NAME} PROPERTIES LINKER_LANGUAGE Kotlin)
+    get_filename_component(${UPPER_LIB_NAME}_LIBRARY_DIR ${${UPPER_LIB_NAME}_LIBRARY} DIRECTORY)
+    set(${UPPER_LIB_NAME}_LIBRARY_DIR ${${UPPER_LIB_NAME}_LIBRARY_DIR} PARENT_SCOPE)
+    set(${UPPER_LIB_NAME}_LIBRARY ${${UPPER_LIB_NAME}_LIBRARY} PARENT_SCOPE)
+    set(${UPPER_LIB_NAME}_INCLUDE_DIR ${${UPPER_LIB_NAME}_INCLUDE_DIR} PARENT_SCOPE)
+
+    message(STATUS "Include ${INCLUDE_FILE} found as ${${UPPER_LIB_NAME}_INCLUDE_FILE}")
 endfunction()
