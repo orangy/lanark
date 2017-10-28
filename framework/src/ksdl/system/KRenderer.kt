@@ -1,6 +1,7 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.geometry.*
 import sdl2.*
 
 class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Renderer>) {
@@ -57,11 +58,11 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
     }
 
     fun draw(texture: KTexture, position: KPoint) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(KRect(position, texture.size))).checkSDLError("SDL_RenderCopy")
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, texture.size)).checkSDLError("SDL_RenderCopy")
     }
 
     fun draw(texture: KTexture, position: KPoint, size: KSize) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(KRect(position, size))).checkSDLError("SDL_RenderCopy")
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, size)).checkSDLError("SDL_RenderCopy")
     }
 
     fun scale(scale: Float) {

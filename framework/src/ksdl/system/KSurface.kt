@@ -1,6 +1,7 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.geometry.*
 import sdl2.*
 
 class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {

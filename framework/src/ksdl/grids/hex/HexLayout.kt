@@ -1,5 +1,6 @@
 package ksdl.grids.hex
 
+import ksdl.geometry.*
 import ksdl.system.*
 import platform.posix.*
 

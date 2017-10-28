@@ -1,5 +1,6 @@
 package ksdl.resources
 
+import ksdl.io.*
 import ksdl.system.*
 
 class KResourceTiles(name: String, val file: String, val configure: KResourceTiles.() -> Unit = emptyConfigure) : KResource(name, resourceType) {

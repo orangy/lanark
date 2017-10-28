@@ -1,8 +1,8 @@
-package ksdl.system
+package ksdl.events
 
 import sdl2.*
 
-object KConstantNames {
+object KEventNames {
     val events = mapOf(
             SDL_QUIT to "SDL_QUIT",
             SDL_APP_TERMINATING to "SDL_APP_TERMINATING",

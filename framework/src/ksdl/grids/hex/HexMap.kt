@@ -1,6 +1,6 @@
 package ksdl.grids.hex
 
-import ksdl.system.*
+import ksdl.geometry.*
 
 class HexMap<T : Any>(val size: KSize) : Iterable<Map.Entry<HexCell, T>> {
     private val cells = HashMap<HexCell, T>()

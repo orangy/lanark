@@ -1,6 +1,6 @@
 package ksdl.resources
 
-import ksdl.system.*
+import ksdl.io.*
 
 class KResourceVideo(name: String, val file: String) : KResource(name, resourceType) {
     fun load(fileSystem: KFileSystem): KVideo = TODO("Load video")

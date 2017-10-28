@@ -1,5 +1,6 @@
 package ksdl.resources
 
+import ksdl.io.*
 import ksdl.system.*
 
 class KResourceScope(name: String = "", val fileSystem: KFileSystem = KFileSystem.Default, configure: KResourceScope.() -> Unit = emptyConfigure) : KResource(name, resourceType) {

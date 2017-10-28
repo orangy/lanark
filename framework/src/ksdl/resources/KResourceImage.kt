@@ -1,5 +1,6 @@
 package ksdl.resources
 
+import ksdl.io.*
 import ksdl.system.*
 
 class KResourceImage(name: String, val file: String) : KResource(name, resourceType) {

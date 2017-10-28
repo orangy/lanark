@@ -1,5 +1,6 @@
 import ksdl.composition.*
 import ksdl.events.*
+import ksdl.geometry.*
 import ksdl.grids.hex.*
 import ksdl.resources.*
 import ksdl.system.*

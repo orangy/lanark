@@ -1,6 +1,7 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.geometry.*
 import sdl2.*
 
 class KTexture(val texturePtr: CPointer<SDL_Texture>) {

@@ -1,5 +1,6 @@
 package ksdl.resources
 
+import ksdl.io.*
 import ksdl.system.*
 
 class KResourceCursor(name: String, val file: String, val hotX: Int, val hotY: Int) : KResource(name, resourceType) {

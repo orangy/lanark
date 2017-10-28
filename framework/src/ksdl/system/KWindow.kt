@@ -1,6 +1,7 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.geometry.*
 import sdl2.*
 
 class KWindow(private val windowPtr: CPointer<SDL_Window>) {

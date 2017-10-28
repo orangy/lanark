@@ -1,6 +1,8 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.geometry.*
+import ksdl.io.*
 import ksdl.resources.*
 import sdl2.*
 

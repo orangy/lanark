@@ -9,10 +9,7 @@ fun getSDLErrorText() = SDL_GetError()!!.toKString()
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T : CPointed> CPointer<T>?.checkSDLError(context: String = "SDL"): CPointer<T> {
-    if (this == null) {
-        throw KPlatformException("$context Error: ${getSDLErrorText()}")
-    }
-    return this
+    return this ?: throw KPlatformException("$context Error: ${getSDLErrorText()}")
 }
 
 @Suppress("NOTHING_TO_INLINE")

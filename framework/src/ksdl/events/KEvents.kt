@@ -18,7 +18,7 @@ class KEvents {
     }
 
     private fun processEvent(event: SDL_Event) {
-        val eventName = KConstantNames.events[event.type]
+        val eventName = KEventNames.events[event.type]
         when (event.type) {
             SDL_QUIT,
             SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,

@@ -1,4 +1,5 @@
 import ksdl.composition.*
+import ksdl.geometry.*
 import ksdl.resources.*
 import ksdl.system.*
 import sdl2.*
