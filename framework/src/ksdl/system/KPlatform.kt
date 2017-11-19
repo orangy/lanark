@@ -120,11 +120,6 @@ object KPlatform {
             SDL_DisableScreenSaver()
     }
 
-    fun createWindow(title: String, width: Int, height: Int, x: Int = SDL_WINDOWPOS_UNDEFINED, y: Int = SDL_WINDOWPOS_UNDEFINED, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
-        val window = SDL_CreateWindow(title, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
-        return KWindow(window)
-    }
-
     internal fun registerWindow(windowID: Int, window: KWindow) {
         windows[windowID] = window
     }

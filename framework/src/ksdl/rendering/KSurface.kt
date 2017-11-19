@@ -8,10 +8,6 @@ import ksdl.system.*
 import sdl2.*
 
 class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
-    init {
-        logger.system("Created $this")
-    }
-
     override fun release() {
         SDL_FreeSurface(surfacePtr)
         logger.system("Released $this")
@@ -88,7 +84,9 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
 
         fun create(size: KSize, bitsPerPixel: Int): KSurface {
             val surface = SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).checkSDLError("SDL_CreateRGBSurface")
-            return KSurface(surface)
+            return KSurface(surface).also {
+                logger.system("Created $it")
+            }
         }
     }
 }

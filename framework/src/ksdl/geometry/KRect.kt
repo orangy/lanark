@@ -8,6 +8,11 @@ data class KRect(val x: Int, val y: Int, val width: Int, val height: Int) {
     val origin get() = KPoint(x, y)
     val size get() = KSize(width, height)
 
+    val left get() = x
+    val right get() = x + width
+    val top get() = y
+    val bottom get() = y + height
+
     constructor(origin: KPoint, size: KSize) : this(origin.x, origin.y, size.width, size.height)
 
     override fun toString() = "R($x, $y, $width, $height)"
@@ -30,6 +35,15 @@ fun MemScope.SDL_Rect(value: KRect): CPointer<SDL_Rect> {
     sdl.y = value.y
     sdl.w = value.width
     sdl.h = value.height
+    return sdl.ptr
+}
+
+fun MemScope.SDL_Rect(x: Int, y: Int, width: Int, height: Int): CPointer<SDL_Rect> {
+    val sdl = alloc<SDL_Rect>()
+    sdl.x = x
+    sdl.y = y
+    sdl.w = width
+    sdl.h = height
     return sdl.ptr
 }
 

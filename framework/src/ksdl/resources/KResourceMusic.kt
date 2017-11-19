@@ -1,8 +1,7 @@
 package ksdl.resources
 
-import ksdl.diagnostics.*
-import ksdl.system.*
 import ksdl.io.*
+import ksdl.media.*
 
 class KResourceMusic(name: String, val location: KFileLocation) : KResource<KMusic>(name, resourceType) {
     override fun load(context: KResourceContext, progress: (Double) -> Unit): KMusic {

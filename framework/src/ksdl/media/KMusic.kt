@@ -1,4 +1,4 @@
-package ksdl.resources
+package ksdl.media
 
 import kotlinx.cinterop.*
 import ksdl.diagnostics.*
@@ -7,10 +7,6 @@ import ksdl.system.*
 import sdl2.*
 
 class KMusic(val musicPtr: CPointer<Mix_Music>) : KManaged {
-    init {
-        logger.system("Created $this")
-    }
-
     override fun release() {
         Mix_FreeMusic(musicPtr)
         logger.system("Released $this")
@@ -28,10 +24,11 @@ class KMusic(val musicPtr: CPointer<Mix_Music>) : KManaged {
 
     companion object {
         fun load(path: String, fileSystem: KFileSystem): KMusic {
-            val file = fileSystem.open(path)
-            val audio = Mix_LoadMUS_RW(file.handle, 0).checkSDLError("Mix_LoadMUS_RW")
-            return KMusic(audio).also {
-                logger.system("Loaded $it from $path at $fileSystem")
+            return fileSystem.open(path).use { file ->
+                val audio = Mix_LoadMUS_RW(file.handle, 0).checkSDLError("Mix_LoadMUS_RW")
+                KMusic(audio).also {
+                    logger.system("Loaded $it from $path at $fileSystem")
+                }
             }
         }
     }

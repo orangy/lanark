@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
     }
 
     val title = "Kotlin SDL2 Demo"
-    val window = KPlatform.createWindow(title, 800, 600, windowFlags = SDL_WINDOW_ALLOW_HIGHDPI or SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL).apply {
+    val window = KWindow.create(title, 800, 600, windowFlags = SDL_WINDOW_ALLOW_HIGHDPI or SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL).apply {
         minimumSize = KSize(800, 600)
         setBordered(true)
         setResizable(true)
@@ -31,7 +31,14 @@ fun main(args: Array<String>) {
     val ui = resources("ui") {
         texture("background", "ui-background.png")
         tiles("elements", "ui-tileset.png") {
-            tile("dialog-border-upper-left", 856, 189, 24, 24)
+            tile("border-top-left", 855, 188, 24, 24, 14, 14)
+            tile("border-top", 893, 188, 72, 24, 0, 14)
+            tile("border-top-right", 978, 188, 24, 24, 11, 14)
+            tile("border-right", 978, 228, 24, 54, 11, 0)
+            tile("border-bottom-right", 978, 294, 24, 24, 11, 11)
+            tile("border-bottom", 893, 294, 72, 24, 0, 11)
+            tile("border-bottom-left", 855, 294, 24, 24, 14, 11)
+            tile("border-left", 855, 228, 24, 54, 14, 0)
         }
     }
 
@@ -77,7 +84,7 @@ fun main(args: Array<String>) {
 
     val application = KSceneApplication(executor, renderer)
 
-    application.scene = KDialog(uiResources )
+    application.scene = KDialog(KRect(100, 100, 400, 400), uiResources)
 
     application.run()
 

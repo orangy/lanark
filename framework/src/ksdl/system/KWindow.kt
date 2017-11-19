@@ -9,11 +9,6 @@ import sdl2.*
 class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     val id: Int get() = SDL_GetWindowID(windowPtr)
 
-    init {
-        KPlatform.registerWindow(id, this)
-        logger.system("Created $this")
-    }
-
     override fun release() {
         KPlatform.unregisterWindow(id, this)
         val captureId = id
@@ -108,4 +103,14 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     }
 
     override fun toString() = "Window #$id ${windowPtr.rawValue}"
+
+    companion object {
+        fun create(title: String, width: Int, height: Int, x: Int = SDL_WINDOWPOS_UNDEFINED, y: Int = SDL_WINDOWPOS_UNDEFINED, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
+            val window = SDL_CreateWindow(title, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
+            return KWindow(window).also {
+                KPlatform.registerWindow(it.id, it)
+                logger.system("Created $it")
+            }
+        }
+    }
 }

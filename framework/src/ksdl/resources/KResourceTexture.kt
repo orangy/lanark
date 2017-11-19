@@ -8,9 +8,7 @@ class KResourceTexture(name: String, val location: KFileLocation) : KResource<KT
     override fun load(context: KResourceContext, progress: (Double) -> Unit): KTexture {
         return context.loadIfAbsent(this) {
             val (file, fileSystem) = location
-            KSurface.load(file, fileSystem).use {
-                context.renderer.createTexture(it)
-            }.also { progress(1.0) }
+            KTexture.load(file, fileSystem, context.renderer).also { progress(1.0) }
         }
     }
 

@@ -6,7 +6,7 @@ import ksdl.geometry.*
 import ksdl.system.*
 import sdl2.*
 
-class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Renderer>) : KManaged {
+class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) : KManaged {
     var size: KSize
         get() = memScoped {
             val w = alloc<IntVar>()
@@ -34,6 +34,10 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         SDL_SetRenderDrawColor(rendererPtr, color.red.toByte(), color.green.toByte(), color.blue.toByte(), color.alpha.toByte()).checkSDLError("SDL_SetRenderDrawColor")
     }
 
+    fun scale(scale: Float) {
+        SDL_RenderSetScale(rendererPtr, scale, scale).checkSDLError("SDL_RenderSetScale")
+    }
+
     fun present() {
         SDL_RenderPresent(rendererPtr)
     }
@@ -47,37 +51,5 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         SDL_RenderDrawLine(rendererPtr, from.x, from.y, to.x, to.y).checkSDLError("SDL_RenderDrawLine")
     }
 
-    fun draw(texture: KTexture) {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, null).checkSDLError("SDL_RenderCopy")
-    }
-
-    fun draw(texture: KTexture, sourceRect: KRect, destinationRect: KRect) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, SDL_Rect(sourceRect), SDL_Rect(destinationRect)).checkSDLError("SDL_RenderCopy")
-    }
-
-    fun draw(texture: KTexture, destinationRect: KRect) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect)).checkSDLError("SDL_RenderCopy")
-    }
-
-    fun draw(texture: KTexture, position: KPoint) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, texture.size)).checkSDLError("SDL_RenderCopy")
-    }
-
-    fun draw(texture: KTexture, position: KPoint, size: KSize) = memScoped {
-        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, size)).checkSDLError("SDL_RenderCopy")
-    }
-
-    fun scale(scale: Float) {
-        SDL_RenderSetScale(rendererPtr, scale, scale).checkSDLError("SDL_RenderSetScale")
-    }
-
-    fun createTexture(surface: KSurface): KTexture {
-        val texturePtr = SDL_CreateTextureFromSurface(rendererPtr, surface.surfacePtr).checkSDLError("SDL_CreateTextureFromSurface")
-        return KTexture(texturePtr)
-    }
-
     override fun toString() = "Renderer ${rendererPtr.rawValue}"
-
 }
-
-fun KSurface.toTexture(renderer: KRenderer) = renderer.createTexture(this)

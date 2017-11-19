@@ -1,12 +1,13 @@
 package ksdl.resources
 
 import ksdl.io.*
+import ksdl.media.*
 
 class KResourceVideo(name: String, val location: KFileLocation) : KResource<KVideo>(name, resourceType) {
     override fun load(context: KResourceContext, progress: (Double) -> Unit): KVideo {
         return context.loadIfAbsent(this) {
             val (file, fileSystem) = location
-            KVideo().also { progress(1.0) }
+            KVideo.load(file, fileSystem).also { progress(1.0) }
         }
     }
 

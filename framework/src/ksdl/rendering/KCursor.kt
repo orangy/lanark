@@ -6,10 +6,6 @@ import ksdl.system.*
 import sdl2.*
 
 class KCursor(val cursorPtr: CPointer<SDL_Cursor>) : KManaged {
-    init {
-        logger.system("Created $this")
-    }
-
     override fun release() {
         SDL_FreeCursor(cursorPtr)
         logger.system("Released $this")
@@ -20,12 +16,16 @@ class KCursor(val cursorPtr: CPointer<SDL_Cursor>) : KManaged {
     companion object {
         fun create(surface: KSurface, hotX: Int, hotY: Int): KCursor {
             val cursor = SDL_CreateColorCursor(surface.surfacePtr, hotX, hotY).checkSDLError("SDL_CreateColorCursor")
-            return KCursor(cursor)
+            return KCursor(cursor).also {
+                logger.system("Created $it")
+            }
         }
 
         fun create(systemCursor: SDL_SystemCursor): KCursor {
             val cursor = SDL_CreateSystemCursor(systemCursor).checkSDLError("SDL_CreateSystemCursor")
-            return KCursor(cursor)
+            return KCursor(cursor).also {
+                logger.system("Created $it")
+            }
         }
     }
 }
