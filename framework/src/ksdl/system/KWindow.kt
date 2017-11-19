@@ -10,15 +10,15 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     val id: Int get() = SDL_GetWindowID(windowPtr)
 
     init {
-        logger.system("Created $this")
         KPlatform.registerWindow(id, this)
+        logger.system("Created $this")
     }
 
     override fun release() {
         KPlatform.unregisterWindow(id, this)
         val captureId = id
         SDL_DestroyWindow(windowPtr)
-        logger.system("Released $this")
+        logger.system("Released window #$captureId ${windowPtr.rawValue}")
     }
 
     fun setBordered(enable: Boolean) {

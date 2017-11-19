@@ -3,8 +3,7 @@ package ksdl.resources
 import ksdl.io.*
 
 class KResourceData(name: String, val location: KFileLocation) : KResource<KData>(name, resourceType) {
-    override fun load(progress: (Double) -> Unit): KData = TODO("Load data")
-    override fun release() {}
+    override fun load(context: KResourceContext, progress: (Double) -> Unit): KData = TODO("Load data")
 
     companion object {
         val resourceType = KResourceType("Data")
@@ -12,6 +11,5 @@ class KResourceData(name: String, val location: KFileLocation) : KResource<KData
 }
 
 fun KResourceContainer.data(name: String, file: String) = KResourceData(name, KFileLocation(file, fileSystem)).also { register(it) }
-
-fun KResourceSource.loadData(path: String) = loadResource<KData>(path, KResourceData.resourceType)
+fun KResourceContext.loadData(path: String) = loadResource<KData>(path, KResourceData.resourceType)
 

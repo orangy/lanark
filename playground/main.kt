@@ -4,6 +4,7 @@ import ksdl.events.*
 import ksdl.geometry.*
 import ksdl.resources.*
 import ksdl.system.*
+import ksdl.ui.*
 import sdl2.*
 
 fun main(args: Array<String>) {
@@ -13,7 +14,7 @@ fun main(args: Array<String>) {
             color(KLogCategory.Info, "\u001B[0;34m")
             color(KLogCategory.Warn, "\u001B[0;33m")
             color(KLogCategory.Error, "\u001B[0;31m")
-            color(KSceneComposer.LogCategory, "\u001B[0;35m")
+            color(KSceneApplication.LogCategory, "\u001B[0;35m")
             color(KEvents.LogCategory, "\u001B[0;36m")
         }
         enableEverything()
@@ -25,41 +26,43 @@ fun main(args: Array<String>) {
         setBordered(true)
         setResizable(true)
     }
-
     val renderer = window.createRenderer()
-    val executor = KTaskExecutorIterative()
 
-    val resources = resources {
+    val ui = resources("ui") {
+        texture("background", "ui-background.png")
+        tiles("elements", "ui-tileset.png") {
+            tile("dialog-border-upper-left", 856, 189, 24, 24)
+        }
+    }
+
+    val resources = resources("main") {
         scope("cursors") {
             cursor("normal", "cursor.png", 0, 0)
             cursor("hot", "cursor-outline-red.png", 0, 0)
         }
-        scope("terrain") {
-            image("grass", "grass.png")
-            image("tree", "grass-tree.png")
-            image("water", "water.png")
 
-            image("selected", "tile-select.png")
-            image("hover", "tile-hover.png")
+        scope("terrain") {
+            texture("grass", "grass.png")
+            texture("tree", "grass-tree.png")
+            texture("water", "water.png")
+
+            texture("selected", "tile-select.png")
+            texture("hover", "tile-hover.png")
         }
+
         scope("welcome") {
-            image("background-image", "welcome-background.png")
+            texture("background-image", "welcome-background.png")
             music("background-music", "welcome-music.ogg")
 
-            image("item", "object.png")
+            texture("item", "object.png")
         }
-        scope("ui") {
-            image("background", "ui-background.png")
-            tiles("elements", "ui-tileset.png") {
-                tile("dialog-border-upper-left", 856, 189, 24, 24)
-            }
-        }
-    }
 
-    resources.load {
-        logger.trace("Loading resources: ${KMath.round(it, 2)}")
-    }
+        register(ui)
+    }.bind(renderer)
 
+    val uiResources = resources.loadScope("ui")
+
+    val executor = KTaskExecutorIterative()
     var frames = 0
     val clock = KClock()
     executor.after.subscribe {
@@ -72,11 +75,13 @@ fun main(args: Array<String>) {
         }
     }
 
-    val composer = KSceneComposer(executor, renderer)
-    composer.scene = HexScene(resources)
-    composer.run()
+    val application = KSceneApplication(executor, renderer)
 
-    resources.release()
+    application.scene = KDialog(uiResources )
+
+    application.run()
+
+    uiResources.release()
     renderer.release()
     window.release()
     KPlatform.quit()

@@ -4,23 +4,18 @@ import ksdl.diagnostics.*
 import ksdl.events.*
 import ksdl.geometry.*
 import ksdl.rendering.*
-import ksdl.resources.*
 import ksdl.system.*
 
-// TODO: find better name, it doesn't compose scenes, it runs them
-class KSceneComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
+class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     private val events = KEvents()
 
     var scene: KScene? = null
 
     private var activeScene: KScene? = null
-    private var activeTextureCache: KTextureCache? = null
 
     private fun deactivate(activeScene: KScene?) {
         activeScene?.also { scene ->
             scene.deactivate(executor)
-            activeTextureCache?.release()
-            activeTextureCache = null
             this.activeScene = null
             logger.composer("Deactivated $scene")
         }
@@ -29,7 +24,6 @@ class KSceneComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
     private fun activate(activeScene: KScene?) {
         activeScene?.also { scene ->
             logger.composer("Activating $scene")
-            activeTextureCache = KTextureCache(renderer)
             scene.activate(executor)
         }
     }
@@ -44,7 +38,9 @@ class KSceneComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 
     private val afterHandler: (Unit) -> Unit = {
-        scene?.render(renderer, activeTextureCache!!)
+        renderer.clear(KColor.BLACK)
+        scene?.render(renderer)
+        renderer.present()
     }
 
     fun run() {
@@ -79,4 +75,4 @@ class KSceneComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 }
 
-fun KLogger.composer(message: String) = log(KSceneComposer.LogCategory, message)
+fun KLogger.composer(message: String) = log(KSceneApplication.LogCategory, message)

@@ -3,13 +3,12 @@ package ksdl.resources
 import ksdl.io.*
 
 class KResourceVideo(name: String, val location: KFileLocation) : KResource<KVideo>(name, resourceType) {
-    override fun load(progress: (Double) -> Unit): KVideo {
-        val (file, fileSystem) = location
-        progress(1.0)
-        return KVideo()
+    override fun load(context: KResourceContext, progress: (Double) -> Unit): KVideo {
+        return context.loadIfAbsent(this) {
+            val (file, fileSystem) = location
+            KVideo().also { progress(1.0) }
+        }
     }
-
-    override fun release() = TODO()
 
     companion object {
         val resourceType = KResourceType("Video")
@@ -17,5 +16,5 @@ class KResourceVideo(name: String, val location: KFileLocation) : KResource<KVid
 }
 
 fun KResourceContainer.video(name: String, file: String) = KResourceVideo(name, KFileLocation(file, fileSystem)).also { register(it) }
-fun KResourceSource.loadVideo(path: String) = loadResource<KVideo>(path, KResourceVideo.resourceType)
+fun KResourceContext.loadVideo(path: String) = loadResource<KVideo>(path, KResourceVideo.resourceType)
 

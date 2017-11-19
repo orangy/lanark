@@ -1,9 +1,10 @@
 package ksdl.resources
 
 import ksdl.rendering.*
+import ksdl.system.*
 
-class KTiles(val surface: KSurface) {
-    fun release() {
+class KTiles(val surface: KSurface) : KManaged {
+    override fun release() {
         surface.release()
     }
 

@@ -5,13 +5,13 @@ import ksdl.rendering.*
 import ksdl.resources.*
 import ksdl.system.*
 
-class WelcomeScene(private val resources: KResourceContainer) : KScene {
-    private val background = resources.loadImage("welcome/background-image")
+class WelcomeScene(private val resources: KResourceContext) : KScene {
+    private val background = resources.loadTexture("welcome/background-image")
     private val backgroundMusic = resources.loadMusic("welcome/background-music")
     private val normalCursor = resources.loadCursor("cursors/normal")
     private val hotCursor = resources.loadCursor("cursors/hot")
 
-    private val item = resources.loadImage("welcome/item")
+    private val item = resources.loadTexture("welcome/item")
     private val itemPosition = KPoint(100, 100)
     private val itemRect = KRect(itemPosition, item.size)
 
@@ -24,27 +24,21 @@ class WelcomeScene(private val resources: KResourceContainer) : KScene {
         backgroundMusic.stop()
     }
 
-    private fun renderItem(renderer: KRenderer, cache: KTextureCache) {
-        val itemTx = item.toTexture(cache)
-        renderer.draw(itemTx, itemPosition)
+    private fun renderItem(renderer: KRenderer) {
+        renderer.draw(item, itemPosition)
     }
 
-    private fun renderBackground(renderer: KRenderer, cache: KTextureCache) {
-        val backgroundTx = background.toTexture(cache)
-        val vscale = renderer.size.height.toDouble() / backgroundTx.size.height
-        val hscale = renderer.size.width.toDouble() / backgroundTx.size.width
+    private fun renderBackground(renderer: KRenderer) {
+        val vscale = renderer.size.height.toDouble() / background.size.height
+        val hscale = renderer.size.width.toDouble() / background.size.width
         val scale = maxOf(vscale, hscale)
-        val destinationRect = KRect(0, 0, (backgroundTx.size.width * scale).toInt(), (backgroundTx.size.height * scale).toInt())
-        renderer.draw(backgroundTx, destinationRect)
+        val destinationRect = KRect(0, 0, (background.size.width * scale).toInt(), (background.size.height * scale).toInt())
+        renderer.draw(background, destinationRect)
     }
 
-    override fun render(renderer: KRenderer, cache: KTextureCache) {
-        renderer.clear(KColor.BLACK)
-
-        renderBackground(renderer, cache)
-        renderItem(renderer, cache)
-
-        renderer.present()
+    override fun render(renderer: KRenderer) {
+        renderBackground(renderer)
+        renderItem(renderer)
     }
 
     override fun event(event: KEvent, executor: KTaskExecutor) {

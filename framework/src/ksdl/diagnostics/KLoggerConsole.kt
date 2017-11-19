@@ -29,5 +29,6 @@ class KLoggerConsole : KLogger {
     }
 }
 
-inline fun consoleLogger() = KLoggerConsole()
+fun consoleLogger() = KLoggerConsole()
+
 inline fun consoleLogger(configure: KLoggerConsole.() -> Unit) = KLoggerConsole().apply(configure)

@@ -8,7 +8,7 @@ import ksdl.resources.*
 import ksdl.system.*
 import sdl2.*
 
-class HexScene(resources: KResourceContainer) : KScene {
+class HexScene(resources: KResourceContext) : KScene {
     private val layout = HexLayout(listOf(
             KVector(60, -34),
             KVector(60, 34),
@@ -18,11 +18,11 @@ class HexScene(resources: KResourceContainer) : KScene {
             KVector(0, -69)
     ))
 
-    private val grass = resources.loadImage("terrain/grass")
+    private val grass = resources.loadTexture("terrain/grass")
     private val tree = resources.loadImage("terrain/tree")
-    private val water = resources.loadImage("terrain/water")
-    private val select = resources.loadImage("terrain/selected")
-    private val hover = resources.loadImage("terrain/hover")
+    private val water = resources.loadTexture("terrain/water")
+    private val select = resources.loadTexture("terrain/selected")
+    private val hover = resources.loadTexture("terrain/hover")
 
     private var hoverHex: HexCell = HexCell(0, 0)
     private var selectedHex: HexCell = HexCell(0, 0)
@@ -39,13 +39,7 @@ class HexScene(resources: KResourceContainer) : KScene {
     override fun deactivate(executor: KTaskExecutor) {
     }
 
-    override fun render(renderer: KRenderer, cache: KTextureCache) {
-        val grass = grass.toTexture(cache)
-        val water = water.toTexture(cache)
-        val select = select.toTexture(cache)
-        val hover = hover.toTexture(cache)
-
-        renderer.clear(KColor.BLACK)
+    override fun render(renderer: KRenderer) {
         renderer.scale(scale)
 
         for (cell in map) {
@@ -57,7 +51,6 @@ class HexScene(resources: KResourceContainer) : KScene {
 
         renderer.renderHex(hoverHex, hover)
         renderer.renderHex(selectedHex, select)
-        renderer.present()
     }
 
     fun KRenderer.renderHex(hex: HexCell, texture: KTexture) {

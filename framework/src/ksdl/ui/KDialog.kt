@@ -4,20 +4,19 @@ import ksdl.geometry.*
 import ksdl.rendering.*
 import ksdl.resources.*
 
-class KDialog(private val resources: KResourceContainer) : UIScene() {
-    private val background = resources.loadImage("background")
+class KDialog(private val resources: KResourceContext) : UIScene() {
+    private val background = resources.loadTexture("background")
 
-    override fun render(renderer: KRenderer, cache: KTextureCache) {
-        renderer.renderBackground(cache)
+    override fun render(renderer: KRenderer) {
+        renderer.renderBackground()
     }
 
-    private fun KRenderer.renderBackground(cache: KTextureCache) {
-        val backgroundTx = background.toTexture(cache)
-        val vscale = size.height.toDouble() / backgroundTx.size.height
-        val hscale = size.width.toDouble() / backgroundTx.size.width
+    private fun KRenderer.renderBackground() {
+        val vscale = size.height.toDouble() / background.size.height
+        val hscale = size.width.toDouble() / background.size.width
         val scale = maxOf(vscale, hscale)
-        val destinationRect = KRect(0, 0, (backgroundTx.size.width * scale).toInt(), (backgroundTx.size.height * scale).toInt())
-        draw(backgroundTx, destinationRect)
+        val destinationRect = KRect(0, 0, (background.size.width * scale).toInt(), (background.size.height * scale).toInt())
+        draw(background, destinationRect)
     }
 
 }

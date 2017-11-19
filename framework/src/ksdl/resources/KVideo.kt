@@ -1,5 +1,7 @@
 package ksdl.resources
 
-class KVideo {
+import ksdl.system.*
 
+class KVideo : KManaged {
+    override fun release() {}
 }

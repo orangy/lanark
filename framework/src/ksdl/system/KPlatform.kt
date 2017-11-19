@@ -130,6 +130,8 @@ object KPlatform {
     }
 
     internal fun unregisterWindow(windowID: Int, window: KWindow) {
+        val registered = windows[windowID]
+        require(registered == window) { "Window #$windowID must be unregistered with the same instance" }
         windows.remove(windowID)
     }
 

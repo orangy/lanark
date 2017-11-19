@@ -2,24 +2,17 @@ package ksdl.resources
 
 import ksdl.diagnostics.*
 import ksdl.io.*
+import ksdl.rendering.*
 import ksdl.system.*
 
-class KResourceContainer(name: String = "", val fileSystem: KFileSystem = KFileSystem.Default) : KResource<KResourceSource>(name, resourceType), KResourceSource {
+class KResourceContainer(name: String, val fileSystem: KFileSystem = KFileSystem.Default) : KResource<KResourceContext>(name, resourceType), KResourceScope {
     private val resources = mutableMapOf<String, KResource<*>>()
-
-    fun scope(name: String, configure: KResourceContainer.() -> Unit = emptyConfigure): KResourceContainer {
-        return KResourceContainer(name, fileSystem).apply(configure).also { register(it) }
-    }
 
     fun <TResource> register(resource: KResource<TResource>) {
         val existing = resources[resource.name]
         if (existing != null)
             return logger.error("Resource '${resource.name}' is already registered in '$this' for '$existing'")
         resources.put(resource.name, resource)
-    }
-
-    override fun release() {
-        resources.forEach { it.value.release() }
     }
 
     override fun findResource(path: String): KResource<*> {
@@ -31,25 +24,29 @@ class KResourceContainer(name: String = "", val fileSystem: KFileSystem = KFileS
         }
     }
 
-    override fun load(progress: (Double) -> Unit): KResourceSource {
+    override fun load(context: KResourceContext, progress: (Double) -> Unit): KResourceContext {
         val values = resources.values
         val step = 1.0 / values.size
         var current = 0.0
         for (resource in values) {
-            resource.load { progress(current + it * step) }
+            resource.load(context) { progress(current + it * step) }
             current += step
         }
         progress(1.0)
-        return this
+        return KResourceContext(context, this)
     }
 
     companion object {
         val resourceType = KResourceType("Scope")
-
-        private val emptyConfigure: KResourceContainer.() -> Unit = {}
     }
 }
 
-fun resources(name: String = "", fileSystem: KFileSystem = KFileSystem.Default, configure: KResourceContainer.() -> Unit): KResourceContainer {
+inline fun resources(name: String, fileSystem: KFileSystem = KFileSystem.Default, configure: KResourceContainer.() -> Unit): KResourceContainer {
     return KResourceContainer(name, fileSystem).apply(configure)
 }
+
+inline fun KResourceContainer.scope(name: String, configure: KResourceContainer.() -> Unit): KResourceContainer {
+    return KResourceContainer(name, fileSystem).apply(configure).also { register(it) }
+}
+
+fun KResourceContext.loadScope(path: String) = loadResource<KResourceContext>(path, KResourceContainer.resourceType)
