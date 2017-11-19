@@ -1,9 +1,9 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
-import ksdl.geometry.*
-import ksdl.io.*
-import ksdl.resources.*
+import kotlinx.cinterop.CPointer
+import ksdl.diagnostics.*
+import ksdl.rendering.KCursor
 import sdl2.*
 
 object KPlatform {
@@ -55,10 +55,8 @@ object KPlatform {
         }
 
         logger.info("Initializing MIX v$mixVersion")
-        val initialized = Mix_Init(MIX_INIT_OGG)
-        if (initialized == 0) {
-            throw KPlatformException("Mix_Init Error: ${getSDLErrorText()}")
-        }
+        //Mix_Init(MIX_INIT_OGG).checkSDLError("Mix_Init")
+        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT.toShort(), 1, 4096).checkSDLError("Mix_OpenAudio")
     }
 
     private fun enabledSubsystems(): List<String> = mutableListOf<String>().apply {
@@ -122,36 +120,6 @@ object KPlatform {
             SDL_DisableScreenSaver()
     }
 
-    fun loadSurface(path: String): KSurface {
-        val surface = IMG_Load(path).checkSDLError("IMG_Load")
-        return KSurface(surface).also {
-            logger.system("Loaded $it from $path")
-        }
-    }
-
-    fun loadSurface(path: String, fileSystem: KFileSystem): KSurface {
-        val file = fileSystem.open(path)
-        val surface = IMG_Load_RW(file.handle, 0).checkSDLError("IMG_Load")
-        file.close()
-        return KSurface(surface).also {
-            logger.system("Loaded $it from $path at $fileSystem")
-        }
-    }
-
-    fun loadMusic(path: String, fileSystem: KFileSystem): KMusic {
-        val file = fileSystem.open(path)
-        val audio = Mix_LoadMUS_RW(file.handle, 0).checkSDLError("Mix_LoadMUS_RW")
-        return KMusic(audio).also {
-            logger.system("Loaded $it from $path at $fileSystem")
-        }
-    }
-
-
-    fun createSurface(size: KSize, bitsPerPixel: Int): KSurface {
-        val surface = SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).checkSDLError("SDL_CreateRGBSurface")
-        return KSurface(surface)
-    }
-
     fun createWindow(title: String, width: Int, height: Int, x: Int = SDL_WINDOWPOS_UNDEFINED, y: Int = SDL_WINDOWPOS_UNDEFINED, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
         val window = SDL_CreateWindow(title, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
         return KWindow(window)
@@ -166,16 +134,6 @@ object KPlatform {
     }
 
     fun findWindow(windowID: Int) = windows[windowID]
-
-    fun createCursor(systemCursor: SDL_SystemCursor): KCursor {
-        val cursor = SDL_CreateSystemCursor(systemCursor).checkSDLError("SDL_CreateSystemCursor")
-        return KCursor(cursor)
-    }
-
-    fun createCursor(surface: KSurface, hotX: Int, hotY: Int): KCursor {
-        val cursor = SDL_CreateColorCursor(surface.surfacePtr, hotX, hotY).checkSDLError("SDL_CreateColorCursor")
-        return KCursor(cursor)
-    }
 
     enum class MessageBoxIcon {
         Information, Warning, Error
@@ -217,10 +175,6 @@ object KPlatform {
             flags = flags or SDL_INIT_VIDEO
         }
     }
-}
-
-class KVersion(val major: Int, val minor: Int, val patch: Int, val revision: String? = null) {
-    override fun toString(): String = "$major.$minor.$patch${revision?.let { " [$it]" } ?: ""}"
 }
 
 val logger: KLogger

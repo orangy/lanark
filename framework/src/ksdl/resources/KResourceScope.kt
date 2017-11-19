@@ -1,16 +1,15 @@
 package ksdl.resources
 
+import ksdl.diagnostics.*
 import ksdl.io.*
 import ksdl.system.*
 
-class KResourceScope(name: String = "", val fileSystem: KFileSystem = KFileSystem.Default, configure: KResourceScope.() -> Unit = emptyConfigure) : KResource(name, resourceType) {
+class KResourceScope(name: String = "", val fileSystem: KFileSystem = KFileSystem.Default) : KResource(name, resourceType) {
     private val resources = mutableMapOf<String, KResource>()
 
-    init {
-        apply(configure)
+    fun scope(name: String, configure: KResourceScope.() -> Unit = emptyConfigure): KResourceScope {
+        return KResourceScope(name, fileSystem).apply(configure).also { register(it) }
     }
-
-    fun scope(name: String, configure: KResourceScope.() -> Unit = emptyConfigure) = KResourceScope(name, fileSystem).apply(configure).also { register(it) }
 
     fun register(resource: KResource) {
         val existing = resources[resource.name]
@@ -58,3 +57,6 @@ class KResourceScope(name: String = "", val fileSystem: KFileSystem = KFileSyste
     }
 }
 
+fun resources(name: String = "", fileSystem: KFileSystem = KFileSystem.Default, configure: KResourceScope.() -> Unit): KResourceScope {
+    return KResourceScope(name, fileSystem).apply(configure)
+}

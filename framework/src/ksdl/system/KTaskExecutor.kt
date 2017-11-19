@@ -1,5 +1,7 @@
 package ksdl.system
 
+import ksdl.diagnostics.*
+
 interface KTaskExecutor {
     fun submit(task: () -> Unit)
 

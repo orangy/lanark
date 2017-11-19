@@ -1,6 +1,6 @@
 package ksdl.io
 
-import ksdl.system.*
+import ksdl.diagnostics.*
 import sdl2.*
 
 interface KFileSystem {

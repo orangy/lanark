@@ -1,6 +1,7 @@
 import ksdl.composition.*
 import ksdl.events.*
 import ksdl.geometry.*
+import ksdl.rendering.*
 import ksdl.resources.*
 import ksdl.system.*
 
@@ -23,12 +24,12 @@ class WelcomeScene(private val resources: KResourceScope) : KScene {
         backgroundMusic.stop()
     }
 
-    fun renderItem(renderer: KRenderer, cache: KTextureCache) {
+    private fun renderItem(renderer: KRenderer, cache: KTextureCache) {
         val itemTx = item.toTexture(cache)
         renderer.draw(itemTx, itemPosition)
     }
 
-    fun renderBackground(renderer: KRenderer, cache: KTextureCache) {
+    private fun renderBackground(renderer: KRenderer, cache: KTextureCache) {
         val backgroundTx = background.toTexture(cache)
         val vscale = renderer.size.height.toDouble() / backgroundTx.size.height
         val hscale = renderer.size.width.toDouble() / backgroundTx.size.width
@@ -38,7 +39,7 @@ class WelcomeScene(private val resources: KResourceScope) : KScene {
     }
 
     override fun render(renderer: KRenderer, cache: KTextureCache) {
-        renderer.clear(Colors.BLACK)
+        renderer.clear(KColor.BLACK)
 
         renderBackground(renderer, cache)
         renderItem(renderer, cache)

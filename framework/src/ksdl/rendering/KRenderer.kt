@@ -1,10 +1,12 @@
-package ksdl.system
+package ksdl.rendering
 
 import kotlinx.cinterop.*
+import ksdl.diagnostics.*
 import ksdl.geometry.*
+import ksdl.system.*
 import sdl2.*
 
-class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Renderer>) {
+class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Renderer>) : KManaged {
     var size: KSize
         get() = memScoped {
             val w = alloc<IntVar>()
@@ -36,7 +38,7 @@ class KRenderer(val window: KWindow, private val rendererPtr: CPointer<SDL_Rende
         SDL_RenderPresent(rendererPtr)
     }
 
-    fun release() {
+    override fun release() {
         SDL_DestroyRenderer(rendererPtr)
         logger.system("Released $this")
     }

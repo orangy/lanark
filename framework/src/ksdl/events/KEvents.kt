@@ -1,6 +1,7 @@
 package ksdl.events
 
 import kotlinx.cinterop.*
+import ksdl.diagnostics.*
 import ksdl.system.*
 import sdl2.*
 
@@ -55,8 +56,8 @@ class KEvents {
     }
 
     companion object {
-        val logCategory = KLogCategory("Events", "\u001B[0;36m")
+        val LogCategory = KLogCategory("Events")
     }
 }
 
-fun KLogger.event(message: String) = log(KEvents.logCategory, message)
+fun KLogger.event(message: String) = log(KEvents.LogCategory, message)

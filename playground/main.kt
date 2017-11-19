@@ -1,4 +1,6 @@
 import ksdl.composition.*
+import ksdl.diagnostics.*
+import ksdl.events.*
 import ksdl.geometry.*
 import ksdl.resources.*
 import ksdl.system.*
@@ -6,13 +8,19 @@ import sdl2.*
 
 fun main(args: Array<String>) {
     KPlatform.init {
-        logger = KLoggerConsole()
+        logger = consoleLogger {
+            color(KLogCategory.System, "\u001B[0;37m")
+            color(KLogCategory.Info, "\u001B[0;34m")
+            color(KLogCategory.Warn, "\u001B[0;33m")
+            color(KLogCategory.Error, "\u001B[0;31m")
+            color(KSceneComposer.LogCategory, "\u001B[0;35m")
+            color(KEvents.LogCategory, "\u001B[0;36m")
+        }
         enableEverything()
     }
-    Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT.toShort(), 1, 4096).checkSDLError("Mix_OpenAudio")
 
     val title = "Kotlin SDL2 Demo"
-    val window = KPlatform.createWindow(title, 800, 600, windowFlags = SDL_WINDOW_ALLOW_HIGHDPI or SDL_WINDOW_SHOWN).apply {
+    val window = KPlatform.createWindow(title, 800, 600, windowFlags = SDL_WINDOW_ALLOW_HIGHDPI or SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL).apply {
         minimumSize = KSize(800, 600)
         setBordered(true)
         setResizable(true)
@@ -21,7 +29,7 @@ fun main(args: Array<String>) {
     val renderer = window.createRenderer()
     val executor = KTaskExecutorIterative()
 
-    val resources = KResourceScope() {
+    val resources = resources {
         scope("cursors") {
             cursor("normal", "cursor.png", 0, 0)
             cursor("hot", "cursor-outline-red.png", 0, 0)
@@ -43,7 +51,7 @@ fun main(args: Array<String>) {
         scope("ui") {
             image("background", "ui-background.png")
             tiles("elements", "ui-tileset") {
-                tile("upper-left", 856, 189, 24, 24)
+                tile("dialog-border-upper-left", 856, 189, 24, 24)
             }
         }
     }

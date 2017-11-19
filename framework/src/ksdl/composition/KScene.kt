@@ -1,6 +1,7 @@
 package ksdl.composition
 
 import ksdl.events.*
+import ksdl.rendering.*
 import ksdl.resources.*
 import ksdl.system.*
 

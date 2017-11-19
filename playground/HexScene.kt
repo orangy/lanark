@@ -1,7 +1,9 @@
 import ksdl.composition.*
+import ksdl.diagnostics.*
 import ksdl.events.*
 import ksdl.geometry.*
 import ksdl.grids.hex.*
+import ksdl.rendering.*
 import ksdl.resources.*
 import ksdl.system.*
 import sdl2.*
@@ -43,7 +45,7 @@ class HexScene(resources: KResourceScope) : KScene {
         val select = select.toTexture(cache)
         val hover = hover.toTexture(cache)
 
-        renderer.clear(Colors.BLACK)
+        renderer.clear(KColor.BLACK)
         renderer.scale(scale)
 
         for (cell in map) {

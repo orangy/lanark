@@ -1,5 +1,7 @@
 package ksdl.system
 
+import ksdl.diagnostics.*
+
 class KSignal<T>(val tag: String) {
     private val handlers = mutableListOf<(T) -> Unit>()
 

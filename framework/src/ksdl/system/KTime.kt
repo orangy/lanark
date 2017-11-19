@@ -16,13 +16,13 @@ class KTime(val value: time_t) {
     override fun toString(): String = memScoped {
         val time = alloc<time_tVar>()
         time.value = value
-        val tm = localtime(time.ptr) ?: return@memScoped "<null>"
-        val year = (tm.pointed.tm_year + 1900).toString()
-        val month = (tm.pointed.tm_mon + 1).toZeroPadding(2)
-        val day = tm.pointed.tm_mday.toZeroPadding(2)
-        val hour = tm.pointed.tm_hour.toZeroPadding(2)
-        val minute = tm.pointed.tm_min.toZeroPadding(2)
-        val seconds = tm.pointed.tm_sec.toZeroPadding(2)
+        val tm = localtime(time.ptr)?.pointed ?: return@memScoped "<null>"
+        val year = (tm.tm_year + 1900).toString()
+        val month = (tm.tm_mon + 1).toZeroPadding(2)
+        val day = tm.tm_mday.toZeroPadding(2)
+        val hour = tm.tm_hour.toZeroPadding(2)
+        val minute = tm.tm_min.toZeroPadding(2)
+        val seconds = tm.tm_sec.toZeroPadding(2)
         "$year/$month/$day $hour:$minute:$seconds"
     }
 

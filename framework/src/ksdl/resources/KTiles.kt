@@ -1,6 +1,6 @@
 package ksdl.resources
 
-import ksdl.system.*
+import ksdl.rendering.*
 
 class KTiles(val surface: KSurface) {
     fun release() {

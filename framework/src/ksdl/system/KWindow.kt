@@ -1,10 +1,12 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
+import ksdl.diagnostics.*
 import ksdl.geometry.*
+import ksdl.rendering.*
 import sdl2.*
 
-class KWindow(private val windowPtr: CPointer<SDL_Window>) {
+class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     val id: Int get() = SDL_GetWindowID(windowPtr)
 
     init {
@@ -12,7 +14,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) {
         KPlatform.registerWindow(id, this)
     }
 
-    fun release() {
+    override fun release() {
         KPlatform.unregisterWindow(id, this)
         val captureId = id
         SDL_DestroyWindow(windowPtr)

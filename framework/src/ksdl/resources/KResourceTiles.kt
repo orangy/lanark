@@ -1,6 +1,8 @@
 package ksdl.resources
 
+import ksdl.diagnostics.*
 import ksdl.io.*
+import ksdl.rendering.*
 import ksdl.system.*
 
 class KResourceTiles(name: String, val file: String, val configure: KResourceTiles.() -> Unit = emptyConfigure) : KResource(name, resourceType) {
@@ -13,7 +15,7 @@ class KResourceTiles(name: String, val file: String, val configure: KResourceTil
 
     fun load(fileSystem: KFileSystem): KTiles {
         tiles?.let { return it }
-        val surface = KPlatform.loadSurface(file, fileSystem)
+        val surface = KSurface.load(file, fileSystem)
         val tiles = KTiles(surface)
         return tiles.also {
             logger.system("Loaded $it from $this")

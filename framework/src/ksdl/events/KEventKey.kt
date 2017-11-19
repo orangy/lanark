@@ -2,6 +2,7 @@ package ksdl.events
 
 import sdl2.*
 import kotlinx.cinterop.*
+import ksdl.diagnostics.*
 import ksdl.system.*
 
 abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdlEvent.type) {

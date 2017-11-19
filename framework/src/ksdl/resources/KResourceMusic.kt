@@ -1,5 +1,6 @@
 package ksdl.resources
 
+import ksdl.diagnostics.*
 import ksdl.io.*
 import ksdl.system.*
 
@@ -7,7 +8,7 @@ class KResourceMusic(name: String, val file: String) : KResource(name, resourceT
     private var music: KMusic? = null
     fun load(fileSystem: KFileSystem): KMusic {
         music?.let { return it }
-        return KPlatform.loadMusic(file, fileSystem).also { music = it }.also {
+        return KMusic.load(file, fileSystem).also { music = it }.also {
             logger.system("Loaded $it from $this")
         }
     }
@@ -16,7 +17,6 @@ class KResourceMusic(name: String, val file: String) : KResource(name, resourceT
         music?.release()
         music = null
     }
-
 
     companion object {
         val resourceType = KResourceType("Music")

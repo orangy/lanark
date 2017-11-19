@@ -1,5 +1,6 @@
 package ksdl.events
 
+import ksdl.diagnostics.*
 import ksdl.system.*
 import sdl2.*
 

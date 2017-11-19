@@ -1,4 +1,4 @@
-package ksdl.system
+package ksdl.diagnostics
 
 import kotlinx.cinterop.*
 import sdl2.*

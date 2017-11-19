@@ -1,3 +1,4 @@
+package ksdl.tests.system
 
 import ksdl.system.*
 import sdl2.*

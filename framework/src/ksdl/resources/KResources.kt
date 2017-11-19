@@ -1,8 +1,9 @@
 package ksdl.resources
 
-abstract class KResource(val name: String, val resourceType: KResourceType) {
+import ksdl.system.*
+
+abstract class KResource(val name: String, val resourceType: KResourceType) : KManaged {
     override fun toString() = "$resourceType($name)"
-    abstract fun release()
 }
 
 class KResourceType(val name: String) {

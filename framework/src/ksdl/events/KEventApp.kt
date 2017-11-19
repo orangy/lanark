@@ -1,6 +1,6 @@
 package ksdl.events
 
-import ksdl.system.*
+import ksdl.diagnostics.*
 import sdl2.*
 
 abstract class KEventApp(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {

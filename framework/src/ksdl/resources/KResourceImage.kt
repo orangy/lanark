@@ -1,6 +1,8 @@
 package ksdl.resources
 
+import ksdl.diagnostics.*
 import ksdl.io.*
+import ksdl.rendering.*
 import ksdl.system.*
 
 class KResourceImage(name: String, val file: String) : KResource(name, resourceType) {
@@ -13,7 +15,7 @@ class KResourceImage(name: String, val file: String) : KResource(name, resourceT
 
     fun load(fileSystem: KFileSystem): KSurface {
         surface?.let { return it }
-        return KPlatform.loadSurface(file, fileSystem).also { surface = it }.also {
+        return KSurface.load(file, fileSystem).also { surface = it }.also {
             logger.system("Loaded $it from $this")
         }
     }

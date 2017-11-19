@@ -1,20 +1,23 @@
-package ksdl.system
+package ksdl.rendering
 
 import kotlinx.cinterop.*
+import ksdl.diagnostics.*
 import ksdl.geometry.*
+import ksdl.io.*
+import ksdl.system.*
 import sdl2.*
 
-class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {
+class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
     init {
         logger.system("Created $this")
     }
 
-    fun release() {
+    override fun release() {
         SDL_FreeSurface(surfacePtr)
         logger.system("Released $this")
     }
 
-    val size : KSize get() = KSize(surfacePtr.pointed.w, surfacePtr.pointed.h)
+    val size: KSize get() = KSize(surfacePtr.pointed.w, surfacePtr.pointed.h)
 
     var blendMode: BlendMode
         get() = memScoped {
@@ -72,5 +75,21 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) {
     }
 
     override fun toString() = "Surface ${surfacePtr.rawValue}"
+
+    companion object {
+        fun load(path: String, fileSystem: KFileSystem): KSurface {
+            val file = fileSystem.open(path)
+            val surface = IMG_Load_RW(file.handle, 0).checkSDLError("IMG_Load")
+            file.close()
+            return KSurface(surface).also {
+                logger.system("Loaded $it from $path at $fileSystem")
+            }
+        }
+
+        fun create(size: KSize, bitsPerPixel: Int): KSurface {
+            val surface = SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).checkSDLError("SDL_CreateRGBSurface")
+            return KSurface(surface)
+        }
+    }
 }
 

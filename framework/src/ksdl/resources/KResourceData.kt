@@ -1,11 +1,11 @@
 package ksdl.resources
 
+import ksdl.diagnostics.*
 import ksdl.io.*
-import ksdl.system.*
 
 class KResourceData(name: String, val file: String) : KResource(name, resourceType) {
     fun load(fileSystem: KFileSystem): KData = TODO("Load data")
-    override fun release() = TODO()
+    override fun release() {}
 
     companion object {
         val resourceType = KResourceType("Data")

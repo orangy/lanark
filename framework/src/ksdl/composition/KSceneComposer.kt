@@ -1,7 +1,9 @@
 package ksdl.composition
 
+import ksdl.diagnostics.*
 import ksdl.events.*
 import ksdl.geometry.*
+import ksdl.rendering.*
 import ksdl.resources.*
 import ksdl.system.*
 
@@ -73,8 +75,8 @@ class KSceneComposer(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 
     companion object {
-        val logCategory = KLogCategory("Composer", "\u001B[0;35m")
+        val LogCategory = KLogCategory("Composer")
     }
 }
 
-fun KLogger.composer(message: String) = log(KSceneComposer.logCategory, message)
+fun KLogger.composer(message: String) = log(KSceneComposer.LogCategory, message)
