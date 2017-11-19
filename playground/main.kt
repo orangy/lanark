@@ -77,14 +77,17 @@ fun main(args: Array<String>) {
         val seconds = clock.elapsedMillis()
         if (seconds > 1000) {
             clock.reset()
-            window.title = "$title / FPS: ${frames}"
+            window.title = "$title / FPS: $frames"
             frames = 0
         }
     }
 
     val application = KSceneApplication(executor, renderer)
 
-    application.scene = KDialog(KRect(100, 100, 400, 400), uiResources)
+    val dialog = KDialog(KRect(300, 130, 212, 234), uiResources)
+    val welcome = WelcomeScene(resources)
+
+    application.scene = KSceneLayered(listOf(welcome, dialog))
 
     application.run()
 

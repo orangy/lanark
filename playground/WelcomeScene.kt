@@ -17,11 +17,11 @@ class WelcomeScene(private val resources: KResourceContext) : KScene {
 
     override fun activate(executor: KTaskExecutor) {
         KPlatform.activeCursor = normalCursor
-        backgroundMusic.play()
+        //backgroundMusic.play()
     }
 
     override fun deactivate(executor: KTaskExecutor) {
-        backgroundMusic.stop()
+        //backgroundMusic.stop()
     }
 
     private fun renderItem(renderer: KRenderer) {

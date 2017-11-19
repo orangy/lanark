@@ -1,5 +1,31 @@
 package ksdl.composition
 
-class KSceneLayered {
+import ksdl.events.*
+import ksdl.rendering.*
+import ksdl.system.*
 
+class KSceneLayered(val layers: List<KScene>) : KScene {
+    override fun activate(executor: KTaskExecutor) {
+        layers.forEach {
+            it.activate(executor)
+        }
+    }
+
+    override fun deactivate(executor: KTaskExecutor) {
+        layers.forEach {
+            it.deactivate(executor)
+        }
+    }
+
+    override fun render(renderer: KRenderer) {
+        layers.forEach {
+            it.render(renderer)
+        }
+    }
+
+    override fun event(event: KEvent, executor: KTaskExecutor) {
+        layers.forEach {
+            it.event(event, executor)
+        }
+    }
 }
