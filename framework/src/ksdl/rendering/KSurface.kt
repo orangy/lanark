@@ -78,11 +78,11 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
 
     companion object {
         fun load(path: String, fileSystem: KFileSystem): KSurface {
-            val file = fileSystem.open(path)
-            val surface = IMG_Load_RW(file.handle, 0).checkSDLError("IMG_Load")
-            file.close()
-            return KSurface(surface).also {
-                logger.system("Loaded $it from $path at $fileSystem")
+            return fileSystem.open(path).use { file ->
+                val surfacePtr = IMG_Load_RW(file.handle, 0).checkSDLError("IMG_Load_RW")
+                KSurface(surfacePtr).also {
+                    logger.system("Loaded $it from $path at $fileSystem")
+                }
             }
         }
 

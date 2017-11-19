@@ -5,7 +5,7 @@ import ksdl.rendering.*
 import ksdl.resources.*
 import ksdl.system.*
 
-class WelcomeScene(private val resources: KResourceScope) : KScene {
+class WelcomeScene(private val resources: KResourceContainer) : KScene {
     private val background = resources.loadImage("welcome/background-image")
     private val backgroundMusic = resources.loadMusic("welcome/background-music")
     private val normalCursor = resources.loadCursor("cursors/normal")

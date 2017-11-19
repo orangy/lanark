@@ -4,7 +4,7 @@ import ksdl.geometry.*
 import ksdl.rendering.*
 import ksdl.resources.*
 
-class KDialog(private val resources: KResourceScope) : UIScene() {
+class KDialog(private val resources: KResourceContainer) : UIScene() {
     private val background = resources.loadImage("background")
 
     override fun render(renderer: KRenderer, cache: KTextureCache) {

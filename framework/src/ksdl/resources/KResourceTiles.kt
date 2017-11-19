@@ -1,11 +1,11 @@
 package ksdl.resources
 
 import ksdl.diagnostics.*
-import ksdl.io.*
 import ksdl.rendering.*
 import ksdl.system.*
+import ksdl.io.*
 
-class KResourceTiles(name: String, val file: String, val configure: KResourceTiles.() -> Unit = emptyConfigure) : KResource(name, resourceType) {
+class KResourceTiles(name: String, val location: KFileLocation, val configure: KResourceTiles.() -> Unit = emptyConfigure) : KResource<KTiles>(name, resourceType) {
     private var tiles: KTiles? = null
 
     override fun release() {
@@ -13,12 +13,14 @@ class KResourceTiles(name: String, val file: String, val configure: KResourceTil
         tiles = null
     }
 
-    fun load(fileSystem: KFileSystem): KTiles {
+    override fun load(progress: (Double) -> Unit): KTiles {
         tiles?.let { return it }
+        val (file, fileSystem) = location
         val surface = KSurface.load(file, fileSystem)
         val tiles = KTiles(surface)
         return tiles.also {
             logger.system("Loaded $it from $this")
+            progress(1.0)
         }
     }
 
@@ -32,11 +34,8 @@ class KResourceTiles(name: String, val file: String, val configure: KResourceTil
     }
 }
 
-fun KResourceScope.tiles(name: String, file: String, configure: KResourceTiles.() -> Unit = KResourceTiles.emptyConfigure) = KResourceTiles(name, file).also { register(it) }
-fun KResourceScope.loadTiles(path: String): KTiles {
-    val resource = findResource(path)
-    if (resource.resourceType != KResourceImage.resourceType)
-        throw KPlatformException("Resource '$resource' is not a Tileset")
-    return (resource as KResourceTiles).load(fileSystem)
-}
+fun KResourceContainer.tiles(name: String, file: String, configure: KResourceTiles.() -> Unit = KResourceTiles.emptyConfigure) = KResourceTiles(name, KFileLocation(file, fileSystem)).also { register(it) }
+
+fun KResourceSource.loadTiles(path: String) = loadResource<KTiles>(path, KResourceTiles.resourceType)
+
 

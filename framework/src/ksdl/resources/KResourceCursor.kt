@@ -1,18 +1,22 @@
 package ksdl.resources
 
 import ksdl.diagnostics.*
-import ksdl.io.*
 import ksdl.rendering.*
 import ksdl.system.*
+import ksdl.io.*
 
-class KResourceCursor(name: String, val file: String, val hotX: Int, val hotY: Int) : KResource(name, resourceType) {
+class KResourceCursor(name: String, val location: KFileLocation, val hotX: Int, val hotY: Int) : KResource<KCursor>(name, resourceType) {
     private var cursor: KCursor? = null
-    fun load(fileSystem: KFileSystem): KCursor {
+
+    override fun load(progress: (Double) -> Unit): KCursor {
         cursor?.let { return it }
-        val surface = KSurface.load(file, fileSystem)
-        return KCursor.create(surface, hotX, hotY).also { cursor = it }.also {
-            surface.release()
-            logger.system("Loaded $it from $this")
+        val (file, fileSystem) = location
+        return KSurface.load(file, fileSystem).use { surface ->
+            KCursor.create(surface, hotX, hotY).also {
+                cursor = it
+                logger.system("Loaded $it from $this")
+                progress(1.0)
+            }
         }
     }
 
@@ -26,8 +30,6 @@ class KResourceCursor(name: String, val file: String, val hotX: Int, val hotY: I
     }
 }
 
-fun KResourceScope.cursor(name: String, file: String, hotX: Int, hotY: Int) = KResourceCursor(name, file, hotX, hotY).also { register(it) }
-fun KResourceScope.loadCursor(path: String): KCursor {
-    val resource = findResource(path, KResourceCursor.resourceType)
-    return (resource as KResourceCursor).load(fileSystem)
-}
+fun KResourceContainer.cursor(name: String, file: String, hotX: Int, hotY: Int) = KResourceCursor(name, KFileLocation(file, fileSystem), hotX, hotY).also { register(it) }
+
+fun KResourceSource.loadCursor(path: String) = loadResource<KCursor>(path, KResourceCursor.resourceType)

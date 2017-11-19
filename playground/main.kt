@@ -50,12 +50,15 @@ fun main(args: Array<String>) {
         }
         scope("ui") {
             image("background", "ui-background.png")
-            tiles("elements", "ui-tileset") {
+            tiles("elements", "ui-tileset.png") {
                 tile("dialog-border-upper-left", 856, 189, 24, 24)
             }
         }
     }
 
+    resources.load {
+        logger.trace("Loading resources: ${KMath.round(it, 2)}")
+    }
 
     var frames = 0
     val clock = KClock()

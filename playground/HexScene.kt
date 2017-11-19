@@ -8,7 +8,7 @@ import ksdl.resources.*
 import ksdl.system.*
 import sdl2.*
 
-class HexScene(resources: KResourceScope) : KScene {
+class HexScene(resources: KResourceContainer) : KScene {
     private val layout = HexLayout(listOf(
             KVector(60, -34),
             KVector(60, 34),

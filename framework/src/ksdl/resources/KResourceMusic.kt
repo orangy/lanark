@@ -1,15 +1,17 @@
 package ksdl.resources
 
 import ksdl.diagnostics.*
-import ksdl.io.*
 import ksdl.system.*
+import ksdl.io.*
 
-class KResourceMusic(name: String, val file: String) : KResource(name, resourceType) {
+class KResourceMusic(name: String, val location: KFileLocation) : KResource<KMusic>(name, resourceType) {
     private var music: KMusic? = null
-    fun load(fileSystem: KFileSystem): KMusic {
+    override fun load(progress: (Double) -> Unit): KMusic {
         music?.let { return it }
+        val (file, fileSystem) = location
         return KMusic.load(file, fileSystem).also { music = it }.also {
             logger.system("Loaded $it from $this")
+            progress(1.0)
         }
     }
 
@@ -23,10 +25,7 @@ class KResourceMusic(name: String, val file: String) : KResource(name, resourceT
     }
 }
 
-fun KResourceScope.music(name: String, file: String) = KResourceMusic(name, file).also { register(it) }
+fun KResourceContainer.music(name: String, file: String) = KResourceMusic(name, KFileLocation(file, fileSystem)).also { register(it) }
 
-fun KResourceScope.loadMusic(path: String): KMusic {
-    val resource = findResource(path, KResourceMusic.resourceType)
-    return (resource as KResourceMusic).load(fileSystem)
-}
+fun KResourceSource.loadMusic(path: String) = loadResource<KMusic>(path, KResourceMusic.resourceType)
 
