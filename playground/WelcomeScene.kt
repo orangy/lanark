@@ -41,7 +41,7 @@ class WelcomeScene(private val resources: KResourceContext) : KScene {
         renderItem(renderer)
     }
 
-    override fun event(event: KEvent, executor: KTaskExecutor) {
+    override fun event(event: KEvent, executor: KTaskExecutor): Boolean {
         when (event) {
             is KEventMouseMotion -> {
                 if (event.position in itemRect) {
@@ -51,6 +51,7 @@ class WelcomeScene(private val resources: KResourceContext) : KScene {
                 }
             }
         }
+        return true
     }
 
     override fun toString() = "WelcomeScene"

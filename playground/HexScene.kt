@@ -60,7 +60,7 @@ class HexScene(resources: KResourceContext) : KScene {
         draw(texture, center)
     }
 
-    override fun event(event: KEvent, executor: KTaskExecutor) {
+    override fun event(event: KEvent, executor: KTaskExecutor): Boolean {
         when (event) {
             is KEventKeyDown -> {
                 when (event.keyCode) {
@@ -81,5 +81,6 @@ class HexScene(resources: KResourceContext) : KScene {
                 logger.trace((layout.cellCenter(selectedHex) + offset).toString())
             }
         }
+        return true
     }
 }

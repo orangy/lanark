@@ -13,8 +13,8 @@ abstract class UIScene : KScene {
 
     }
 
-    override fun event(event: KEvent, executor: KTaskExecutor) {
-
+    override fun event(event: KEvent, executor: KTaskExecutor): Boolean {
+        return false
     }
 
 }

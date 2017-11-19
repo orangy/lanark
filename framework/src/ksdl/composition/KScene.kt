@@ -9,6 +9,6 @@ interface KScene {
     fun deactivate(executor: KTaskExecutor)
 
     fun render(renderer: KRenderer)
-    fun event(event: KEvent, executor: KTaskExecutor)
+    fun event(event: KEvent, executor: KTaskExecutor): Boolean
 }
 

@@ -84,7 +84,7 @@ fun main(args: Array<String>) {
 
     val application = KSceneApplication(executor, renderer)
 
-    val dialog = KDialog(KRect(300, 130, 212, 234), uiResources)
+    val dialog = KDialog(KRect(140, 140, 212, 234), uiResources)
     val welcome = WelcomeScene(resources)
 
     application.scene = KSceneLayered(listOf(welcome, dialog))

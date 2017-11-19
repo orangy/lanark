@@ -1,8 +1,10 @@
 package ksdl.ui
 
+import ksdl.events.*
 import ksdl.geometry.*
 import ksdl.rendering.*
 import ksdl.resources.*
+import ksdl.system.*
 
 class KDialog(val area: KRect, private val resources: KResourceContext) : UIScene() {
     private val background = resources.loadTexture("background")
@@ -28,32 +30,44 @@ class KDialog(val area: KRect, private val resources: KResourceContext) : UIScen
         draw(bottomLeftTile, KPoint(area.left, area.bottom))
         draw(bottomRightTile, KPoint(area.right, area.bottom))
 
-        val topLeftX = topLeftTile.width - topLeftTile.hotPoint.x
+        val topLeftX = topLeftTile.width - topLeftTile.origin.x
         fill(topTile, KRect(
                 area.left + topLeftX,
-                area.top - topTile.hotPoint.y,
-                area.width - topLeftX - topRightTile.hotPoint.x,
+                area.top - topTile.origin.y,
+                area.width - topLeftX - topRightTile.origin.x,
                 topTile.height))
 
-        val bottomLeftX = bottomLeftTile.width - bottomLeftTile.hotPoint.x
+        val bottomLeftX = bottomLeftTile.width - bottomLeftTile.origin.x
         fill(bottomTile, KRect(
                 area.left + bottomLeftX,
-                area.bottom - bottomTile.hotPoint.y,
-                area.width - bottomLeftX - bottomRightTile.hotPoint.x,
+                area.bottom - bottomTile.origin.y,
+                area.width - bottomLeftX - bottomRightTile.origin.x,
                 bottomTile.height))
 
-        val topLeftY = topLeftTile.height - topLeftTile.hotPoint.y
+        val topLeftY = topLeftTile.height - topLeftTile.origin.y
         fill(leftTile, KRect(
-                area.left - leftTile.hotPoint.x,
+                area.left - leftTile.origin.x,
                 area.top + topLeftY,
                 leftTile.width,
-                area.height - topLeftY - bottomLeftTile.hotPoint.y))
+                area.height - topLeftY - bottomLeftTile.origin.y))
 
-        val topRightY = topRightTile.height - topRightTile.hotPoint.y
+        val topRightY = topRightTile.height - topRightTile.origin.y
         fill(rightTile, KRect(
-                area.right - rightTile.hotPoint.x,
+                area.right - rightTile.origin.x,
                 area.top + topRightY,
                 rightTile.width,
-                area.height - topRightY - bottomRightTile.hotPoint.y))
+                area.height - topRightY - bottomRightTile.origin.y))
+    }
+
+    override fun event(event: KEvent, executor: KTaskExecutor): Boolean {
+        when (event) {
+            is KEventMouseMotion -> {
+                return event.position in area
+            }
+            is KEventMouseButton -> {
+                return event.position in area
+            }
+        }
+        return false
     }
 }

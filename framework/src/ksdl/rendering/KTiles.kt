@@ -17,7 +17,7 @@ class KTiles(val texture: KTexture, val tiles: Map<String, KTile>) : KManaged {
     }
 }
 
-class KTile(val name: String, val texture: KTexture, val rectangle: KRect, val hotPoint: KPoint) {
+class KTile(val name: String, val texture: KTexture, val rectangle: KRect, val origin: KPoint) {
     val width get() = rectangle.width
     val height get() = rectangle.height
 
@@ -26,7 +26,7 @@ class KTile(val name: String, val texture: KTexture, val rectangle: KRect, val h
 
 fun KRenderer.draw(tile: KTile, position: KPoint) = memScoped {
     val srcRect = tile.rectangle
-    val dstRect = SDL_Rect(position.x - tile.hotPoint.x, position.y - tile.hotPoint.y, tile.width, tile.height)
+    val dstRect = SDL_Rect(position.x - tile.origin.x, position.y - tile.origin.y, tile.width, tile.height)
     SDL_RenderCopy(rendererPtr, tile.texture.texturePtr, SDL_Rect(srcRect), dstRect).checkSDLError("SDL_RenderCopy")
 }
 

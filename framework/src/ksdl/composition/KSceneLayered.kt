@@ -23,9 +23,7 @@ class KSceneLayered(val layers: List<KScene>) : KScene {
         }
     }
 
-    override fun event(event: KEvent, executor: KTaskExecutor) {
-        layers.forEach {
-            it.event(event, executor)
-        }
+    override fun event(event: KEvent, executor: KTaskExecutor): Boolean {
+        return layers.asReversed().any { it.event(event, executor) }
     }
 }
