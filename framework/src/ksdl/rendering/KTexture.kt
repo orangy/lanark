@@ -55,20 +55,20 @@ fun KRenderer.draw(texture: KTexture, destinationRect: KRect) = memScoped {
 }
 
 fun KRenderer.fill(texture: KTexture, destinationRect: KRect) = memScoped {
-    SDL_RenderSetClipRect(rendererPtr, SDL_Rect(destinationRect))
-    val rect = alloc<SDL_Rect>().apply {
-        w = texture.width
-        h = texture.height
-    }
+    withClip(destinationRect) {
+        val rect = alloc<SDL_Rect>().apply {
+            w = texture.width
+            h = texture.height
+        }
 
-    for (x in destinationRect.left..destinationRect.right step texture.width) {
-        for (y in destinationRect.top..destinationRect.bottom step texture.height) {
-            rect.x = x
-            rect.y = y
-            SDL_RenderCopy(rendererPtr, texture.texturePtr, null, rect.ptr).checkSDLError("SDL_RenderCopy")
+        for (x in destinationRect.left..destinationRect.right step texture.width) {
+            for (y in destinationRect.top..destinationRect.bottom step texture.height) {
+                rect.x = x
+                rect.y = y
+                SDL_RenderCopy(rendererPtr, texture.texturePtr, null, rect.ptr).checkSDLError("SDL_RenderCopy")
+            }
         }
     }
-    SDL_RenderSetClipRect(rendererPtr, null)
 }
 
 fun KRenderer.draw(texture: KTexture, position: KPoint) = memScoped {

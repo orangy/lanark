@@ -38,6 +38,7 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 
     private val afterHandler: (Unit) -> Unit = {
+        renderer.clip = null
         renderer.clear(KColor.BLACK)
         scene?.render(renderer)
         renderer.present()

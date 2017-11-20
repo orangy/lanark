@@ -39,6 +39,11 @@ fun main(args: Array<String>) {
             tile("border-bottom", 893, 294, 72, 24, 0, 11)
             tile("border-bottom-left", 855, 294, 24, 24, 14, 11)
             tile("border-left", 855, 228, 24, 54, 14, 0)
+
+            tile("button", 12, 126, 285, 54)
+            tile("button-pressed", 12, 126 + 78, 285, 54)
+            tile("button-hover", 12, 126 + 78 * 2, 285, 54)
+            tile("button-disabled", 12, 126 + 78 * 3, 285, 54)
         }
     }
 
@@ -83,8 +88,9 @@ fun main(args: Array<String>) {
     }
 
     val application = KSceneApplication(executor, renderer)
-
-    val dialog = KDialog(KRect(140, 140, 212, 234), uiResources)
+    val dialog = KDialog(KRect(140, 140, 412, 234), uiResources, listOf(
+            KButton(KPoint(20, 20), uiResources),
+            KButton(KPoint(20, 80), uiResources)))
     val welcome = WelcomeScene(resources)
 
     application.scene = KSceneLayered(listOf(welcome, dialog))

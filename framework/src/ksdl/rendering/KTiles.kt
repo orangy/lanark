@@ -31,19 +31,19 @@ fun KRenderer.draw(tile: KTile, position: KPoint) = memScoped {
 }
 
 fun KRenderer.fill(tile: KTile, destinationRect: KRect) = memScoped {
-    SDL_RenderSetClipRect(rendererPtr, SDL_Rect(destinationRect))
-    val rect = alloc<SDL_Rect>().apply {
-        w = tile.width
-        h = tile.height
-    }
-    val srcRect = tile.rectangle
+    withClip(destinationRect) {
+        val rect = alloc<SDL_Rect>().apply {
+            w = tile.width
+            h = tile.height
+        }
+        val srcRect = tile.rectangle
 
-    for (x in destinationRect.left..destinationRect.right step tile.width) {
-        for (y in destinationRect.top..destinationRect.bottom step tile.height) {
-            rect.x = x
-            rect.y = y
-            SDL_RenderCopy(rendererPtr, tile.texture.texturePtr, SDL_Rect(srcRect), rect.ptr).checkSDLError("SDL_RenderCopy")
+        for (x in destinationRect.left..destinationRect.right step tile.width) {
+            for (y in destinationRect.top..destinationRect.bottom step tile.height) {
+                rect.x = x
+                rect.y = y
+                SDL_RenderCopy(rendererPtr, tile.texture.texturePtr, SDL_Rect(srcRect), rect.ptr).checkSDLError("SDL_RenderCopy")
+            }
         }
     }
-    SDL_RenderSetClipRect(rendererPtr, null)
 }

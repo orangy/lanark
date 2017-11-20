@@ -6,7 +6,7 @@ import ksdl.rendering.*
 import ksdl.resources.*
 import ksdl.system.*
 
-class KDialog(val area: KRect, private val resources: KResourceContext) : UIScene() {
+class KDialog(val area: KRect, private val resources: KResourceContext, val controls: List<KControl>) : UIScene() {
     private val background = resources.loadTexture("background")
     private val tiles = resources.loadTiles("elements")
 
@@ -21,6 +21,15 @@ class KDialog(val area: KRect, private val resources: KResourceContext) : UIScen
 
     override fun render(renderer: KRenderer) {
         renderer.renderFrame()
+        renderer.renderControls()
+    }
+
+    private fun KRenderer.renderControls() {
+        withClip(area) {
+            controls.forEach {
+                it.render(area, this)
+            }
+        }
     }
 
     private fun KRenderer.renderFrame() {
@@ -69,5 +78,21 @@ class KDialog(val area: KRect, private val resources: KResourceContext) : UIScen
             }
         }
         return false
+    }
+}
+
+abstract class KControl {
+    abstract fun render(area: KRect, renderer: KRenderer)
+}
+
+class KButton(val position: KPoint, private val resources: KResourceContext) : KControl() {
+    private val tiles = resources.loadTiles("elements")
+    private val button = tiles["button"]
+    private val buttonHover = tiles["button-hover"]
+    private val buttonPressed = tiles["button-pressed"]
+    private val buttonDisabled = tiles["button-disabled"]
+
+    override fun render(area: KRect, renderer: KRenderer) {
+        renderer.draw(button, position.relativeTo(area.origin))
     }
 }

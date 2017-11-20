@@ -19,6 +19,22 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) : 
             logger.system("Resized $this for window #${window.id} to $size")
         }
 
+    var clip: KRect?
+        get() = memScoped {
+            val rect = alloc<SDL_Rect>()
+            SDL_RenderGetClipRect(rendererPtr, rect.ptr)
+            if (rect.w == 0 && rect.h == 0)
+                null
+            else
+                KRect(rect.x, rect.y, rect.w, rect.h)
+        }
+        set(value) = memScoped {
+            if (value == null)
+                SDL_RenderSetClipRect(rendererPtr, null)
+            else
+                SDL_RenderSetClipRect(rendererPtr, SDL_Rect(value))
+        }
+
     init {
         size = window.size
         logger.system("Created $this for window #${window.id}")
@@ -52,4 +68,14 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) : 
     }
 
     override fun toString() = "Renderer ${rendererPtr.rawValue}"
+}
+
+inline fun KRenderer.withClip(rectangle: KRect, body: () -> Unit) {
+    val old = clip
+    try {
+        clip = rectangle
+        body()
+    } finally {
+        clip = old
+    }
 }
