@@ -3,12 +3,18 @@ package ksdl.composition
 import ksdl.diagnostics.*
 import ksdl.events.*
 import ksdl.geometry.*
+import ksdl.metrics.*
 import ksdl.rendering.*
 import ksdl.system.*
 
 class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     private val events = KEvents()
-    private val clock = KClock()
+
+    private val dumpStatsClock = KClock()
+    private val statsClock = KClock()
+    private val updateStats = KMetrics.reservoir("ApplicationTiming.update")
+    private val renderStats = KMetrics.reservoir("ApplicationTiming.render")
+    private val presentStats = KMetrics.reservoir("ApplicationTiming.present")
 
     var scene: KScene? = null
 
@@ -30,7 +36,7 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 
     private val beforeHandler: (Unit) -> Unit = {
-        clock.reset()
+        statsClock.reset()
         if (scene != activeScene) {
             deactivate(activeScene)
             activeScene = scene
@@ -40,14 +46,25 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 
     private val afterHandler: (Unit) -> Unit = {
-        val time1 = clock.elapsedMicros()
+        val time1 = statsClock.elapsedMicros()
         renderer.clip = null
         renderer.clear(KColor.BLACK)
         scene?.render(renderer)
-        val time2 = clock.elapsedMicros()
+        val time2 = statsClock.elapsedMicros()
         renderer.present()
-        val time3 = clock.elapsedMicros()
-        // logger.system("Frame: U:${time1} μs, R:${time2 - time1} μs, P:${time3 - time2} μs")
+        val time3 = statsClock.elapsedMicros()
+
+        updateStats.update(time1)
+        renderStats.update(time2 - time1)
+        presentStats.update(time3 - time2)
+
+        if (dumpStatsClock.elapsedSeconds() > 10) {
+            dumpStatsClock.reset()
+            val meanUpdate = updateStats.snapshot().mean()
+            val meanRender = renderStats.snapshot().mean()
+            val meanPresent = presentStats.snapshot().mean()
+            logger.system("Mean times: U[${KMath.round(meanUpdate, 2)}] R[${KMath.round(meanRender, 2)}] P[${KMath.round(meanPresent, 2)}]")
+        }
     }
 
     fun run() {
