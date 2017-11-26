@@ -14,10 +14,12 @@ class KLoggerConsole : KLogger {
         if (enable) disabledCategorySet.remove(category) else disabledCategorySet.add(category)
     }
 
-    override fun log(category: KLogCategory, message: () -> String) {
+    override fun isEnabled(category: KLogCategory): Boolean = !disabledCategorySet.contains(category)
+
+    override fun log(category: KLogCategory, message: String) {
         if (disabledCategorySet.contains(category)) return
         val color = categoryColor(category)
-        println("${KTime.now()} $color${category.name}: ${message()}$resetColor")
+        println("${KTime.now()} $color${category.name}: $message$resetColor")
     }
 
     private fun categoryColor(category: KLogCategory): String {

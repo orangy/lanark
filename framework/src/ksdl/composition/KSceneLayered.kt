@@ -4,7 +4,7 @@ import ksdl.events.*
 import ksdl.rendering.*
 import ksdl.system.*
 
-class KSceneLayered(val layers: List<KScene>) : KScene {
+class KSceneLayered(val name: String, val layers: List<KScene>) : KScene {
     override fun activate(executor: KTaskExecutor) {
         layers.forEach {
             it.activate(executor)
@@ -26,4 +26,6 @@ class KSceneLayered(val layers: List<KScene>) : KScene {
     override fun event(event: KEvent, executor: KTaskExecutor): Boolean {
         return layers.asReversed().any { it.event(event, executor) }
     }
+
+    override fun toString(): String = "KSceneLayered($name)"
 }

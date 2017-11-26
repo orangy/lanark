@@ -15,11 +15,13 @@ class KMusic(val musicPtr: CPointer<Mix_Music>) : KManaged {
     override fun toString() = "Music ${musicPtr.rawValue}"
 
     fun play(repeat: Int = -1) {
+        logger.system("Playing $this")
         Mix_PlayMusic(musicPtr, repeat)
     }
 
     fun stop() {
         Mix_HaltMusic() // TODO: figure out channels
+        logger.system("Stopped $this")
     }
 
     companion object {

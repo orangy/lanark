@@ -11,14 +11,19 @@ class KClock {
         start = SDL_GetPerformanceCounter()
     }
 
-    fun elapsed(): Long = SDL_GetPerformanceCounter() - start
+    fun elapsedTicks(): Long = SDL_GetPerformanceCounter() - start
 
     fun elapsedMillis(): Long {
-        val elapsed = elapsed() * 1000
+        val elapsed = elapsedTicks() * 1000
+        return (elapsed.toDouble() / frequency).toLong()
+    }
+
+    fun elapsedMicros(): Long {
+        val elapsed = elapsedTicks() * 1000000
         return (elapsed.toDouble() / frequency).toLong()
     }
 
     fun elapsedSeconds(): Long {
-        return (elapsed().toDouble() / frequency).toLong()
+        return (elapsedTicks().toDouble() / frequency).toLong()
     }
 }

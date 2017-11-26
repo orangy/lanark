@@ -14,9 +14,9 @@ class KSignal<T>(val tag: String) {
     }
 
     fun raise(event: T) {
-        handlers.forEach {
+        for (handler in handlers) {
             try {
-                it(event)
+                handler(event)
             } catch (e: Throwable) {
                 logger.error("Error handling $tag event $event: $e")
             }

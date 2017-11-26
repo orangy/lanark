@@ -3,10 +3,9 @@ package ksdl.diagnostics
 // TODO: May be use SDL_Log: https://wiki.libsdl.org/SDL_Log
 
 interface KLogger {
-    fun log(category: KLogCategory, message: String) = log(category) { message }
-    fun log(category: KLogCategory, message: () -> String)
-
+    fun log(category: KLogCategory, message: String)
     fun switch(category: KLogCategory, enable: Boolean)
+    fun isEnabled(category: KLogCategory): Boolean
 }
 
 class KLogCategory(val name: String) {
@@ -20,8 +19,15 @@ class KLogCategory(val name: String) {
 }
 
 object KLoggerNone : KLogger {
-    override fun log(category: KLogCategory, message: () -> String) {}
+    override fun isEnabled(category: KLogCategory): Boolean = false
+    override fun log(category: KLogCategory, message: String) {}
     override fun switch(category: KLogCategory, enable: Boolean) {}
+}
+
+inline fun KLogger.log(category: KLogCategory, message: () -> String) {
+    if (isEnabled(category)) {
+        log(category, message())
+    }
 }
 
 fun KLogger.system(message: String) = log(KLogCategory.System, message)

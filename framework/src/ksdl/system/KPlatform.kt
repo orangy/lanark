@@ -55,7 +55,7 @@ object KPlatform {
         }
 
         logger.info("Initializing MIX v$mixVersion")
-        //Mix_Init(MIX_INIT_OGG).checkSDLError("Mix_Init")
+        Mix_Init(MIX_INIT_OGG).checkSDLError("Mix_Init")
         Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT.toShort(), 1, 4096).checkSDLError("Mix_OpenAudio")
     }
 
@@ -93,10 +93,16 @@ object KPlatform {
         }
         set(value) {
             if (value == null) {
-                SDL_ShowCursor(SDL_DISABLE)
+                val shown = SDL_ShowCursor(SDL_QUERY)
+                if (shown != SDL_DISABLE)
+                    SDL_ShowCursor(SDL_DISABLE)
             } else {
-                SDL_ShowCursor(SDL_ENABLE)
-                SDL_SetCursor(value.cursorPtr)
+                val shown = SDL_ShowCursor(SDL_QUERY)
+                if (shown == SDL_DISABLE)
+                    SDL_ShowCursor(SDL_ENABLE)
+                val oldCursor = SDL_GetCursor()
+                if (oldCursor != value.cursorPtr)
+                    SDL_SetCursor(value.cursorPtr)
             }
         }
 

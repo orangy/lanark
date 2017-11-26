@@ -8,6 +8,7 @@ import ksdl.system.*
 
 class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     private val events = KEvents()
+    private val clock = KClock()
 
     var scene: KScene? = null
 
@@ -29,6 +30,7 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 
     private val beforeHandler: (Unit) -> Unit = {
+        clock.reset()
         if (scene != activeScene) {
             deactivate(activeScene)
             activeScene = scene
@@ -38,10 +40,14 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
     }
 
     private val afterHandler: (Unit) -> Unit = {
+        val time1 = clock.elapsedMicros()
         renderer.clip = null
         renderer.clear(KColor.BLACK)
         scene?.render(renderer)
+        val time2 = clock.elapsedMicros()
         renderer.present()
+        val time3 = clock.elapsedMicros()
+        // logger.system("Frame: U:${time1} μs, R:${time2 - time1} μs, P:${time3 - time2} μs")
     }
 
     fun run() {

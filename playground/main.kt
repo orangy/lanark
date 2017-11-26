@@ -85,7 +85,9 @@ fun main(args: Array<String>) {
             window.title = "$title / FPS: $frames"
             frames = 0
         }
+
     }
+    logger.switch(KEvents.LogCategory, false)
 
     val application = KSceneApplication(executor, renderer)
     val dialog = KDialog(KRect(140, 140, 412, 234), uiResources, listOf(
@@ -93,7 +95,7 @@ fun main(args: Array<String>) {
             KButton(KPoint(20, 80), uiResources)))
     val welcome = WelcomeScene(resources)
 
-    application.scene = KSceneLayered(listOf(welcome, dialog))
+    application.scene = KSceneLayered("main", listOf(welcome, dialog))
 
     application.run()
 

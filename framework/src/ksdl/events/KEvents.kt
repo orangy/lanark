@@ -19,38 +19,38 @@ class KEvents {
     }
 
     private fun processEvent(event: SDL_Event) {
-        val eventName = KEventNames.events[event.type]
         when (event.type) {
             SDL_QUIT,
             SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
             SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> {
                 val kevent = KEventApp.createEvent(event)
-                logger.event(kevent.toString())
+                logger.event { kevent.toString() }
                 application.raise(kevent)
             }
             SDL_WINDOWEVENT -> {
                 val kevent = KEventWindow.createEvent(event)
-                logger.event(kevent.toString())
+                logger.event { kevent.toString() }
                 window.raise(kevent)
             }
             SDL_KEYUP, SDL_KEYDOWN -> {
                 val kevent = KEventKey.createEvent(event)
-                logger.event(kevent.toString())
+                logger.event { kevent.toString() }
                 keyboard.raise(kevent)
             }
             SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> {
                 val kevent = KEventMouse.createEvent(event)
-                logger.event(kevent.toString())
+                logger.event { kevent.toString() }
                 mouse.raise(kevent)
             }
             SDL_FINGERMOTION, SDL_FINGERDOWN, SDL_FINGERUP -> {
                 // ignore event and don't log it
             }
             else -> {
+                val eventName = KEventNames.events[event.type]
                 if (eventName == null)
-                    logger.event("Unknown event eventType: ${event.type}")
+                    logger.event { "Unknown event: ${event.type}" }
                 else
-                    logger.event(eventName.toString())
+                    logger.event { eventName.toString() }
             }
         }
     }
@@ -60,4 +60,4 @@ class KEvents {
     }
 }
 
-fun KLogger.event(message: String) = log(KEvents.LogCategory, message)
+fun KLogger.event(message: () -> String) = log(KEvents.LogCategory, message)
