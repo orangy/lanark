@@ -5,5 +5,5 @@ cmake-build*
 !.idea/vcs.xml
 !.idea/dictionaries
 !.idea/dictionaries/*
-out
+bin
 *.iml

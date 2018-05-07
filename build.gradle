@@ -33,16 +33,19 @@ konanArtifacts {
         libraries {
             artifact 'sdl2'
         }
-        srcFiles fileTree('framework/src')
-        //testFiles fileTree('framework/test')
+        // srcFiles fileTree('framework/src')
+        srcDir 'framework/src'
+        // testFiles fileTree('framework/test')
     }
 
     program ('playground') {
+        baseDir 'bin'
+
         libraries {
             artifact 'ksdl'
         }
 
-        srcFiles fileTree('playground')
+        srcDir 'playground'
 
         target 'macbook', {
             linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
