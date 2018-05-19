@@ -1,6 +1,6 @@
 package ksdl.metrics
 
-// Metrics framework loosely modeled after dropwizard's
+// Metrics ksdl loosely modeled after dropwizard's
 object KMetrics {
     private val reservoirs = mutableMapOf<String, KMetricReservoir>()
 

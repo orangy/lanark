@@ -7,22 +7,22 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:${project.property('konan.plugin.version')}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.41"
+        classpath files("/Users/orangy/Projects/kotlin-native/tools/kotlin-native-gradle-plugin/build/libs/kotlin-native-gradle-plugin-0.8-dev.jar")
     }
 }
 
 apply plugin: 'konan'
 
-konan.targets = ['macbook']
+konan.targets = ['macos']
 
 def konanUserDir = System.getenv("KONAN_DATA_DIR") ?: "${System.getProperty("user.home")}/.konan"
 
 konanArtifacts {
-    interop ('sdl2') {
-        defFile 'c_interop/sdl2.def'
+    interop('sdl2') {
         packageName 'sdl2'
 
-        target 'macbook', {
+        target 'macos', {
             includeDirs '/usr/local/opt/sdl2/include/SDL2'
             includeDirs '/usr/local/opt/sdl2_image/include/SDL2'
             includeDirs '/usr/local/opt/sdl2_mixer/include/SDL2'
@@ -34,20 +34,17 @@ konanArtifacts {
             artifact 'sdl2'
         }
         // srcFiles fileTree('framework/src')
-        srcDir 'framework/src'
         // testFiles fileTree('framework/test')
     }
 
-    program ('playground') {
+    program('playground') {
         baseDir 'bin'
 
         libraries {
             artifact 'ksdl'
         }
 
-        srcDir 'playground'
-
-        target 'macbook', {
+        target 'macos', {
             linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
         }
     }
@@ -57,7 +54,7 @@ compileKonan {
     doLast {
         konanArtifacts.playground.forEach() { task ->
             copy {
-                from 'resources'
+                from 'sample/resources'
                 into task.artifact.parentFile
             }
         }
