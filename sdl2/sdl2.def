@@ -1,7 +1,8 @@
 headers = SDL.h SDL_image.h SDL_mixer.h
 entryPoint = SDL_main
 excludedFunctions = Mix_HasMusicDecoder
-// headerFilter = SDL*
+headerFilter = SDL*
+depends = posix
 
 compilerOpts = -D_POSIX_SOURCE 
 compilerOpts.osx =
