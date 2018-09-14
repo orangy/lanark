@@ -1,45 +1,29 @@
-plugins {
-    id 'org.jetbrains.kotlin.konan' version '0.8.2'
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven {
+            url 'https://dl.bintray.com/kotlin/kotlin-dev/'
+        }
+    }
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.0-rc-6'
+    }
 }
 
-konan.targets = ['macos']
+apply plugin: 'kotlin-multiplatform'
 
-def konanUserDir = System.getenv("KONAN_DATA_DIR") ?: "${System.getProperty("user.home")}/.konan"
-
-konanArtifacts {
-    interop('sdl2') {
-        packageName 'sdl2'
-
-        target 'macos', {
-            defFile = new File("sdl2/sdl2.def")
-            includeDirs '/usr/local/opt/sdl2/include/SDL2'
-            includeDirs '/usr/local/opt/sdl2_image/include/SDL2'
-            includeDirs '/usr/local/opt/sdl2_mixer/include/SDL2'
-        }
-    }
-
-    library('ksdl') {
-        libraries {
-            artifact 'sdl2'
-        }
-        srcDir 'ksdl/src'
-        //testFiles fileTree('framework/test')
-    }
-
-    program('playground') {
-        baseDir 'bin'
-        srcDir 'playground/src'
-
-        libraries {
-            artifact 'ksdl'
-        }
-
-        target 'macos', {
-            linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven {
+            url 'https://dl.bintray.com/kotlin/kotlin-dev/'
         }
     }
 }
 
+/*
 compileKonan {
     doLast {
         konanArtifacts.playground.forEach() { task ->
@@ -49,4 +33,4 @@ compileKonan {
             }
         }
     }
-}
+}*/

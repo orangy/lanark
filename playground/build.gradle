@@ -1,0 +1,23 @@
+apply plugin: 'kotlin-multiplatform'
+
+kotlin {
+    targets {
+        fromPreset(presets.macosX64, 'macos') {
+            compilations.main {
+                outputKinds = [EXECUTABLE]
+                // output DIR "bin"
+            }
+            compilations.all {
+                linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
+            }
+        }
+    }
+    sourceSets {
+        macosMain {
+            kotlin.srcDirs += "src"
+            dependencies {
+                implementation project(":ksdl")
+            }
+        }
+    }
+}

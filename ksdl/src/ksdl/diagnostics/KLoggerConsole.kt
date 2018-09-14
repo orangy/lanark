@@ -7,7 +7,7 @@ class KLoggerConsole : KLogger {
     private val colorMap = mutableMapOf<KLogCategory, String>()
 
     fun color(category: KLogCategory, color: String) {
-        colorMap.put(category, color)
+        colorMap[category] = color
     }
 
     override fun switch(category: KLogCategory, enable: Boolean) {
@@ -27,7 +27,7 @@ class KLoggerConsole : KLogger {
     }
 
     private companion object {
-        val resetColor = "\u001B[0m"
+        const val resetColor = "\u001B[0m"
     }
 }
 
