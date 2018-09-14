@@ -7,7 +7,7 @@ import ksdl.rendering.*
 import sdl2.*
 
 class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
-    val id: Int get() = SDL_GetWindowID(windowPtr)
+    val id: UInt get() = SDL_GetWindowID(windowPtr)
 
     override fun release() {
         KPlatform.unregisterWindow(id, this)
@@ -26,7 +26,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
 
     fun setWindowMode(mode: Mode) {
         SDL_SetWindowFullscreen(windowPtr, when (mode) {
-            Mode.Windowed -> 0
+            Mode.Windowed -> 0u
             Mode.FullScreen -> SDL_WINDOW_FULLSCREEN
             Mode.FullScreenDesktop -> SDL_WINDOW_FULLSCREEN_DESKTOP
         })
@@ -86,7 +86,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
         }
 
 
-    fun createRenderer(rendererFlags: Int = SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC): KRenderer {
+    fun createRenderer(rendererFlags: UInt = SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC): KRenderer {
         val renderer = SDL_CreateRenderer(windowPtr, -1, rendererFlags).checkSDLError("SDL_CreateRenderer")
         return KRenderer(this, renderer)
     }
@@ -105,7 +105,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     override fun toString() = "Window #$id ${windowPtr.rawValue}"
 
     companion object {
-        fun create(title: String, width: Int, height: Int, x: Int = SDL_WINDOWPOS_UNDEFINED, y: Int = SDL_WINDOWPOS_UNDEFINED, windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
+        fun create(title: String, width: Int, height: Int, x: Int = SDL_WINDOWPOS_UNDEFINED.toInt(), y: Int = SDL_WINDOWPOS_UNDEFINED.toInt(), windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
             val window = SDL_CreateWindow(title, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
             return KWindow(window).also {
                 KPlatform.registerWindow(it.id, it)

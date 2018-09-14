@@ -54,11 +54,13 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
         renderer.present()
         val time3 = statsClock.elapsedMicros()
 
+/*
         updateStats.update(time1)
         renderStats.update(time2 - time1)
         presentStats.update(time3 - time2)
+*/
 
-        if (dumpStatsClock.elapsedSeconds() > 10) {
+        if (dumpStatsClock.elapsedSeconds() > 10u) {
             dumpStatsClock.reset()
             val meanUpdate = updateStats.snapshot().mean()
             val meanRender = renderStats.snapshot().mean()

@@ -16,7 +16,7 @@ object KPlatform {
     private var refreshRate: Int = 0
     private var cpus: Int = 0
     private var memorySize: Int = 0
-    private val windows = mutableMapOf<Int, KWindow>()
+    private val windows = mutableMapOf<UInt, KWindow>()
 
     init {
         version = memScoped {
@@ -55,8 +55,8 @@ object KPlatform {
         }
 
         logger.info("Initializing MIX v$mixVersion")
-        Mix_Init(MIX_INIT_OGG).checkSDLError("Mix_Init")
-        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT.toShort(), 1, 4096).checkSDLError("Mix_OpenAudio")
+        Mix_Init(MIX_INIT_OGG.toInt()).checkSDLError("Mix_Init")
+        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 1, 4096).checkSDLError("Mix_OpenAudio")
     }
 
     private fun enabledSubsystems(): List<String> = mutableListOf<String>().apply {
@@ -76,13 +76,13 @@ object KPlatform {
         logger.info("Quit SDL")
     }
 
-    val isVideoEnabled get() = SDL_WasInit(SDL_INIT_VIDEO) != 0
-    val isAudioEnabled get() = SDL_WasInit(SDL_INIT_AUDIO) != 0
-    val isTimerEnabled get() = SDL_WasInit(SDL_INIT_TIMER) != 0
-    val isEventsEnabled get() = SDL_WasInit(SDL_INIT_EVENTS) != 0
-    val isControllerEnabled get() = SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 0
-    val isJoystickEnabled get() = SDL_WasInit(SDL_INIT_JOYSTICK) != 0
-    val isHapticEnabled get() = SDL_WasInit(SDL_INIT_HAPTIC) != 0
+    val isVideoEnabled get() = SDL_WasInit(SDL_INIT_VIDEO) != 0u
+    val isAudioEnabled get() = SDL_WasInit(SDL_INIT_AUDIO) != 0u
+    val isTimerEnabled get() = SDL_WasInit(SDL_INIT_TIMER) != 0u
+    val isEventsEnabled get() = SDL_WasInit(SDL_INIT_EVENTS) != 0u
+    val isControllerEnabled get() = SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 0u
+    val isJoystickEnabled get() = SDL_WasInit(SDL_INIT_JOYSTICK) != 0u
+    val isHapticEnabled get() = SDL_WasInit(SDL_INIT_HAPTIC) != 0u
 
     var activeCursor: KCursor?
         get() {
@@ -106,7 +106,7 @@ object KPlatform {
             }
         }
 
-    fun sleep(millis: Int) {
+    fun sleep(millis: UInt) {
         SDL_Delay(millis)
     }
 
@@ -126,24 +126,24 @@ object KPlatform {
             SDL_DisableScreenSaver()
     }
 
-    internal fun registerWindow(windowID: Int, window: KWindow) {
+    internal fun registerWindow(windowID: UInt, window: KWindow) {
         windows[windowID] = window
     }
 
-    internal fun unregisterWindow(windowID: Int, window: KWindow) {
+    internal fun unregisterWindow(windowID: UInt, window: KWindow) {
         val registered = windows[windowID]
         require(registered == window) { "Window #$windowID must be unregistered with the same instance" }
         windows.remove(windowID)
     }
 
-    fun findWindow(windowID: Int) = windows[windowID]
+    fun findWindow(windowID: UInt) = windows[windowID]
 
     enum class MessageBoxIcon {
         Information, Warning, Error
     }
 
     class Configuration(val platform: String, val cpus: Int, val version: KVersion) {
-        internal var flags = 0
+        internal var flags : UInt = 0u
         var logger: KLogger = KLoggerNone
 
         fun enableEverything() {

@@ -21,3 +21,12 @@ kotlin {
         }
     }
 }
+
+afterEvaluate {
+    kotlin.targets.macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
+        copy {
+            from 'playground/resources'
+            into task.outputFile.get().parent
+        }
+    }
+}

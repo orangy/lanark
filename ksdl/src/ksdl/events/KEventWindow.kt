@@ -15,7 +15,7 @@ abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected v
             }
 
             val windowEvent = sdlEvent.window
-            val eventKind = SDL_WindowEventID.byValue(windowEvent.event.toInt())
+            val eventKind = SDL_WindowEventID.byValue(windowEvent.event.toUInt())
             val kevent = when (eventKind) {
                 SDL_WindowEventID.SDL_WINDOWEVENT_NONE -> throw KPlatformException("SDL_WINDOWEVENT_NONE shouldn't be sent")
                 SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN -> KEventWindowShown(windowEvent)
@@ -35,7 +35,7 @@ abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected v
                 SDL_WindowEventID.SDL_WINDOWEVENT_TAKE_FOCUS -> KEventWindowOfferedFocus(windowEvent)
                 SDL_WindowEventID.SDL_WINDOWEVENT_HIT_TEST -> KEventWindowHitTest(windowEvent)
             }
-            if (kevent.sdlWindowEventType.value != windowEvent.event.toInt())
+            if (kevent.sdlWindowEventType.value != windowEvent.event.toUInt())
                 logger.error("Posted window event ${kevent.sdlWindowEventType.name} is not the same as in created KWindowEvent instance")
             return kevent
         }

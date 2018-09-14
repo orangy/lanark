@@ -17,7 +17,7 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
 
     var blendMode: BlendMode
         get() = memScoped {
-            val mode = alloc<IntVar>()
+            val mode = alloc<UIntVar>()
             SDL_GetSurfaceBlendMode(surfacePtr, mode.ptr).checkSDLError("SDL_GetSurfaceBlendMode")
             when (mode.value) {
                 SDL_BLENDMODE_NONE -> BlendMode.None
@@ -67,7 +67,7 @@ class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
     }
 
     private fun KColor.toRawColor(): Uint32 {
-        return SDL_MapRGBA(surfacePtr.pointed.format, red.toByte(), green.toByte(), blue.toByte(), alpha.toByte())
+        return SDL_MapRGBA(surfacePtr.pointed.format, red, green, blue, alpha)
     }
 
     override fun toString() = "Surface ${surfacePtr.rawValue}"

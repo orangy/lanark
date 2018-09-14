@@ -22,8 +22,8 @@ abstract class KEventMouseButton(val sdlEvent: SDL_MouseButtonEvent) : KEventMou
     val timestamp get() = sdlEvent.timestamp
     val touch get() = sdlEvent.which == SDL_TOUCH_MOUSEID
     val clicks get() = sdlEvent.clicks
-    val button get() = KMouseButton.fromValue(sdlEvent.button.toInt())
-    val state get() = KButtonState.fromValue(sdlEvent.state.toInt())
+    val button get() = KMouseButton.fromValue(sdlEvent.button)
+    val state get() = KButtonState.fromValue(sdlEvent.state)
     val x get() = sdlEvent.x
     val y get() = sdlEvent.y
 
@@ -39,7 +39,7 @@ class KEventMouseMotion(val sdlEvent: SDL_MouseMotionEvent) : KEventMouse(sdlEve
     val window get() = KPlatform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
     val touch get() = sdlEvent.which == SDL_TOUCH_MOUSEID
-    val state get() = KButtonState.fromValue(sdlEvent.state)
+    val state get() = KButtonState.fromValue(sdlEvent.state.toUByte())
     val x get() = sdlEvent.x
     val y get() = sdlEvent.y
     val deltaX get() = sdlEvent.xrel
@@ -66,7 +66,7 @@ enum class KMouseButton {
     Left, Middle, Right, X1, X2;
 
     companion object {
-        fun fromValue(value: Int) = when (value) {
+        fun fromValue(value: UByte) = when (value.toInt()) {
             SDL_BUTTON_LEFT -> Left
             SDL_BUTTON_RIGHT -> Right
             SDL_BUTTON_MIDDLE -> Middle

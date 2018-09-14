@@ -8,7 +8,7 @@ import ksdl.system.*
 abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdlEvent.type) {
     val window get() = KPlatform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
-    val state get() = KButtonState.fromValue(sdlEvent.state.toInt())
+    val state get() = KButtonState.fromValue(sdlEvent.state)
     val repeat get() = sdlEvent.repeat.toInt() != 0
     val keyCode get() = sdlEvent.keysym.sym
     val scanCode get() = sdlEvent.keysym.scancode
@@ -35,7 +35,7 @@ enum class KButtonState {
     Pressed, Released;
 
     companion object {
-        fun fromValue(value: Int) = when (value) {
+        fun fromValue(value: UByte) = when (value.toInt()) {
             SDL_PRESSED -> Pressed
             SDL_RELEASED -> Released
             else -> throw KPlatformException("Unknown key state: $value")

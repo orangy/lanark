@@ -47,7 +47,7 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) : 
     }
 
     fun color(color: KColor) {
-        SDL_SetRenderDrawColor(rendererPtr, color.red.toByte(), color.green.toByte(), color.blue.toByte(), color.alpha.toByte()).checkSDLError("SDL_SetRenderDrawColor")
+        SDL_SetRenderDrawColor(rendererPtr, color.red, color.green, color.blue, color.alpha).checkSDLError("SDL_SetRenderDrawColor")
     }
 
     fun scale(scale: Float) {
