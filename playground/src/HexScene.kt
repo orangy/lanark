@@ -63,7 +63,7 @@ class HexScene(resources: KResourceContext) : KScene {
     override fun event(event: KEvent, executor: KTaskExecutor): Boolean {
         when (event) {
             is KEventKeyDown -> {
-                when (event.keyCode.toInt()) {
+                when (event.keyCode.toUInt()) {
                     SDLK_UP -> scale += 0.1f
                     SDLK_DOWN -> scale -= 0.1f
                 }
