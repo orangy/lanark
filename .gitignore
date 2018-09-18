@@ -1,4 +1,3 @@
-cmake-build*
 .idea/*
 !.idea/runConfigurations
 !.idea/runConfigurations/*
@@ -7,3 +6,4 @@ cmake-build*
 !.idea/dictionaries/*
 bin
 *.iml
+build

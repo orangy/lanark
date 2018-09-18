@@ -26,5 +26,6 @@ kotlin {
             kotlin.srcDirs += "test"
         }
     }
-
+    
+    targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget).all { it.compilations.all { it.extraOpts('-Xuse-experimental=kotlin.ExperimentalUnsignedTypes') } }
 }

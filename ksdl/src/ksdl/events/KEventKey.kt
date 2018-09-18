@@ -9,7 +9,7 @@ abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdl
     val window get() = KPlatform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
     val state get() = KButtonState.fromValue(sdlEvent.state)
-    val repeat get() = sdlEvent.repeat.toInt() != 0
+    val repeat get() = sdlEvent.repeat != 0.toUByte()
     val keyCode get() = sdlEvent.keysym.sym
     val scanCode get() = sdlEvent.keysym.scancode
     val modifiers get() = sdlEvent.keysym.mod

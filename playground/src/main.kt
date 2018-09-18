@@ -80,7 +80,7 @@ fun main(args: Array<String>) {
     executor.after.subscribe {
         frames++
         val seconds = clock.elapsedMillis()
-        if (seconds > 1000) {
+        if (seconds > 1000u) {
             clock.reset()
             window.title = "$title / FPS: $frames"
             frames = 0
