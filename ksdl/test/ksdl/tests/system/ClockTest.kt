@@ -3,7 +3,6 @@ package ksdl.tests.system
 import ksdl.system.*
 import sdl2.*
 import kotlin.test.*
-import kotlin.test.Test
 
 class ClockTest {
     @Test

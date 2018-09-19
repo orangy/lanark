@@ -24,6 +24,9 @@ kotlin {
         }
         macosTest {
             kotlin.srcDirs += "test"
+            dependencies { // Workaround for a problem that cinterop is not visible from tests
+                api project(':ksdl')
+            }
         }
     }
     

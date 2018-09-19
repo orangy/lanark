@@ -3,10 +3,10 @@ buildscript {
         mavenLocal()
         jcenter()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-dev/' }
-        maven { url 'https://teamcity.jetbrains.com/guestAuth/repository/download/Kotlin_dev_CompilerAllPlugins/1622966:id/maven' }
+        maven { url 'https://teamcity.jetbrains.com/guestAuth/repository/download/Kotlin_130_CompilerAllPlugins/1625530:id/maven' }
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.20-dev-244'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.0-rc-50'
     }
 }
 
@@ -16,7 +16,7 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
-        maven { url 'https://teamcity.jetbrains.com/guestAuth/repository/download/Kotlin_dev_CompilerAllPlugins/1622966:id/maven' }
+        maven { url 'https://teamcity.jetbrains.com/guestAuth/repository/download/Kotlin_130_CompilerAllPlugins/1625530:id/maven' }
         maven { url 'https://dl.bintray.com/kotlin/kotlin-dev/' }
     }
 }
