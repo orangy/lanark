@@ -12,9 +12,9 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
 
     private val dumpStatsClock = KClock()
     private val statsClock = KClock()
-    private val updateStats = KMetrics.reservoir("ApplicationTiming.update")
-    private val renderStats = KMetrics.reservoir("ApplicationTiming.render")
-    private val presentStats = KMetrics.reservoir("ApplicationTiming.present")
+    private val updateStats = platform.metrics.reservoir("ApplicationTiming.update")
+    private val renderStats = platform.metrics.reservoir("ApplicationTiming.render")
+    private val presentStats = platform.metrics.reservoir("ApplicationTiming.present")
 
     var scene: KScene? = null
 
@@ -54,11 +54,9 @@ class KSceneApplication(val executor: KTaskExecutor, val renderer: KRenderer) {
         renderer.present()
         val time3 = statsClock.elapsedMicros()
 
-/*
-        updateStats.update(time1)
-        renderStats.update(time2 - time1)
-        presentStats.update(time3 - time2)
-*/
+        updateStats.update(time1.toLong())
+        renderStats.update((time2 - time1).toLong())
+        presentStats.update((time3 - time2).toLong())
 
         if (dumpStatsClock.elapsedSeconds() > 10u) {
             dumpStatsClock.reset()

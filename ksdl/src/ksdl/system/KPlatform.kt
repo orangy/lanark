@@ -3,35 +3,45 @@ package ksdl.system
 import kotlinx.cinterop.*
 import kotlinx.cinterop.CPointer
 import ksdl.diagnostics.*
+import ksdl.diagnostics.KLogger
+import ksdl.diagnostics.KLoggerNone
 import ksdl.rendering.KCursor
 import sdl2.*
+import kotlin.collections.List
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
-object KPlatform {
+private lateinit var platformInstance: KPlatform
+
+val platform get() = platformInstance
+
+class KPlatform(configure: Configuration.() -> Unit) {
+    val logger: KLogger
+
     private val version: KVersion
     private val mixVersion: KVersion
-    private lateinit var platform: String
-    lateinit var logger: KLogger
-    private var displayWidth: Int = 0
-    private var displayHeight: Int = 0
-    private var refreshRate: Int = 0
-    private var cpus: Int = 0
-    private var memorySize: Int = 0
+    private val platform: String
+    private val displayWidth: Int
+    private val displayHeight: Int
+    private val refreshRate: Int
+    private val cpus: Int
+    private val memorySize: Int
     private val windows = mutableMapOf<UInt, KWindow>()
 
     init {
         version = memScoped {
             val version = alloc<SDL_version>()
             SDL_GetVersion(version.ptr)
-            KVersion(version.major.toInt(), version.minor.toInt(), version.patch.toInt(), SDL_GetRevision()?.toKString() ?: "null")
+            KVersion(version.major.toInt(), version.minor.toInt(), version.patch.toInt(), SDL_GetRevision()?.toKString()
+                    ?: "null")
         }
         mixVersion = memScoped {
             val mixApiVersion = Mix_Linked_Version().checkSDLError("Mix_Linked_Version")
             val version = mixApiVersion.pointed
             KVersion(version.major.toInt(), version.minor.toInt(), version.patch.toInt())
         }
-    }
 
-    fun init(configure: Configuration.() -> Unit) {
         platform = SDL_GetPlatform()!!.toKString()
         cpus = SDL_GetCPUCount()
         memorySize = SDL_GetSystemRAM()
@@ -44,15 +54,17 @@ object KPlatform {
         SDL_Init(configuration.flags).checkSDLError("SDL_Init")
         logger.info("Enabled SDL subsystems: ${enabledSubsystems()}")
 
-        memScoped {
+        val displayMode = memScoped {
             val displayMode = alloc<SDL_DisplayMode>()
             // TODO: Support multiply displays
             SDL_GetCurrentDisplayMode(0, displayMode.ptr.reinterpret()).checkSDLError("SDL_GetCurrentDisplayMode")
-            displayWidth = displayMode.w
-            displayHeight = displayMode.h
-            refreshRate = displayMode.refresh_rate
-            logger.info("Display mode: ${displayWidth}x${displayHeight}, $refreshRate Hz")
+            logger.info("Display mode: ${displayMode.w}x${displayMode.h}, ${displayMode.refresh_rate} Hz")
+            displayMode
         }
+
+        displayWidth = displayMode.w
+        displayHeight = displayMode.h
+        refreshRate = displayMode.refresh_rate
 
         logger.info("Initializing MIX v$mixVersion")
         Mix_Init(MIX_INIT_OGG.toInt()).checkSDLError("Mix_Init")
@@ -143,7 +155,7 @@ object KPlatform {
     }
 
     class Configuration(val platform: String, val cpus: Int, val version: KVersion) {
-        internal var flags : UInt = 0u
+        internal var flags: UInt = 0u
         var logger: KLogger = KLoggerNone
 
         fun enableEverything() {
@@ -178,7 +190,13 @@ object KPlatform {
             flags = flags or SDL_INIT_VIDEO
         }
     }
+
+    companion object {
+        fun init(configure: Configuration.() -> Unit) {
+            platformInstance = KPlatform(configure)
+        }
+    }
 }
 
 val logger: KLogger
-    inline get() = KPlatform.logger
+    inline get() = platform.logger

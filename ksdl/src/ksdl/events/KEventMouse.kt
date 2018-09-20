@@ -18,7 +18,7 @@ abstract class KEventMouse(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {
 }
 
 abstract class KEventMouseButton(val sdlEvent: SDL_MouseButtonEvent) : KEventMouse(sdlEvent.type) {
-    val window get() = KPlatform.findWindow(sdlEvent.windowID)
+    val window get() = platform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
     val touch get() = sdlEvent.which == SDL_TOUCH_MOUSEID
     val clicks get() = sdlEvent.clicks
@@ -36,7 +36,7 @@ class KEventMouseDown(sdlEvent: SDL_MouseButtonEvent) : KEventMouseButton(sdlEve
 class KEventMouseUp(sdlEvent: SDL_MouseButtonEvent) : KEventMouseButton(sdlEvent)
 
 class KEventMouseMotion(val sdlEvent: SDL_MouseMotionEvent) : KEventMouse(sdlEvent.type) {
-    val window get() = KPlatform.findWindow(sdlEvent.windowID)
+    val window get() = platform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
     val touch get() = sdlEvent.which == SDL_TOUCH_MOUSEID
     val state get() = KButtonState.fromValue(sdlEvent.state.toUByte())
@@ -52,7 +52,7 @@ class KEventMouseMotion(val sdlEvent: SDL_MouseMotionEvent) : KEventMouse(sdlEve
 }
 
 class KEventMouseWheel(val sdlEvent: SDL_MouseWheelEvent) : KEventMouse(sdlEvent.type) {
-    val window get() = KPlatform.findWindow(sdlEvent.windowID)
+    val window get() = platform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
     val touch get() = sdlEvent.which == SDL_TOUCH_MOUSEID
     val scrollX get() = sdlEvent.x

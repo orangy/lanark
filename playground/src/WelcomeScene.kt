@@ -16,7 +16,7 @@ class WelcomeScene(private val resources: KResourceContext) : KScene {
     private val itemRect = KRect(itemPosition, item.size)
 
     override fun activate(executor: KTaskExecutor) {
-        KPlatform.activeCursor = normalCursor
+        platform.activeCursor = normalCursor
         //backgroundMusic.play()
     }
 
@@ -45,9 +45,9 @@ class WelcomeScene(private val resources: KResourceContext) : KScene {
         when (event) {
             is KEventMouseMotion -> {
                 if (event.position in itemRect) {
-                    KPlatform.activeCursor = hotCursor
+                    platform.activeCursor = hotCursor
                 } else {
-                    KPlatform.activeCursor = normalCursor
+                    platform.activeCursor = normalCursor
                 }
             }
         }

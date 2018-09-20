@@ -25,8 +25,17 @@ kotlin {
 afterEvaluate {
     kotlin.targets.macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
         copy {
-            from 'playground/resources'
+            from file('resources')
             into task.outputFile.get().parent
         }
     }
+}
+
+afterEvaluate {
+    def linkTask = kotlin.targets.macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG")
+    task run(type: Exec) {
+        def outputArtifact = linkTask.outputFile.get()
+        commandLine "$outputArtifact"
+    }
+    tasks["run"].dependsOn(linkTask)
 }

@@ -6,7 +6,7 @@ import ksdl.diagnostics.*
 import ksdl.system.*
 
 abstract class KEventKey(protected val sdlEvent: SDL_KeyboardEvent) : KEvent(sdlEvent.type) {
-    val window get() = KPlatform.findWindow(sdlEvent.windowID)
+    val window get() = platform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
     val state get() = KButtonState.fromValue(sdlEvent.state)
     val repeat get() = sdlEvent.repeat != 0.toUByte()

@@ -10,7 +10,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     val id: UInt get() = SDL_GetWindowID(windowPtr)
 
     override fun release() {
-        KPlatform.unregisterWindow(id, this)
+        platform.unregisterWindow(id, this)
         val captureId = id
         SDL_DestroyWindow(windowPtr)
         logger.system("Released window #$captureId ${windowPtr.rawValue}")
@@ -92,7 +92,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     }
 
     fun messageBox(title: String, message: String, icon: KPlatform.MessageBoxIcon) {
-        KPlatform.messageBox(title, message, icon, windowPtr)
+        platform.messageBox(title, message, icon, windowPtr)
     }
 
 
@@ -108,7 +108,7 @@ class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
         fun create(title: String, width: Int, height: Int, x: Int = SDL_WINDOWPOS_UNDEFINED.toInt(), y: Int = SDL_WINDOWPOS_UNDEFINED.toInt(), windowFlags: SDL_WindowFlags = SDL_WINDOW_SHOWN): KWindow {
             val window = SDL_CreateWindow(title, x, y, width, height, windowFlags).checkSDLError("SDL_CreateWindow")
             return KWindow(window).also {
-                KPlatform.registerWindow(it.id, it)
+                platform.registerWindow(it.id, it)
                 logger.system("Created $it")
             }
         }

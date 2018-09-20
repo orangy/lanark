@@ -9,7 +9,7 @@ class KVideo : KManaged {
 
     companion object {
         fun load(path: String, fileSystem: KFileSystem): KVideo {
-            return fileSystem.open(path).use { file ->
+            return fileSystem.open(path).use {
                 KVideo().also {
                     logger.system("Loaded $it from $path at $fileSystem")
                 }

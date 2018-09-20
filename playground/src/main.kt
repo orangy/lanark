@@ -102,6 +102,6 @@ fun main(args: Array<String>) {
     uiResources.release()
     renderer.release()
     window.release()
-    KPlatform.quit()
+    platform.quit()
 }
 

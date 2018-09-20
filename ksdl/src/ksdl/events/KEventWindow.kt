@@ -5,7 +5,7 @@ import ksdl.system.*
 import sdl2.*
 
 abstract class KEventWindow(protected val sdlEvent: SDL_WindowEvent, protected val sdlWindowEventType: SDL_WindowEventID) : KEvent(sdlEvent.type) {
-    val window get() = KPlatform.findWindow(sdlEvent.windowID)
+    val window get() = platform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
 
     companion object {

@@ -9,7 +9,7 @@ class KData : KManaged {
 
     companion object {
         fun load(path: String, fileSystem: KFileSystem): KData {
-            return fileSystem.open(path).use { file ->
+            return fileSystem.open(path).use {
                 KData().also {
                     logger.system("Loaded $it from $path at $fileSystem")
                 }
