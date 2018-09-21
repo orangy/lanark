@@ -8,6 +8,9 @@ kotlin {
                 // output DIR "bin"
             }
             compilations.all {
+                tasks.getByName(compilation.compileKotlinTaskName).kotlinOptions {
+                    freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
+                }
                 linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
             }
         }
@@ -34,8 +37,8 @@ afterEvaluate {
 afterEvaluate {
     def linkTask = kotlin.targets.macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG")
     task run(type: Exec) {
+        dependsOn(linkTask)
         def outputArtifact = linkTask.outputFile.get()
         commandLine "$outputArtifact"
     }
-    tasks["run"].dependsOn(linkTask)
 }

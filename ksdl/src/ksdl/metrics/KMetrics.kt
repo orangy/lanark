@@ -2,10 +2,9 @@ package ksdl.metrics
 
 import ksdl.system.*
 
-@ThreadLocal
-private val metricsValue = KMetrics() 
-
 val KPlatform.metrics get() = metricsValue
+
+private val metricsValue = KMetrics()
 
 // Metrics ksdl loosely modeled after dropwizard's
 class KMetrics {

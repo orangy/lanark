@@ -1,16 +1,10 @@
 package ksdl.system
 
 import kotlinx.cinterop.*
-import kotlinx.cinterop.CPointer
 import ksdl.diagnostics.*
-import ksdl.diagnostics.KLogger
-import ksdl.diagnostics.KLoggerNone
-import ksdl.rendering.KCursor
+import ksdl.rendering.*
 import sdl2.*
-import kotlin.collections.List
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.set
+import kotlin.collections.*
 
 private lateinit var platformInstance: KPlatform
 
