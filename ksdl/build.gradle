@@ -13,10 +13,9 @@ kotlin {
                     }
                 }
             }
-            compilations.all {
-                tasks.getByName(compilation.compileKotlinTaskName).kotlinOptions {
-                    freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
-                }
+            compilations.all { compilation ->
+                tasks.getByName(compilation.compileKotlinTaskName).kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
+                
                 linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
             }
         }
