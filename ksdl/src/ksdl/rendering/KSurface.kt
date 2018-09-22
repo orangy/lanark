@@ -7,7 +7,7 @@ import ksdl.io.*
 import ksdl.system.*
 import sdl2.*
 
-class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
+inline class KSurface(internal val surfacePtr: CPointer<SDL_Surface>) : KManaged {
     override fun release() {
         SDL_FreeSurface(surfacePtr)
         logger.system("Released $this")

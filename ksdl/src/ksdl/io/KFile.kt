@@ -5,7 +5,7 @@ import kotlinx.cinterop.*
 import ksdl.diagnostics.*
 import ksdl.system.*
 
-class KFile(val handle: CPointer<SDL_RWops>) : KManaged {
+inline class KFile(val handle: CPointer<SDL_RWops>) : KManaged {
     override fun release() {
         close()
     }

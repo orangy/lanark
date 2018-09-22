@@ -31,6 +31,6 @@ class KLoggerConsole : KLogger {
     }
 }
 
-fun consoleLogger() = KLoggerConsole()
-
-inline fun consoleLogger(configure: KLoggerConsole.() -> Unit) = KLoggerConsole().apply(configure)
+inline fun KPlatform.Configuration.consoleLogger(configure: KLoggerConsole.() -> Unit) {
+    logger = KLoggerConsole().apply(configure)
+}

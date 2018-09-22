@@ -5,7 +5,7 @@ import ksdl.diagnostics.*
 import ksdl.system.*
 import sdl2.*
 
-class KCursor(val cursorPtr: CPointer<SDL_Cursor>) : KManaged {
+inline class KCursor(val cursorPtr: CPointer<SDL_Cursor>) : KManaged {
     override fun release() {
         SDL_FreeCursor(cursorPtr)
         logger.system("Released $this")

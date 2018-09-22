@@ -17,7 +17,7 @@ abstract class KEventMouse(sdlEventType: SDL_EventType) : KEvent(sdlEventType) {
     }
 }
 
-abstract class KEventMouseButton(val sdlEvent: SDL_MouseButtonEvent) : KEventMouse(sdlEvent.type) {
+abstract class KEventMouseButton(private val sdlEvent: SDL_MouseButtonEvent) : KEventMouse(sdlEvent.type) {
     val window get() = platform.findWindow(sdlEvent.windowID)
     val timestamp get() = sdlEvent.timestamp
     val touch get() = sdlEvent.which == SDL_TOUCH_MOUSEID

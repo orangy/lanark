@@ -9,7 +9,7 @@ import sdl2.*
 
 fun main(args: Array<String>) {
     KPlatform.init {
-        logger = consoleLogger {
+        consoleLogger {
             color(KLogCategory.System, "\u001B[0;37m")
             color(KLogCategory.Info, "\u001B[0;34m")
             color(KLogCategory.Warn, "\u001B[0;33m")

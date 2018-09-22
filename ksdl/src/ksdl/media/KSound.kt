@@ -6,7 +6,7 @@ import ksdl.io.*
 import ksdl.system.*
 import sdl2.*
 
-class KSound(val soundPtr: CPointer<Mix_Chunk>) : KManaged {
+inline class KSound(private val soundPtr: CPointer<Mix_Chunk>) : KManaged {
 
     override fun release() {
         Mix_FreeChunk(soundPtr)

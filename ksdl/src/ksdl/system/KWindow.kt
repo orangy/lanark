@@ -6,7 +6,7 @@ import ksdl.geometry.*
 import ksdl.rendering.*
 import sdl2.*
 
-class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
+inline class KWindow(private val windowPtr: CPointer<SDL_Window>) : KManaged {
     val id: UInt get() = SDL_GetWindowID(windowPtr)
 
     override fun release() {

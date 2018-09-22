@@ -3,7 +3,8 @@ package ksdl.system
 import sdl2.*
 
 class KClock {
-    val frequency: ULong = SDL_GetPerformanceFrequency()
+    private val frequency: ULong = SDL_GetPerformanceFrequency()
+    
     var start: ULong = SDL_GetPerformanceCounter()
         private set
 

@@ -1,5 +1,6 @@
 package ksdl.rendering
 
+import cnames.structs.SDL_Texture
 import kotlinx.cinterop.*
 import ksdl.diagnostics.*
 import ksdl.geometry.*
@@ -7,13 +8,14 @@ import ksdl.io.*
 import ksdl.system.*
 import sdl2.*
 
-class KTexture(val texturePtr: CPointer<SDL_Texture>) : KManaged {
-    val size: KSize = memScoped {
-        val width = alloc<IntVar>()
-        val height = alloc<IntVar>()
-        SDL_QueryTexture(texturePtr, null, null, width.ptr, height.ptr)
-        KSize(width.value, height.value)
-    }
+inline class KTexture(val texturePtr: CPointer<SDL_Texture>) : KManaged {
+    val size: KSize
+        get() = memScoped {
+            val width = alloc<IntVar>()
+            val height = alloc<IntVar>()
+            SDL_QueryTexture(texturePtr, null, null, width.ptr, height.ptr)
+            KSize(width.value, height.value)
+        }
 
     val width: Int get() = size.width
     val height: Int get() = size.height

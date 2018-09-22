@@ -6,7 +6,7 @@ import ksdl.io.*
 import ksdl.system.*
 import sdl2.*
 
-class KMusic(val musicPtr: CPointer<Mix_Music>) : KManaged {
+inline class KMusic(private val musicPtr: CPointer<Mix_Music>) : KManaged {
     override fun release() {
         Mix_FreeMusic(musicPtr)
         logger.system("Released $this")
