@@ -31,7 +31,7 @@ fun KRenderer.draw(tile: KTile, position: KPoint) = memScoped {
 }
 
 fun KRenderer.fill(tile: KTile, destinationRect: KRect) = memScoped {
-    withClip(destinationRect) {
+    clip(destinationRect) {
         val rect = alloc<SDL_Rect>().apply {
             w = tile.width
             h = tile.height

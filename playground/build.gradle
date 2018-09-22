@@ -20,7 +20,8 @@ kotlin {
         macosMain {
             kotlin.srcDirs += "src"
             dependencies {
-                implementation project(":ksdl")
+                implementation project(":api")
+                implementation project(":backend-sdl2")
             }
         }
     }

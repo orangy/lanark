@@ -1,0 +1,28 @@
+apply plugin: 'kotlin-multiplatform'
+
+kotlin {
+    targets {
+        fromPreset(presets.macosX64, 'macos') {
+            compilations.main {
+            }
+            compilations.all { compilation ->
+                tasks.getByName(compilation.compileKotlinTaskName) {
+                    kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes", "-XXLanguage:+InlineClasses"]
+                }
+            }
+        }
+    }
+    
+    sourceSets {
+        macosMain {
+            kotlin.srcDirs += "src"
+            dependencies {
+                api 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native_debug_macos_x64:0.26.1-eap13'
+                api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
+            }
+        }
+        macosTest {
+            kotlin.srcDirs += "test"
+        }
+    }
+}

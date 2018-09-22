@@ -70,7 +70,7 @@ class KRenderer(val window: KWindow, val rendererPtr: CPointer<SDL_Renderer>) : 
     override fun toString() = "Renderer ${rendererPtr.rawValue}"
 }
 
-inline fun KRenderer.withClip(rectangle: KRect, body: () -> Unit) {
+inline fun KRenderer.clip(rectangle: KRect, body: () -> Unit) {
     val old = clip
     try {
         clip = rectangle

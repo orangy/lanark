@@ -57,7 +57,7 @@ fun KRenderer.draw(texture: KTexture, destinationRect: KRect) = memScoped {
 }
 
 fun KRenderer.fill(texture: KTexture, destinationRect: KRect) = memScoped {
-    withClip(destinationRect) {
+    clip(destinationRect) {
         val rect = alloc<SDL_Rect>().apply {
             w = texture.width
             h = texture.height

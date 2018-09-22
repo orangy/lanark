@@ -1,3 +1,6 @@
+group = 'org.lanark'
+version = '1.0'
+
 buildscript {
     repositories {
         mavenLocal()

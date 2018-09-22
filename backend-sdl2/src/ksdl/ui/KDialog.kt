@@ -25,7 +25,7 @@ class KDialog(val area: KRect, private val resources: KResourceContext, val cont
     }
 
     private fun KRenderer.renderControls() {
-        withClip(area) {
+        clip(area) {
             controls.forEach {
                 it.render(area, this)
             }
