@@ -5,6 +5,7 @@ expect class Clock() {
         private set
 
     fun reset()
+    fun delay(millis: ULong)
     fun elapsedTicks(): ULong
     fun elapsedMillis(): ULong
     fun elapsedMicros(): ULong

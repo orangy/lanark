@@ -49,5 +49,8 @@ kotlin {
                 api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
             }
         }
+        
+        sdl2macosTest {
+        }
     }
 }

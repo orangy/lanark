@@ -2,7 +2,7 @@ package org.lanark.system
 
 import sdl2.*
 
-actual class Clock {
+actual class Clock actual constructor() {
     private val frequency: ULong = SDL_GetPerformanceFrequency()
     
     actual var start: ULong = SDL_GetPerformanceCounter()
@@ -26,5 +26,9 @@ actual class Clock {
 
     actual fun elapsedSeconds(): ULong {
         return (elapsedTicks() / frequency)
+    }
+
+    actual fun delay(millis: ULong) {
+        SDL_Delay(millis.toUInt())
     }
 }

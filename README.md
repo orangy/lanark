@@ -1,4 +1,7 @@
-# KotlinSDL2
+# Lanark
 
-A Kotlin/Native framework for SDL2
+Kotlin multiplatform framework for simple games and media applications. 
+Primitive. Really it is. Not ready. Like at all. Seriously, it's a draft.  
+
+
  
