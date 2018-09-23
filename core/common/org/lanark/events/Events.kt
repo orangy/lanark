@@ -5,6 +5,7 @@ import org.lanark.diagnostics.*
 import org.lanark.system.*
 
 expect class Events(engine: Engine) {
+    val all: Signal<Event>
     val window: Signal<EventWindow>
     val application: Signal<EventApp>
     val keyboard: Signal<EventKey>

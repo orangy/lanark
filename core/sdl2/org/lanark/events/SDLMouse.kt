@@ -42,8 +42,6 @@ actual class EventMouseMotion(frame: Frame, private val sdlEvent: SDL_MouseMotio
     actual val deltaX get() = sdlEvent.xrel
     actual val deltaY get() = sdlEvent.yrel
 
-    val position get() = Point(x, y)
-
     override fun toString() =
         "#${sdlEvent.windowID} ${super.toString()} ${if (touch) "[T]" else ""} $state ($x, $y) by ($deltaX, $deltaY)"
 

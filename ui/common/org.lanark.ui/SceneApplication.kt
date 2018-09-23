@@ -7,8 +7,8 @@ import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 
-class SceneApplication(val engine: Engine, val executor: TaskExecutor, val renderer: Renderer) {
-    private val events = Events(engine)
+class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
+    private val events = Events(frame.engine)
     private val metrics = Metrics()
 
     private val dumpStatsClock = Clock()
@@ -25,13 +25,13 @@ class SceneApplication(val engine: Engine, val executor: TaskExecutor, val rende
         activeScene?.also { scene ->
             scene.deactivate(executor)
             this.activeScene = null
-            engine.logger.composer("Deactivated $scene")
+            frame.engine.logger.composer("Deactivated $scene")
         }
     }
 
     private fun activate(activeScene: Scene?) {
         activeScene?.also { scene ->
-            engine.logger.composer("Activating $scene")
+            frame.engine.logger.composer("Activating $scene")
             scene.activate(executor)
         }
     }
@@ -48,9 +48,11 @@ class SceneApplication(val engine: Engine, val executor: TaskExecutor, val rende
 
     private val afterHandler: (Unit) -> Unit = {
         val time1 = statsClock.elapsedMicros()
+        val renderer = frame.renderer
+        
         renderer.clip = null
         renderer.clear(Color.BLACK)
-        scene?.render(renderer)
+        activeScene?.render(renderer)
         val time2 = statsClock.elapsedMicros()
         renderer.present()
         val time3 = statsClock.elapsedMicros()
@@ -64,7 +66,7 @@ class SceneApplication(val engine: Engine, val executor: TaskExecutor, val rende
             val meanUpdate = updateStats.snapshot().mean()
             val meanRender = renderStats.snapshot().mean()
             val meanPresent = presentStats.snapshot().mean()
-            engine.logger.system("Mean times: U[${Math.round(meanUpdate, 2)}] R[${Math.round(meanRender, 2)}] P[${Math.round(meanPresent, 2)}]")
+            frame.engine.logger.system("Mean times: U[${Math.round(meanUpdate, 2)}] R[${Math.round(meanRender, 2)}] P[${Math.round(meanPresent, 2)}]")
         }
     }
 
@@ -77,7 +79,7 @@ class SceneApplication(val engine: Engine, val executor: TaskExecutor, val rende
         events.window.subscribe {
             // TODO: Decide on automatic resizing?
             if (it is EventWindowResized) {
-                renderer.size = Size(it.width, it.height)
+                frame.renderer.size = Size(it.width, it.height)
             }
         }
 

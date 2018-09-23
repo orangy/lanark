@@ -157,7 +157,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual fun loadCanvas(path: String, fileSystem: FileSystem): Canvas {
-        return fileSystem.open(path).use { file ->
+        return fileSystem.open(path, FileOpenMode.Read).use { file ->
             val surfacePtr = IMG_Load_RW(file.handle, 0).sdlError("IMG_Load_RW")
             Canvas(this, surfacePtr).also {
                 logger.system("Loaded $it from $path at $fileSystem")
@@ -173,7 +173,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual fun loadMusic(path: String, fileSystem: FileSystem): Music {
-        return fileSystem.open(path).use { file ->
+        return fileSystem.open(path, FileOpenMode.Read).use { file ->
             val audio = Mix_LoadMUS_RW(file.handle, 0).sdlError("Mix_LoadMUS_RW")
             Music(this, audio).also {
                 logger.system("Loaded $it from $path at $fileSystem")
@@ -182,7 +182,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual fun loadSound(path: String, fileSystem: FileSystem): Sound {
-        return fileSystem.open(path).use { file ->
+        return fileSystem.open(path, FileOpenMode.Read).use { file ->
             val audio = Mix_LoadWAV_RW(file.handle, 0).sdlError("Mix_LoadWAV_RW")
             Sound(this, audio).also {
                 logger.system("Loaded $it from $path at $fileSystem")
@@ -191,7 +191,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual fun loadVideo(path: String, fileSystem: FileSystem): Video {
-        return fileSystem.open(path).use {
+        return fileSystem.open(path, FileOpenMode.Read).use {
             Video(this).also {
                 logger.system("Loaded $it from $path at $fileSystem")
             }

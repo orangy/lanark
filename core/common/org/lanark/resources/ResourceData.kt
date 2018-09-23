@@ -11,7 +11,7 @@ class ResourceData(name: String, val location: FileLocation) : Resource<Data>(na
     ): Data {
         return context.loadIfAbsent(this) {
             val (file, fileSystem) = location
-            fileSystem.open(file).use {
+            fileSystem.open(file, FileOpenMode.Read).use {
                 Data().also {
                     context.engine.logger.system("Loaded $it from $file at $fileSystem")
                     progress(1.0)

@@ -67,7 +67,7 @@ actual fun Renderer.draw(texture: Texture, position: Point, size: Size) = memSco
 }
 
 actual fun Renderer.loadTexture(path: String, fileSystem: FileSystem): Texture {
-    return fileSystem.open(path).use { file ->
+    return fileSystem.open(path, FileOpenMode.Read).use { file ->
         val surfacePtr = IMG_Load_RW(file.handle, 0).sdlError("IMG_Load_RW")
         try {
             val texturePtr = SDL_CreateTextureFromSurface(rendererPtr, surfacePtr)

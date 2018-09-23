@@ -5,7 +5,7 @@ kotlin {
         all {
             compilations.all { compilation ->
                 tasks.getByName(compilation.compileKotlinTaskName) {
-                    kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes", "-XXLanguage:+InlineClasses"]
+                    kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
                 }
             }
         }
@@ -51,6 +51,15 @@ kotlin {
         }
         
         sdl2macosTest {
+        }
+    }
+}
+
+afterEvaluate {
+    kotlin.targets.sdl2macos.compilations.test.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
+        copy {
+            from file('testResources')
+            into task.outputFile.get().parent
         }
     }
 }

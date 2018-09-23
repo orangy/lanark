@@ -9,10 +9,11 @@ import sdl2.*
 actual abstract class Event(actual val timestamp: ULong)
 
 actual class Events actual constructor(private val engine: Engine) {
-    actual val window: Signal<EventWindow> = Signal("Window")
-    actual val application: Signal<EventApp> = Signal("App")
-    actual val keyboard: Signal<EventKey> = Signal("Key")
-    actual val mouse: Signal<EventMouse> = Signal("Mouse")
+    actual val all: Signal<Event> = Signal("Event")
+    actual val window: Signal<EventWindow> = all.filter()
+    actual val application: Signal<EventApp> = all.filter()
+    actual val keyboard: Signal<EventKey> = all.filter()
+    actual val mouse: Signal<EventMouse> = all.filter()
 
     actual fun poll() = memScoped {
         val event = alloc<SDL_Event>()
@@ -22,31 +23,24 @@ actual class Events actual constructor(private val engine: Engine) {
     }
 
     private fun processEvent(sdlEvent: SDL_Event) {
-        when (sdlEvent.type) {
+        val event = when (sdlEvent.type) {
             SDL_QUIT,
             SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
             SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> {
-                val event = EventApp.createEvent(sdlEvent, engine)
-                engine.logger.event { event.toString() }
-                application.raise(event)
+                EventApp.createEvent(sdlEvent, engine)
             }
             SDL_WINDOWEVENT -> {
-                val event = EventWindow.createEvent(sdlEvent, engine)
-                engine.logger.event { event.toString() }
-                window.raise(event)
+                EventWindow.createEvent(sdlEvent, engine)
             }
             SDL_KEYUP, SDL_KEYDOWN -> {
-                val event = EventKey.createEvent(sdlEvent, engine)
-                engine.logger.event { event.toString() }
-                keyboard.raise(event)
+                EventKey.createEvent(sdlEvent, engine)
             }
             SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> {
-                val event = EventMouse.createEvent(sdlEvent, engine)
-                engine.logger.event { event.toString() }
-                mouse.raise(event)
+                EventMouse.createEvent(sdlEvent, engine)
             }
             SDL_FINGERMOTION, SDL_FINGERDOWN, SDL_FINGERUP -> {
                 // ignore event and don't log it
+                null
             }
             else -> {
                 val eventName = eventNames[sdlEvent.type]
@@ -54,8 +48,15 @@ actual class Events actual constructor(private val engine: Engine) {
                     engine.logger.event { "Unknown event: ${sdlEvent.type}" }
                 else
                     engine.logger.event { eventName.toString() }
+                null
             }
         }
+
+        if (event != null) {
+            engine.logger.event { event.toString() }
+            all.raise(event)
+        }
+
     }
 
     actual companion object {
@@ -111,5 +112,14 @@ actual class Events actual constructor(private val engine: Engine) {
             SDL_USEREVENT to "SDL_USEREVENT"
         )
     }
+}
+
+private inline fun <TEvent, reified TDerivedEvent : TEvent> Signal<TEvent>.filter(): Signal<TDerivedEvent> {
+    val signal = Signal<TDerivedEvent>("$tag.${TDerivedEvent::class.simpleName}")
+    subscribe {
+        if (it is TDerivedEvent)
+            signal.raise(it)
+    }
+    return signal
 }
 

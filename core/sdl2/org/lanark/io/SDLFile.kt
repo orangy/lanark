@@ -1,9 +1,9 @@
 package org.lanark.io
 
-import sdl2.*
 import kotlinx.cinterop.*
-import org.lanark.system.*
 import org.lanark.diagnostics.*
+import org.lanark.system.*
+import sdl2.*
 
 actual class File(val handle: CPointer<SDL_RWops>) : Managed {
     override fun release() {
@@ -19,12 +19,24 @@ actual class File(val handle: CPointer<SDL_RWops>) : Managed {
     actual val position: Long get() = seek(0, SeekFrom.Current)
 
     actual fun seek(position: Long, seekFrom: SeekFrom): Long {
-        val fn = handle.pointed.seek.sdlError("File.size")
+        val fn = handle.pointed.seek.sdlError("File.seek")
         return fn(handle, position, seekFrom.value)
     }
 
+    actual fun write(source: ByteArray): ULong = memScoped {
+        val fn = handle.pointed.write.sdlError("File.write")
+        return fn(handle, source.toCValues().ptr, 1u, source.size.toULong())
+    }
+
+    actual fun read(count: Int): ByteArray = memScoped {
+        val fn = handle.pointed.read.sdlError("File.read")
+        val buffer = allocArray<ByteVar>(count)
+        val numBytes = fn(handle, buffer, 1u, count.toULong())
+        return buffer.readBytes(numBytes.toInt())
+    }
+
     actual fun close() {
-        val fn = handle.pointed.close.sdlError("File.size")
+        val fn = handle.pointed.close.sdlError("File.close")
         fn(handle)
     }
 }
@@ -35,3 +47,9 @@ actual enum class SeekFrom(val value: Int) {
     End(RW_SEEK_END),
 }
 
+actual enum class FileOpenMode(val value: String) {
+    Read("rb"),
+    Truncate("wb+"),
+    Append("ab"),
+    Update("rb+"),
+}

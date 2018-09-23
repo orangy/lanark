@@ -26,7 +26,6 @@ fun main(args: Array<String>) {
         setBordered(true)
         setResizable(true)
     }
-    val renderer = frame.renderer
 
     val ui = resources("ui") {
         texture("background", "ui-background.png")
@@ -89,7 +88,7 @@ fun main(args: Array<String>) {
     }
     engine.logger.switch(Events.LogCategory, false)
 
-    val application = SceneApplication(engine, executor, renderer)
+    val application = SceneApplication(frame, executor)
     val dialog = Dialog(Rect(140, 140, 412, 234), uiResources, listOf(
             Button(Point(20, 20), uiResources),
             Button(Point(20, 80), uiResources)))
@@ -100,7 +99,7 @@ fun main(args: Array<String>) {
     application.run()
 
     uiResources.release()
-    renderer.release()
+    frame.renderer.release()
     frame.release()
     engine.quit()
 }

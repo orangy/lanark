@@ -5,7 +5,7 @@ kotlin {
         all {
             compilations.all { compilation ->
                 tasks.getByName(compilation.compileKotlinTaskName) {
-                    kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes", "-XXLanguage:+InlineClasses"]
+                    kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
                 }
             }
         }

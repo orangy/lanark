@@ -81,18 +81,3 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
     }
 }
 
-abstract class Control {
-    abstract fun render(area: Rect, renderer: Renderer)
-}
-
-class Button(val position: Point, private val resources: ResourceContext) : Control() {
-    private val tiles = resources.loadTiles("elements")
-    private val button = tiles["button"]
-    private val buttonHover = tiles["button-hover"]
-    private val buttonPressed = tiles["button-pressed"]
-    private val buttonDisabled = tiles["button-disabled"]
-
-    override fun render(area: Rect, renderer: Renderer) {
-        renderer.draw(button, position.relativeTo(area.origin))
-    }
-}
