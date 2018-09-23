@@ -1,5 +1,5 @@
 //enableFeaturePreview('GRADLE_METADATA')
 
-include ":api"
-include ":backend-sdl2"
+include ":core"
+include ":ui"
 include ":playground"

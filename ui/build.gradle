@@ -2,27 +2,27 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     targets {
-        fromPreset(presets.macosX64, 'sdl2macos') {
-            compilations.main {
-                outputKinds = [EXECUTABLE]
-                // output DIR "bin"
-            }
+        all {
             compilations.all { compilation ->
                 tasks.getByName(compilation.compileKotlinTaskName) {
                     kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes", "-XXLanguage:+InlineClasses"]
                 }
-                
+            }
+        }
+
+        fromPreset(presets.macosX64, 'sdl2macos') {
+            compilations.all { compilation ->
                 linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
             }
         }
     }
+
     sourceSets {
         commonMain {
             kotlin.srcDirs += "common"
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 implementation project(":core")
-                implementation project(":ui")
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib'
             }
         }
         commonTest {
@@ -36,26 +36,9 @@ kotlin {
         sdl2macosMain {
             kotlin.srcDirs += "sdl2"
             dependencies {
-                implementation project(":core")
+                api 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native_debug_macos_x64:0.26.1-eap13'
+                api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
             }
         }
-    }
-}
-
-afterEvaluate {
-    kotlin.targets.sdl2macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
-        copy {
-            from file('resources')
-            into task.outputFile.get().parent
-        }
-    }
-}
-
-afterEvaluate {
-    def linkTask = kotlin.targets.sdl2macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG")
-    task run(type: Exec) {
-        dependsOn(linkTask)
-        def outputArtifact = linkTask.outputFile.get()
-        commandLine "$outputArtifact"
     }
 }

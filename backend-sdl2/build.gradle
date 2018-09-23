@@ -26,6 +26,7 @@ kotlin {
         macosMain {
             kotlin.srcDirs += "src"
             dependencies {
+                api project(":core")
                 api 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native_debug_macos_x64:0.26.1-eap13'
                 api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
             }
