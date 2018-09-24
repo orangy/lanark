@@ -1,7 +1,6 @@
 package org.lanark.playground.hex
 
-import org.lanark.system.*
-
+import kotlin.math.*
 
 data class HexCell(val q: Int, val r: Int, val s: Int = -q - r) {
     init {
@@ -16,7 +15,7 @@ data class HexCell(val q: Int, val r: Int, val s: Int = -q - r) {
     fun neighbor(index: Int) = plus(directions[index])
     fun neighbors() = (0..5).map { plus(directions[it]) }
 
-    private fun distanceFromZero() = (Math.abs(q) + Math.abs(r) + Math.abs(s)) / 2
+    private fun distanceFromZero() = (abs(q) + abs(r) + abs(s)) / 2
 
     override fun toString() = "Hex($q, $r, $s)"
 

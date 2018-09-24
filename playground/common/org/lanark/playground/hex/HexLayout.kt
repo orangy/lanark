@@ -2,13 +2,14 @@ package org.lanark.playground.hex
 
 import org.lanark.geometry.*
 import org.lanark.system.*
+import kotlin.math.*
 
 fun HexLayout(orientation: Double, radius: Int): HexLayout {
     val cornerVectors = (0 until 6).map { index ->
-        val angle = 2 * Math.pi * (orientation + index) / 6
-        val x = radius * Math.cos(angle)
-        val y = radius * Math.sin(angle)
-        Vector(Math.round(x).toInt(), Math.round(y).toInt())
+        val angle = 2 * PI * (orientation + index) / 6
+        val x = radius * cos(angle)
+        val y = radius * sin(angle)
+        Vector(round(x).toInt(), round(y).toInt())
     }
     return HexLayout(cornerVectors)
 }
@@ -47,12 +48,12 @@ data class HexLayout(private val vectors: List<Vector>) {
 
 
     private fun roundToCell(q: Double, r: Double, s: Double): HexCell {
-        val qInt = Math.round(q).toInt()
-        val rInt = Math.round(r).toInt()
-        val sInt = Math.round(s).toInt()
-        val qDiff = Math.abs(qInt - q)
-        val rDiff = Math.abs(rInt - r)
-        val sDiff = Math.abs(sInt - s)
+        val qInt = round(q).toInt()
+        val rInt = round(r).toInt()
+        val sInt = round(s).toInt()
+        val qDiff = abs(qInt - q)
+        val rDiff = abs(rInt - r)
+        val sDiff = abs(sInt - s)
         return when {
             qDiff > rDiff && qDiff > sDiff -> HexCell(-rInt - sInt, rInt, sInt)
             rDiff > sDiff -> HexCell(qInt, -qInt - sInt, sInt)

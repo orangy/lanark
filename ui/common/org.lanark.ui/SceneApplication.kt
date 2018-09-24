@@ -66,7 +66,7 @@ class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
             val meanUpdate = updateStats.snapshot().mean()
             val meanRender = renderStats.snapshot().mean()
             val meanPresent = presentStats.snapshot().mean()
-            frame.engine.logger.system("Mean times: U[${Math.round(meanUpdate, 2)}] R[${Math.round(meanRender, 2)}] P[${Math.round(meanPresent, 2)}]")
+            frame.engine.logger.system("Mean times: U[${round(meanUpdate, 2)}] R[${round(meanRender, 2)}] P[${round(meanPresent, 2)}]")
         }
     }
 

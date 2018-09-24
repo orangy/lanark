@@ -17,6 +17,8 @@ kotlin {
                 linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
             }
         }
+
+        fromPreset(presets.jvm, 'lwjgl')
     }
 
     sourceSets {
@@ -42,8 +44,33 @@ kotlin {
                 api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
             }
         }
-        
+
         sdl2macosTest {
+        }
+
+        lwjglMain {
+            kotlin.srcDirs = ["lwjgl"]
+            dependencies {
+                api "org.lwjgl:lwjgl:$lwjglVersion"
+                api "org.lwjgl:lwjgl-assimp:$lwjglVersion"
+                api "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+                api "org.lwjgl:lwjgl-openal:$lwjglVersion"
+                api "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+                api "org.lwjgl:lwjgl-stb:$lwjglVersion"
+                api "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+                api "org.lwjgl:lwjgl-assimp:$lwjglVersion:$lwjglNatives"
+                api "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+                api "org.lwjgl:lwjgl-openal:$lwjglVersion:$lwjglNatives"
+                api "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
+                api "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+            }
+        }
+
+        lwjglTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test'
+                implementation 'org.jetbrains.kotlin:kotlin-test-junit'
+            }
         }
     }
 }

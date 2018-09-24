@@ -1,9 +1,9 @@
 package org.lanark.geometry
 
-import org.lanark.system.*
+import kotlin.math.*
 
 data class Vector(val x: Int, val y: Int) {
-    val length: Double get() = Math.sqrt((x * x + y * y).toDouble())
+    val length: Double get() = sqrt((x * x + y * y).toDouble())
 
     operator fun plus(other: Vector) = Vector(x + other.x, y + other.y)
     operator fun minus(other: Vector) = Vector(x - other.x, y - other.y)

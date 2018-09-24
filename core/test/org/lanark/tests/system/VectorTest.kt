@@ -8,7 +8,7 @@ class VectorTest {
     @Test
     fun vectorLength() {
         assertEquals(0.0, Vector.Empty.length)
-        assertEquals(1.414, Math.round(Vector(1, 1).length, 3))
+        assertEquals(1.414, round(Vector(1, 1).length, 3))
     }
 
     @Test

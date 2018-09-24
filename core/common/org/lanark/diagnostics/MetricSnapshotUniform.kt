@@ -1,6 +1,6 @@
 package org.lanark.diagnostics
 
-import org.lanark.system.*
+import kotlin.math.*
 
 class MetricSnapshotUniform : MetricSnapshot {
     override val values: LongArray
@@ -28,7 +28,7 @@ class MetricSnapshotUniform : MetricSnapshot {
             else -> {
                 val lower = values[index - 1]
                 val upper = values[index]
-                lower + (pos - Math.floor(pos)) * (upper - lower)
+                lower + (pos - floor(pos)) * (upper - lower)
             }
         }
     }
@@ -53,7 +53,7 @@ class MetricSnapshotUniform : MetricSnapshot {
         val mean = mean()
         val sum = values.sumByDouble { (it - mean).let { it * it } }
         val variance = sum / values.lastIndex
-        return Math.sqrt(variance)
+        return sqrt(variance)
     }
 }
 
