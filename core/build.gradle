@@ -29,7 +29,7 @@ kotlin {
             }
         }
         commonTest {
-            kotlin.srcDirs = ["test"]
+            kotlin.srcDirs = ["commonTest"]
             resources.srcDirs = ["testResources"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
@@ -39,6 +39,7 @@ kotlin {
 
         sdl2macosMain {
             kotlin.srcDirs = ["sdl2"]
+            resources.srcDirs = ["sdl2Resources"]
             dependencies {
                 api 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native_debug_macos_x64:0.26.1-eap13'
                 api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
@@ -67,6 +68,7 @@ kotlin {
         }
 
         lwjglTest {
+            kotlin.srcDirs = ["lwjglTest"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test'
                 implementation 'org.jetbrains.kotlin:kotlin-test-junit'

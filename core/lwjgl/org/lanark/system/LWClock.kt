@@ -1,26 +1,29 @@
 package org.lanark.system
 
 actual class Clock actual constructor() {
-    actual var start: ULong
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        private set(value) {}
+    actual var start: ULong = System.nanoTime().toULong()
+        private set
 
-    actual fun reset() {}
-    actual fun delay(millis: ULong) {}
-    actual fun elapsedTicks(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    actual fun reset() {
+        start = System.nanoTime().toULong()
     }
 
+    actual fun delay(millis: ULong) {
+        Thread.sleep(millis.toLong())
+    }
+    
+    actual fun elapsedTicks(): ULong = System.nanoTime().toULong() - start
+
     actual fun elapsedMillis(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return elapsedTicks() / 1000_000u
     }
 
     actual fun elapsedMicros(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return elapsedTicks() / 1000u
     }
 
     actual fun elapsedSeconds(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return elapsedTicks() / 1000_000_000u
     }
 
 }

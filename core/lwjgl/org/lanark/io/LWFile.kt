@@ -1,35 +1,44 @@
 package org.lanark.io
 
 import org.lanark.system.*
+import java.nio.*
+import java.nio.channels.*
+import java.nio.file.*
 
-actual class File : Managed {
-    override fun release() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+actual class File(val file: SeekableByteChannel) : Managed {
     actual val size: Long
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = file.size()
+    
     actual val position: Long
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = file.position()
 
     actual fun read(count: Int): ByteArray {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val buffer = ByteBuffer.allocate(count)
+        file.read(buffer)
+        return buffer.array()
     }
 
     actual fun write(source: ByteArray): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return file.write(ByteBuffer.wrap(source)).toULong()
     }
 
     actual fun seek(position: Long, seekFrom: SeekFrom): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        file.position(position)
+        return file.position()
     }
 
-    actual fun close() {}
+    override fun release() {
+        close()
+    }
+
+    actual fun close() {
+        file.close()
+    }
 }
 
-actual enum class FileOpenMode {
-    Read,
-    Truncate,
-    Append,
-    Update,
+actual enum class FileOpenMode(vararg val value: OpenOption) {
+    Read(StandardOpenOption.READ),
+    Truncate(StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE),
+    Append(StandardOpenOption.APPEND, StandardOpenOption.WRITE),
+    Update(StandardOpenOption.WRITE),
 }

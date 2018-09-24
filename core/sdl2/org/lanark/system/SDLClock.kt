@@ -20,7 +20,7 @@ actual class Clock actual constructor() {
     }
 
     actual fun elapsedMicros(): ULong {
-        val elapsed = elapsedTicks() * 1000000u
+        val elapsed = elapsedTicks() * 1000_000u
         return (elapsed / frequency)
     }
 
