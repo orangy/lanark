@@ -14,7 +14,7 @@ kotlin {
     
     sourceSets {
         commonMain {
-            kotlin.srcDirs += "common"
+            kotlin.srcDirs = ["common"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 implementation project(":core")
@@ -22,7 +22,7 @@ kotlin {
             }
         }
         commonTest {
-            kotlin.srcDirs += "test"
+            kotlin.srcDirs = ["test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
@@ -30,7 +30,8 @@ kotlin {
         }
 
         sdl2macosMain {
-            kotlin.srcDirs += "sdl2"
+            kotlin.srcDirs = ["sdl2"]
+            resources.srcDirs = ["resources"]
             dependencies {
                 implementation project(":core")
             }

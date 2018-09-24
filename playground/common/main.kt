@@ -6,7 +6,7 @@ import org.lanark.resources.*
 import org.lanark.system.*
 import org.lanark.ui.*
 
-fun main(args: Array<String>) {
+fun main() {
     val engine = Engine {
         consoleLogger {
             color(LoggerCategory.System, "\u001B[0;37m")

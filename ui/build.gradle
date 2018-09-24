@@ -11,14 +11,14 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDirs += "common"
+            kotlin.srcDirs = ["common"]
             dependencies {
                 implementation project(":core")
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
             }
         }
         commonTest {
-            kotlin.srcDirs += "test"
+            kotlin.srcDirs = ["test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
@@ -26,7 +26,7 @@ kotlin {
         }
 
         sdl2macosMain {
-            kotlin.srcDirs += "sdl2"
+            kotlin.srcDirs = ["sdl2"]
             dependencies {
                 api 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native_debug_macos_x64:0.26.1-eap13'
                 api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
