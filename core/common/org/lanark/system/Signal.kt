@@ -21,3 +21,12 @@ class Signal<T>(val tag: String) {
         }
     }
 }
+
+inline fun <TEvent, reified TDerivedEvent : TEvent> Signal<TEvent>.filter(): Signal<TDerivedEvent> {
+    val signal = Signal<TDerivedEvent>("$tag.${TDerivedEvent::class.simpleName}")
+    subscribe {
+        if (it is TDerivedEvent)
+            signal.raise(it)
+    }
+    return signal
+}

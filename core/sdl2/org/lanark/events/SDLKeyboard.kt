@@ -19,7 +19,7 @@ actual abstract class EventKey(actual val frame: Frame, private val sdlEvent: SD
             return when (sdlEvent.type) {
                 SDL_KEYDOWN -> EventKeyDown(frame, sdlEvent.key)
                 SDL_KEYUP -> EventKeyUp(frame, sdlEvent.key)
-                else -> throw PlatformException("EventKey.createEvent was called with unknown type of SDL_Event")
+                else -> throw EngineException("EventKey.createEvent was called with unknown type of SDL_Event")
             }
         }
     }
@@ -42,7 +42,7 @@ actual enum class EventButtonState {
         fun fromValue(value: UByte) = when (value.toInt()) {
             SDL_PRESSED -> Pressed
             SDL_RELEASED -> Released
-            else -> throw PlatformException("Unknown key state: $value")
+            else -> throw EngineException("Unknown key state: $value")
         }
     }
 }

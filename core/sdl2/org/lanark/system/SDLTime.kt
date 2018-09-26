@@ -23,7 +23,7 @@ actual class Time(private val value: time_t) {
         val hour = tm.tm_hour.toZeroPadding(2)
         val minute = tm.tm_min.toZeroPadding(2)
         val seconds = tm.tm_sec.toZeroPadding(2)
-        "$year/$month/$day $hour:$minute:$seconds"
+        "$year-$month-${day}T$hour:$minute:$seconds"
     }
 
     private fun Int.toZeroPadding(size: Int): String {

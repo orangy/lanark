@@ -45,7 +45,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
         logger = configuration.logger
 
-        logger.info("$platform with $cpus CPUs, $memorySize MB RAM...")
+        logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing SDL v$version")
         SDL_Init(configuration.flags).sdlError("SDL_Init")
         logger.info("Enabled SDL subsystems: ${enabledSubsystems()}")
@@ -208,5 +208,5 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
     fun tryGetFrame(sdlWindowId: UInt) = windows[sdlWindowId]
 
-    fun getFrame(sdlWindowId: UInt) = windows[sdlWindowId] ?: throw PlatformException("Cannot find SDL Frame for ID $sdlWindowId")
+    fun getFrame(sdlWindowId: UInt) = windows[sdlWindowId] ?: throw EngineException("Cannot find SDL Frame for ID $sdlWindowId")
 }

@@ -5,11 +5,54 @@ import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.media.*
+import org.lanark.system.*
+import org.lwjgl.glfw.*
+import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.opengl.*
+import org.lwjgl.system.MemoryUtil.*
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
-    actual fun quit() {}
+    private val version: Version = Version(org.lwjgl.Version.VERSION_MAJOR, org.lwjgl.Version.VERSION_MINOR, org.lwjgl.Version.VERSION_REVISION, org.lwjgl.Version.BUILD_TYPE.name)
+    private val platform: String = "${System.getProperty("os.name")} v${System.getProperty("os.version")}"
+    private val cpus: Int = Runtime.getRuntime().availableProcessors()
+    private val memorySize: Long = Runtime.getRuntime().maxMemory() / 1024 / 1024
+
+    private val displayWidth: Int
+    private val displayHeight: Int
+    private val refreshRate: Int
+    private val windows = mutableMapOf<UInt, Frame>()
     actual val logger: Logger
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+
+    init {
+        val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
+        logger = configuration.logger
+
+        logger.info("$platform with $cpus CPUs, $memorySize MB")
+        logger.info("Initializing LWJGL3 v$version")
+
+        GLFWErrorCallback.createPrint().set()
+
+        if (!glfwInit())
+            throw EngineException("Unable to initialize GLFW")
+
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE)
+        glfwWindowHint(GLFW_SAMPLES, 4)
+
+        val monitor = glfwGetPrimaryMonitor()
+        val vidmode = glfwGetVideoMode(monitor) ?: throw EngineException("Unable to get GLFW video mode")
+
+        displayWidth = vidmode.width()
+        displayHeight = vidmode.height()
+        refreshRate = vidmode.refreshRate()
+        logger.info("Display mode: ${displayWidth}x${displayHeight}, $refreshRate Hz")
+    }
+
+    actual fun quit() {
+        glfwTerminate()
+        logger.info("Quit LWJGL3")
+    }
 
     actual fun sleep(millis: UInt) {}
     actual fun setScreenSaver(enabled: Boolean) {}
@@ -25,15 +68,21 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         y: Int,
         windowFlags: UInt
     ): Frame {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val window = glfwCreateWindow(width, height, title, 0L, NULL)
+        if (window == NULL) throw AssertionError("Failed to create the GLFW window")
+
+        glfwMakeContextCurrent(window)
+        GL.createCapabilities()
+        glfwShowWindow(window)
+        return Frame(this, window)
     }
 
     actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Cursor(glfwCreateCursor(canvas.image, hotX, hotY))
     }
 
     actual fun createCursor(systemCursor: SystemCursor): Cursor {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Cursor(glfwCreateStandardCursor(systemCursor.cursorId))
     }
 
     actual fun createCanvas(size: Size, bitsPerPixel: Int): Canvas {

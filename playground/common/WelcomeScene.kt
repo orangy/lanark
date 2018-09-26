@@ -7,7 +7,7 @@ import org.lanark.ui.*
 
 class WelcomeScene(val engine: Engine, private val resources: ResourceContext) : Scene {
     private val background = resources.loadTexture("welcome/background-image")
-    private val backgroundMusic = resources.loadMusic("welcome/background-music")
+    //private val backgroundMusic = resources.loadMusic("welcome/background-music")
     private val normalCursor = resources.loadCursor("cursors/normal")
     private val hotCursor = resources.loadCursor("cursors/hot")
 

@@ -34,3 +34,4 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
     fun loadVideo(path: String, fileSystem: FileSystem): Video
 }
 
+class EngineException(message: String) : Exception(message)

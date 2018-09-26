@@ -24,7 +24,7 @@ actual class Canvas(private val engine: Engine, internal val surfacePtr: CPointe
                 SDL_BLENDMODE_MOD -> BlendMode.Mod
                 SDL_BLENDMODE_ADD -> BlendMode.Add
                 SDL_BLENDMODE_BLEND -> BlendMode.Blend
-                else -> throw PlatformException("Unknown blend mode ${mode.value}")
+                else -> throw EngineException("Unknown blend mode ${mode.value}")
             }
         }
         set(value) {

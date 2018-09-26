@@ -19,7 +19,7 @@ fun main() {
         enableEverything()
     }
 
-    val title = "Kotlin SDL2 Demo"
+    val title = "Lanark Demo"
     @Suppress("NAMED_ARGUMENTS_NOT_ALLOWED")
     val frame = engine.createFrame(title, 800, 600, windowFlags = Frame.CreateHiDPI or Frame.CreateShown or Frame.CreateOpenGL).apply {
         minimumSize = Size(800, 600)

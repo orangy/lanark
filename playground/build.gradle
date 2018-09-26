@@ -5,13 +5,25 @@ kotlin {
         fromPreset(presets.macosX64, 'sdl2macos') {
             compilations.main {
                 outputKinds = [EXECUTABLE]
+                linkerOpts '-framework ApplicationServices -framework Cocoa -framework Carbon -framework CoreGraphics -framework CoreAudio -framework AudioToolbox -framework Foundation -framework ForceFeedback -framework OpenGL -framework ImageIO -framework IOKit -weak_framework QuartzCore -weak_framework Metal'
             }
-            compilations.all { compilation ->
-                linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
+        }
+
+        fromPreset(presets.iosX64, 'sdl2ios') {
+            compilations.main {
+                outputKinds = [EXECUTABLE]
+                linkerOpts '-framework AVFoundation -framework CoreGraphics -framework AudioToolbox -framework CoreMotion -framework Foundation -framework GameController -framework OpenGLES -framework UIKit -framework CoreBluetooth -framework ImageIO -framework CoreServices -weak_framework QuartzCore -weak_framework Metal'
+            }
+        }
+
+        fromPreset(presets.jvm, 'lwjgl')
+        configure([lwjgl]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = '1.8'
             }
         }
     }
-    
+
     sourceSets {
         commonMain {
             kotlin.srcDirs = ["common"]
@@ -32,9 +44,13 @@ kotlin {
         sdl2macosMain {
             kotlin.srcDirs = ["sdl2"]
             resources.srcDirs = ["resources"]
-            dependencies {
-                implementation project(":core")
-            }
+        }
+        sdl2iosMain {
+            dependsOn sdl2macosMain
+        }
+
+        lwjglMain {
+            kotlin.srcDirs = ["lwjgl"]
         }
     }
 }
@@ -58,9 +74,43 @@ afterEvaluate {
 
 afterEvaluate {
     def linkTask = kotlin.targets.sdl2macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG")
-    task run(type: Exec) {
+    task sdl2Run(type: Exec) {
         dependsOn(linkTask)
         def outputArtifact = linkTask.outputFile.get()
         commandLine "$outputArtifact"
     }
+}
+
+def xcodeProject = project.name
+def fqn = ""
+task startSimulator(type: Exec) {
+    workingDir '.'
+    executable "sh"
+    args "-c", 'open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+}
+
+task shutdownSimulator(type: Exec) {
+    workingDir '.'
+    executable "sh"
+    args "-c", "xcrun simctl shutdown booted"
+}
+
+task buildXcode(type: Exec, dependsOn: [build, startSimulator]) {
+    workingDir file(xcodeProject + ".xcodeproj")
+    executable "sh"
+    args "-c", "xcrun xcodebuild -scheme $xcodeProject -project . -configuration Debug -destination 'platform=iOS Simulator,name=iPhone X,OS=latest' -derivedDataPath build"
+}
+
+task installSimulator(type: Exec, dependsOn: [buildXcode]) {
+    workingDir file(".")
+    executable "sh"
+
+    def appFolder = file(xcodeProject + ".xcodeproj/build/Build/Products/Debug-iphonesimulator/" + xcodeProject + ".app")
+    args "-c", "xcrun simctl install booted '${appFolder.absolutePath}'"
+}
+
+task launchSimulator(type: Exec, dependsOn: [installSimulator]) {
+    workingDir file(xcodeProject + ".xcodeproj")
+    executable "sh"
+    args "-c", "xcrun simctl launch booted $fqn"
 }

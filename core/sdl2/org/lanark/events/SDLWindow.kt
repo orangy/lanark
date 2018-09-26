@@ -12,7 +12,7 @@ actual abstract class EventWindow(
     companion object {
         fun createEvent(sdlEvent: SDL_Event, engine: Engine): EventWindow {
             if (sdlEvent.type != SDL_WINDOWEVENT) {
-                throw PlatformException("EventWindow.createEvent was called with unknown type of SDL_Event")
+                throw EngineException("EventWindow.createEvent was called with unknown type of SDL_Event")
             }
 
             val windowEvent = sdlEvent.window
@@ -20,7 +20,7 @@ actual abstract class EventWindow(
 
             val eventKind = SDL_WindowEventID.byValue(windowEvent.event.toUInt())
             val kevent = when (eventKind) {
-                SDL_WindowEventID.SDL_WINDOWEVENT_NONE -> throw PlatformException("SDL_WINDOWEVENT_NONE shouldn't be sent")
+                SDL_WindowEventID.SDL_WINDOWEVENT_NONE -> throw EngineException("SDL_WINDOWEVENT_NONE shouldn't be sent")
                 SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN -> EventWindowShown(frame, windowEvent)
                 SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN -> EventWindowHidden(frame, windowEvent)
                 SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED -> EventWindowExposed(frame, windowEvent)

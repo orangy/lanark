@@ -3,16 +3,21 @@ package org.lanark.application
 import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.system.*
+import org.lwjgl.glfw.GLFW.*
 
-actual class Frame : Managed {
+actual class Frame(actual val engine: Engine, val windowHandle: Long) : Managed {
     override fun release() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        glfwDestroyWindow(windowHandle)
     }
 
-    actual val engine: Engine
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     actual val size: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() {
+            val width = IntArray(1)
+            val height = IntArray(1)
+            glfwGetWindowSize(windowHandle, width, height)
+            return Size(width[0], height[0])
+        }
+    
     actual var minimumSize: Size
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         set(value) {}
@@ -22,13 +27,17 @@ actual class Frame : Managed {
     actual var brightness: Float
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         set(value) {}
-    actual var title: String
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        set(value) {}
+    
+    actual var title: String = ""
+        set(value) {
+            field = value
+            glfwSetWindowTitle(windowHandle, value)
+        }
+    
     actual val borders: Margins
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    actual val renderer: Renderer
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    
+    actual val renderer: Renderer = Renderer()
 
     actual fun setBordered(enable: Boolean) {}
     actual fun setResizable(enable: Boolean) {}
@@ -37,19 +46,12 @@ actual class Frame : Managed {
     actual fun messageBox(title: String, message: String, icon: MessageBoxIcon) {}
 
     actual companion object {
-        actual val UndefinedPosition: Int
-            get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        actual val CreateShown: UInt
-            get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        actual val CreateResizable: UInt
-            get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        actual val CreateFullscreen: UInt
-            get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        actual val CreateHiDPI: UInt
-            get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        actual val CreateOpenGL: UInt
-            get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
+        actual val UndefinedPosition: Int = 0
+        actual val CreateShown: UInt = 0u
+        actual val CreateResizable: UInt = 0u
+        actual val CreateFullscreen: UInt = 0u
+        actual val CreateHiDPI: UInt = 0u
+        actual val CreateOpenGL: UInt = 0u
     }
 
 }

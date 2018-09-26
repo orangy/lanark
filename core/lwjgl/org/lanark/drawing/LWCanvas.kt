@@ -2,19 +2,23 @@ package org.lanark.drawing
 
 import org.lanark.geometry.*
 import org.lanark.system.*
+import org.lwjgl.glfw.*
 
-actual class Canvas : Managed {
+actual class Canvas(val image : GLFWImage) : Managed {
     override fun release() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        image.close()
     }
 
     actual val size: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = Size(image.width(), image.height())
+    
     actual var blendMode: BlendMode
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         set(value) {}
 
-    actual fun blit(source: Canvas) {}
+    actual fun blit(source: Canvas) {
+        
+    }
     actual fun blit(source: Canvas, sourceRect: Rect, destination: Point) {}
     actual fun blitScaled(source: Canvas) {}
     actual fun blitScaled(source: Canvas, sourceRect: Rect, destinationRect: Rect) {}

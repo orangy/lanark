@@ -16,7 +16,7 @@ actual abstract class EventApp(private val sdlEvent: SDL_CommonEvent) : Event(sd
                 SDL_APP_DIDENTERFOREGROUND -> EventAppEnteredForeground(sdlEvent.common)
                 SDL_APP_WILLENTERBACKGROUND -> EventAppEnteringBackground(sdlEvent.common)
                 SDL_APP_WILLENTERFOREGROUND -> EventAppEnteringForeground(sdlEvent.common)
-                else -> throw PlatformException("EventApp.createEvent was called with unknown type of SDL_Event")
+                else -> throw EngineException("EventApp.createEvent was called with unknown type of SDL_Event")
             }
         }
     }

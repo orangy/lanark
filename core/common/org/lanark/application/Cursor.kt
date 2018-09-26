@@ -8,14 +8,17 @@ expect class Cursor : Managed {
 expect enum class SystemCursor {
     Arrow,
     IBeam,
-    Wait,
     CrossHair,
-    WaitArrow,
-    SizeNWSE,
-    SizeNESW,
     SizeWE,
     SizeNS,
     SizeAll,
+    Hand,
+
+/*
+    Wait,
+    WaitArrow,
+    SizeNWSE,
+    SizeNESW,
     No,
-    Hand
+*/
 }

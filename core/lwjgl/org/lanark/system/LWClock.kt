@@ -1,29 +1,34 @@
 package org.lanark.system
 
+import org.lwjgl.glfw.*
+
 actual class Clock actual constructor() {
-    actual var start: ULong = System.nanoTime().toULong()
+    private val frequency = GLFW.glfwGetTimerFrequency().toULong()
+
+    actual var start: ULong = GLFW.glfwGetTimerValue().toULong()
         private set
 
     actual fun reset() {
-        start = System.nanoTime().toULong()
+        start = GLFW.glfwGetTimerValue().toULong()
     }
 
     actual fun delay(millis: ULong) {
         Thread.sleep(millis.toLong())
     }
     
-    actual fun elapsedTicks(): ULong = System.nanoTime().toULong() - start
+    actual fun elapsedTicks(): ULong = GLFW.glfwGetTimerValue().toULong() - start
 
     actual fun elapsedMillis(): ULong {
-        return elapsedTicks() / 1000_000u
+        val elapsed = elapsedTicks() * 1000u
+        return (elapsed / frequency)
     }
 
     actual fun elapsedMicros(): ULong {
-        return elapsedTicks() / 1000u
+        val elapsed = elapsedTicks() * 1000_000u
+        return (elapsed / frequency)
     }
 
     actual fun elapsedSeconds(): ULong {
-        return elapsedTicks() / 1000_000_000u
+        return (elapsedTicks() / frequency)
     }
-
 }

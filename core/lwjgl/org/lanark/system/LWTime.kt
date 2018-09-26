@@ -1,9 +1,11 @@
 package org.lanark.system
 
-actual class Time {
+import java.time.*
+
+actual class Time(private val dateTime: LocalDateTime) {
     actual companion object {
-        actual fun now(): Time {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
+        actual fun now(): Time = Time(LocalDateTime.now())
     }
+
+    override fun toString() = dateTime.toString()
 }

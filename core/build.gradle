@@ -7,18 +7,32 @@ kotlin {
                 cinterops {
                     sdl {
                         defFile = file("sdl2/sdl2.def")
-                        includeDirs '/usr/local/opt/sdl2/include/SDL2'
-                        includeDirs '/usr/local/opt/sdl2_image/include/SDL2'
-                        includeDirs '/usr/local/opt/sdl2_mixer/include/SDL2'
                     }
                 }
             }
-            compilations.all { compilation ->
-                linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
+        }
+
+        fromPreset(presets.iosX64, 'sdl2ios') {
+            compilations.main {
+                cinterops {
+                    sdl {
+                        defFile = file("sdl2/sdl2.def")
+                    }
+                }
             }
         }
 
-        fromPreset(presets.jvm, 'lwjgl')
+
+        fromPreset(presets.jvm, 'lwjgl') 
+
+        configure([lwjgl]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = '1.8'
+            }
+            tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = '1.8'
+            }
+        }
     }
 
     sourceSets {
@@ -36,14 +50,13 @@ kotlin {
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
             }
         }
-
+        
         sdl2macosMain {
             kotlin.srcDirs = ["sdl2"]
             resources.srcDirs = ["sdl2Resources"]
-            dependencies {
-                api 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native_debug_macos_x64:0.26.1-eap13'
-                api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
-            }
+        }
+        sdl2iosMain {
+            dependsOn sdl2macosMain
         }
 
         sdl2macosTest {
@@ -52,6 +65,8 @@ kotlin {
         lwjglMain {
             kotlin.srcDirs = ["lwjgl"]
             dependencies {
+                api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+
                 api "org.lwjgl:lwjgl:$lwjglVersion"
                 api "org.lwjgl:lwjgl-assimp:$lwjglVersion"
                 api "org.lwjgl:lwjgl-glfw:$lwjglVersion"

@@ -2,7 +2,6 @@ package org.lanark.events
 
 import org.lanark.application.*
 import org.lanark.diagnostics.*
-import org.lanark.geometry.*
 import sdl2.*
 
 actual abstract class EventMouse(actual val frame: Frame, private val sdlEventType: UInt, timestamp: UInt) : Event(timestamp.toULong()) {
@@ -12,7 +11,7 @@ actual abstract class EventMouse(actual val frame: Frame, private val sdlEventTy
             SDL_MOUSEBUTTONUP -> EventMouseButtonUp(engine.getFrame(sdlEvent.button.windowID), sdlEvent.button)
             SDL_MOUSEMOTION -> EventMouseMotion(engine.getFrame(sdlEvent.motion.windowID), sdlEvent.motion)
             SDL_MOUSEWHEEL -> EventMouseWheel(engine.getFrame(sdlEvent.wheel.windowID), sdlEvent.wheel)
-            else -> throw PlatformException("EventMouse.createEvent was called with unknown type of SDL_Event")
+            else -> throw EngineException("EventMouse.createEvent was called with unknown type of SDL_Event")
         }
     }
 
@@ -71,7 +70,7 @@ actual enum class MouseButton {
             SDL_BUTTON_MIDDLE -> Middle
             SDL_BUTTON_X1 -> X1
             SDL_BUTTON_X2 -> X2
-            else -> throw PlatformException("MouseButton.fromValue was called with unknown value $value")
+            else -> throw EngineException("MouseButton.fromValue was called with unknown value $value")
         }
     }
 }

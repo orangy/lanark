@@ -2,9 +2,13 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     targets {
-        fromPreset(presets.macosX64, 'sdl2macos') {
-            compilations.all { compilation ->
-                linkerOpts "-L/usr/local/opt/sdl2/lib -L/usr/local/opt/sdl2_image/lib -L/usr/local/opt/sdl2_mixer/lib -lsdl2 -lsdl2_image -lsdl2_mixer"
+        fromPreset(presets.macosX64, 'sdl2macos')
+        fromPreset(presets.iosX64, 'sdl2ios')
+
+        fromPreset(presets.jvm, 'lwjgl')
+        configure([lwjgl]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = '1.8'
             }
         }
     }
@@ -27,10 +31,13 @@ kotlin {
 
         sdl2macosMain {
             kotlin.srcDirs = ["sdl2"]
-            dependencies {
-                api 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native_debug_macos_x64:0.26.1-eap13'
-                api 'org.jetbrains.kotlinx:atomicfu-native_debug_macos_x64:0.11.7-eap13'
-            }
+        }
+        sdl2iosMain {
+            dependsOn sdl2macosMain
+        }
+
+        lwjglMain {
+            kotlin.srcDirs = ["lwjgl"]
         }
     }
 }
