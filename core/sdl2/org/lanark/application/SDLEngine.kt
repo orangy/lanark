@@ -23,7 +23,6 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val windows = mutableMapOf<UInt, Frame>()
 
     init {
-        SDL_SetMainReady()
         version = memScoped {
             val version = alloc<SDL_version>()
             SDL_GetVersion(version.ptr)
@@ -64,7 +63,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         refreshRate = displayMode.refresh_rate
 
         logger.info("Initializing MIX v$mixVersion")
-        Mix_Init(MIX_INIT_OGG.toInt()).sdlError("Mix_Init")
+        Mix_Init(MIX_INIT_MP3.toInt()).sdlError("Mix_Init")
         Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 1, 4096).sdlError("Mix_OpenAudio")
     }
 

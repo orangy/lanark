@@ -6,7 +6,7 @@ import org.lanark.resources.*
 import org.lanark.system.*
 import org.lanark.ui.*
 
-fun main(args: Array<String>) {
+fun SDL_main() {
     println("Starting Lanark Demo…")
     val engine = Engine {
         consoleLogger {
@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
 
     val title = "Lanark Demo"
     @Suppress("NAMED_ARGUMENTS_NOT_ALLOWED")
-    val frame = engine.createFrame(title, 800, 600, windowFlags = Frame.CreateHiDPI or Frame.CreateShown or Frame.CreateOpenGL).apply {
+    val frame = engine.createFrame(title, 800, 600, windowFlags = Frame.CreateFullscreen or Frame.CreateHiDPI or Frame.CreateShown or Frame.CreateOpenGL).apply {
         minimumSize = Size(800, 600)
         setBordered(true)
         setResizable(true)
@@ -87,7 +87,7 @@ fun main(args: Array<String>) {
         }
 
     }
-    engine.logger.switch(Events.LogCategory, false)
+    engine.logger.switch(Events.LogCategory, true)
 
     val application = SceneApplication(frame, executor)
     val dialog = Dialog(Rect(140, 140, 412, 234), uiResources, listOf(
@@ -95,7 +95,7 @@ fun main(args: Array<String>) {
             Button(Point(20, 80), uiResources)))
     val welcome = WelcomeScene(engine, resources)
 
-    application.scene = SceneLayered("main", listOf(welcome, dialog))
+    application.scene = SceneLayered("main", listOf(welcome))
 
     application.run()
 

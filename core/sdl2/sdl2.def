@@ -1,15 +1,18 @@
 headers=SDL.h SDL_image.h SDL_mixer.h
+entryPoint=SDL_main
 excludedFunctions=Mix_HasMusicDecoder
 headerFilter=SDL*
 depends=posix
 
-compilerOpts=-D_POSIX_SOURCE -DSDL_MAIN_HANDLED
+compilerOpts=-D_POSIX_SOURCE 
 compilerOpts=-I../libs/sdl/include -I../libs/sdl_image/include -I../libs/sdl_mixer/include 
 compilerOpts.osx= 
 compilerOpts.linux=-D_REENTRANT
 compilerOpts.ios=
 linkerOpts= 
 linkerOpts.ios_arm64=-lSDL2 -lSDL2_image -lSDL2_mixer -L../libs/sdl/ios_arm64 -L../libs/sdl_image/ios_arm64 -L../libs/sdl_mixer/ios_arm64
-linkerOpts.ios_x64=-lSDL2 -lSDL2_image -lSDL2_mixer -L../libs/sdl/ios_x64 -L../libs/sdl_image/ios_x64 -L../libs/sdl_mixer/ios_x64
-linkerOpts.osx=-lSDL2 -lSDL2_image -lSDL2_mixer -L../libs/sdl/macos_x64 -L../libs/sdl_image/macos_x64 -L../libs/sdl_mixer/macos_x64
+linkerOpts.ios_x64=-framework AVFoundation -framework CoreGraphics -framework AudioToolbox -framework CoreMotion -framework Foundation -framework GameController -framework OpenGLES -framework UIKit -framework CoreBluetooth -framework ImageIO -framework CoreServices -weak_framework QuartzCore -weak_framework Metal \
+ -lSDL2 -lSDL2_image -lSDL2_mixer -L../libs/sdl/ios_x64 -L../libs/sdl_image/ios_x64 -L../libs/sdl_mixer/ios_x64
+linkerOpts.osx=-framework ApplicationServices -framework Cocoa -framework Carbon -framework CoreGraphics -framework CoreAudio -framework AudioToolbox -framework Foundation -framework ForceFeedback -framework OpenGL -framework ImageIO -framework IOKit -weak_framework QuartzCore -weak_framework Metal \
+-lSDL2 -lSDL2_image -lSDL2_mixer -L../libs/sdl/macos_x64 -L../libs/sdl_image/macos_x64 -L../libs/sdl_mixer/macos_x64
 

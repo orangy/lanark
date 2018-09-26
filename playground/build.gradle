@@ -5,18 +5,18 @@ kotlin {
         fromPreset(presets.macosX64, 'sdl2macos') {
             compilations.main {
                 outputKinds = [EXECUTABLE]
-                linkerOpts '-framework ApplicationServices -framework Cocoa -framework Carbon -framework CoreGraphics -framework CoreAudio -framework AudioToolbox -framework Foundation -framework ForceFeedback -framework OpenGL -framework ImageIO -framework IOKit -weak_framework QuartzCore -weak_framework Metal'
             }
         }
 
         fromPreset(presets.iosX64, 'sdl2ios') {
             compilations.main {
                 outputKinds = [EXECUTABLE]
-                linkerOpts '-framework AVFoundation -framework CoreGraphics -framework AudioToolbox -framework CoreMotion -framework Foundation -framework GameController -framework OpenGLES -framework UIKit -framework CoreBluetooth -framework ImageIO -framework CoreServices -weak_framework QuartzCore -weak_framework Metal'
+                extraOpts "-nomain"
             }
         }
 
         fromPreset(presets.jvm, 'lwjgl')
+        
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = '1.8'
@@ -55,13 +55,13 @@ kotlin {
     }
 }
 
-kotlin.targets.all {
+/*kotlin.targets.all {
     compilations.all { compilation ->
         tasks.getByName(compilation.compileKotlinTaskName) {
-            kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
+            kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
         }
     }
-}
+}*/
 
 afterEvaluate {
     kotlin.targets.sdl2macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
