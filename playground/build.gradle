@@ -135,6 +135,6 @@ afterEvaluate {
         }
 
         executable "sh"
-        args "-c", "xcrun simctl launch booted $appId --console"
+        args "-c", "xcrun simctl launch --console-pty booted $appId"
     }
 }
