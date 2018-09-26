@@ -73,44 +73,39 @@ afterEvaluate {
 }
 
 afterEvaluate {
-    def linkTask = kotlin.targets.sdl2macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG")
-    task sdl2Run(type: Exec) {
-        dependsOn(linkTask)
-        def outputArtifact = linkTask.outputFile.get()
-        commandLine "$outputArtifact"
+    task runDebugExecutableSdl2macos(type: Exec, dependsOn: [linkDebugExecutableSdl2macos]) {
+        executable linkDebugExecutableSdl2macos.outputFile.get()
     }
-}
 
-def xcodeProject = project.name
-def fqn = ""
-task startSimulator(type: Exec) {
-    workingDir '.'
-    executable "sh"
-    args "-c", 'open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
-}
+    task bundleDebugExecutableSdl2ios(type: Copy, dependsOn: [linkDebugExecutableSdl2ios]) {
+        from linkDebugExecutableSdl2ios.outputFile.get()
+        from file('resources')
+        into file("build/${project.name}.app/")
+    }
 
-task shutdownSimulator(type: Exec) {
-    workingDir '.'
-    executable "sh"
-    args "-c", "xcrun simctl shutdown booted"
-}
+    task installDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios]) {
+        executable "sh"
 
-task buildXcode(type: Exec, dependsOn: [build, startSimulator]) {
-    workingDir file(xcodeProject + ".xcodeproj")
-    executable "sh"
-    args "-c", "xcrun xcodebuild -scheme $xcodeProject -project . -configuration Debug -destination 'platform=iOS Simulator,name=iPhone X,OS=latest' -derivedDataPath build"
-}
+        def appFolder = bundleDebugExecutableSdl2ios.destinationDir
+        args "-c", "xcrun simctl install booted '${appFolder.absolutePath}'"
+    }
 
-task installSimulator(type: Exec, dependsOn: [buildXcode]) {
-    workingDir file(".")
-    executable "sh"
+    task runDebugExecutableSdl2ios(type: Exec, dependsOn: [installDebugExecutableSdl2ios]) {
+        executable "sh"
+        def appId = project.name + ".kexe"
+        args "-c", "xcrun simctl launch booted $appId --console"
+    }
 
-    def appFolder = file(xcodeProject + ".xcodeproj/build/Build/Products/Debug-iphonesimulator/" + xcodeProject + ".app")
-    args "-c", "xcrun simctl install booted '${appFolder.absolutePath}'"
-}
+    task startSimulator(type: Exec) {
+        executable "sh"
+        args "-c", 'open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+        // TODO: Wait for it to start 
+        // xcrun simctl list | grep Booted | wc -l 
+    }
 
-task launchSimulator(type: Exec, dependsOn: [installSimulator]) {
-    workingDir file(xcodeProject + ".xcodeproj")
-    executable "sh"
-    args "-c", "xcrun simctl launch booted $fqn"
+    task shutdownSimulator(type: Exec) {
+        executable "sh"
+        args "-c", "xcrun simctl shutdown booted"
+    }
+
 }

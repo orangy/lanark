@@ -7,13 +7,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
-	<string>lanark.kexe</string>
+	<string>playground.kexe</string>
 	<key>CFBundleIdentifier</key>
-	<string>lanark.kexe</string>
+	<string>playground.kexe</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>lanark.kexe</string>
+	<string>playground.kexe</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
