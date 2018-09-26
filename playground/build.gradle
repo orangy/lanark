@@ -72,6 +72,18 @@ afterEvaluate {
     }
 }
 
+task startSimulator(type: Exec) {
+    executable "sh"
+    args "-c", 'open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+    // TODO: Wait for it to start 
+    // xcrun simctl list | grep Booted | wc -l 
+}
+
+task shutdownSimulator(type: Exec) {
+    executable "sh"
+    args "-c", "xcrun simctl shutdown booted"
+}
+
 afterEvaluate {
     task runDebugExecutableSdl2macos(type: Exec, dependsOn: [linkDebugExecutableSdl2macos]) {
         executable linkDebugExecutableSdl2macos.outputFile.get()
@@ -83,29 +95,46 @@ afterEvaluate {
         into file("build/${project.name}.app/")
     }
 
-    task installDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios]) {
+    task compilePlistDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios]) {
+        def appId = linkDebugExecutableSdl2ios.outputFile.get().name
+        doFirst {
+            println "Compiling Info.plist for `$appId`…"
+        }
+        def appFolder = bundleDebugExecutableSdl2ios.destinationDir
+        executable "sh"
+        args "-c", "plutil -convert binary1 $appFolder/Info.plist"
+    }
+
+
+
+    task installDebugExecutableSdl2ios(type: Exec, dependsOn: [compilePlistDebugExecutableSdl2ios]) {
+        def appId = linkDebugExecutableSdl2ios.outputFile.get().name
+        doFirst {
+            println "Installing `$appId` on a simulator…"
+        }
         executable "sh"
 
         def appFolder = bundleDebugExecutableSdl2ios.destinationDir
         args "-c", "xcrun simctl install booted '${appFolder.absolutePath}'"
+
+        doLast {
+            exec {
+                executable "sh"
+                args "-c", 'echo "Installed to" $(xcrun simctl get_app_container booted ' + appId + ' bundle)'
+            }
+        }
+
+        // Local folder where app is installed 
+        // open `xcrun simctl get_app_container booted BUNDLEID_OF_YOUR_APP data` -a Finder
     }
 
-    task runDebugExecutableSdl2ios(type: Exec, dependsOn: [installDebugExecutableSdl2ios]) {
+    task runDebugExecutableSdl2ios(type: Exec, dependsOn: [installDebugExecutableSdl2ios, startSimulator]) {
+        def appId = linkDebugExecutableSdl2ios.outputFile.get().name
+        doFirst {
+            println "Starting `$appId` on a simulator…"
+        }
+
         executable "sh"
-        def appId = project.name + ".kexe"
         args "-c", "xcrun simctl launch booted $appId --console"
     }
-
-    task startSimulator(type: Exec) {
-        executable "sh"
-        args "-c", 'open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
-        // TODO: Wait for it to start 
-        // xcrun simctl list | grep Booted | wc -l 
-    }
-
-    task shutdownSimulator(type: Exec) {
-        executable "sh"
-        args "-c", "xcrun simctl shutdown booted"
-    }
-
 }

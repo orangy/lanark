@@ -1,10 +1,9 @@
 headers=SDL.h SDL_image.h SDL_mixer.h
-entryPoint=SDL_main
 excludedFunctions=Mix_HasMusicDecoder
 headerFilter=SDL*
 depends=posix
 
-compilerOpts=-D_POSIX_SOURCE 
+compilerOpts=-D_POSIX_SOURCE -DSDL_MAIN_HANDLED
 compilerOpts=-I../libs/sdl/include -I../libs/sdl_image/include -I../libs/sdl_mixer/include 
 compilerOpts.osx= 
 compilerOpts.linux=-D_REENTRANT

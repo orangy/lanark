@@ -23,6 +23,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val windows = mutableMapOf<UInt, Frame>()
 
     init {
+        SDL_SetMainReady()
         version = memScoped {
             val version = alloc<SDL_version>()
             SDL_GetVersion(version.ptr)
