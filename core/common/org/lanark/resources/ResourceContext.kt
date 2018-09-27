@@ -32,5 +32,5 @@ class ResourceContext private constructor(
     }
 }
 
-fun ResourceScope.bind(frame: Frame) = ResourceContext(frame.engine, frame.renderer, this)
+fun ResourceScope.bind(frame: Frame) = ResourceContext(frame.engine, frame, this)
 

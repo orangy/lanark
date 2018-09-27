@@ -8,7 +8,7 @@ class ResourceTexture(name: String, val location: FileLocation) : Resource<Textu
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Texture {
         return context.loadIfAbsent(this) {
             val (file, fileSystem) = location
-            (context.owner as Renderer).loadTexture(file, fileSystem).also { progress(1.0) }
+            (context.owner as Frame).loadTexture(file, fileSystem).also { progress(1.0) }
         }
     }
 

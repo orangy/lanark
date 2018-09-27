@@ -19,12 +19,12 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
     private val leftTile = tiles["border-left"]
     private val bottomTile = tiles["border-bottom"]
 
-    override fun render(renderer: Renderer) {
-        renderer.renderFrame()
-        renderer.renderControls()
+    override fun render(frame: Frame) {
+        frame.renderFrame()
+        frame.renderControls()
     }
 
-    private fun Renderer.renderControls() {
+    private fun Frame.renderControls() {
         clip(area) {
             controls.forEach {
                 it.render(area, this)
@@ -32,7 +32,7 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
         }
     }
 
-    private fun Renderer.renderFrame() {
+    private fun Frame.renderFrame() {
         fill(background, area)
         draw(topLeftTile, Point(area.left, area.top))
         draw(topRightTile, Point(area.right, area.top))

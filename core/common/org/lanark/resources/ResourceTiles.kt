@@ -13,7 +13,7 @@ class ResourceTiles(name: String, val location: FileLocation) : Resource<Tiles>(
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Tiles {
         return context.loadIfAbsent(this) {
             val (file, fileSystem) = location
-            val texture : Texture = (context.owner as Renderer).loadTexture(file, fileSystem)
+            val texture : Texture = (context.owner as Frame).loadTexture(file, fileSystem)
             val tiles = items.mapValues { (name, item) ->
                 Tile(name, texture, Rect(item.x, item.y, item.width, item.height), Point(item.hotX, item.hotY))
             }

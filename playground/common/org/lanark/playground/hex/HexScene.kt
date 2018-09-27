@@ -41,21 +41,21 @@ class HexScene(resources: ResourceContext) : Scene {
     override fun deactivate(executor: TaskExecutor) {
     }
 
-    override fun render(renderer: Renderer) {
-        renderer.scale(scale)
+    override fun render(frame: Frame) {
+        frame.scale(scale)
 
         for (cell in map) {
             when (cell.value.type) {
-                HexLandType.Water -> renderer.renderHex(cell.key, water)
-                HexLandType.Land -> renderer.renderHex(cell.key, grass)
+                HexLandType.Water -> frame.renderHex(cell.key, water)
+                HexLandType.Land -> frame.renderHex(cell.key, grass)
             }
         }
 
-        renderer.renderHex(hoverHex, hover)
-        renderer.renderHex(selectedHex, select)
+        frame.renderHex(hoverHex, hover)
+        frame.renderHex(selectedHex, select)
     }
 
-    fun Renderer.renderHex(hex: HexCell, texture: Texture) {
+    fun Frame.renderHex(hex: HexCell, texture: Texture) {
         val textureSize = texture.size
         val shift = Vector(-textureSize.width / 2, -textureSize.height / 2)
         val center = layout.cellCenter(hex) + offset + shift

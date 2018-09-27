@@ -17,9 +17,9 @@ class SceneLayered(val name: String, val layers: List<Scene>) : Scene {
         }
     }
 
-    override fun render(renderer: Renderer) {
+    override fun render(frame: Frame) {
         layers.forEach {
-            it.render(renderer)
+            it.render(frame)
         }
     }
 

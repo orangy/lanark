@@ -3,6 +3,7 @@ package org.lanark.events
 import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.system.*
+import org.lwjgl.glfw.GLFW.*
 
 actual class Events actual constructor(engine: Engine) {
     actual val all: Signal<Event> = Signal("Event")
@@ -11,7 +12,9 @@ actual class Events actual constructor(engine: Engine) {
     actual val keyboard: Signal<EventKey> = all.filter()
     actual val mouse: Signal<EventMouse> = all.filter()
 
-    actual fun poll() {}
+    actual fun poll() {
+        glfwPollEvents()
+    }
 
     actual companion object {
         actual val LogCategory = LoggerCategory("Events")

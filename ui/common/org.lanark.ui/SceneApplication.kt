@@ -48,13 +48,12 @@ class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
 
     private val afterHandler: (Unit) -> Unit = {
         val time1 = statsClock.elapsedMicros()
-        val renderer = frame.renderer
-        
-        renderer.clip = null
-        renderer.clear(Color.BLACK)
-        activeScene?.render(renderer)
+
+        frame.clip = null
+        frame.clear(Color.BLACK)
+        activeScene?.render(frame)
         val time2 = statsClock.elapsedMicros()
-        renderer.present()
+        frame.present()
         val time3 = statsClock.elapsedMicros()
 
         updateStats.update(time1.toLong())
@@ -79,7 +78,7 @@ class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
         events.window.subscribe {
             // TODO: Decide on automatic resizing?
             if (it is EventWindowResized) {
-                frame.renderer.size = Size(it.width, it.height)
+                frame.resize(Size(it.width, it.height))
             }
         }
 

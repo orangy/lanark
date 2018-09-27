@@ -51,6 +51,9 @@ kotlin {
 
         lwjglMain {
             kotlin.srcDirs = ["lwjgl"]
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-reflect'
+            }
         }
     }
 }

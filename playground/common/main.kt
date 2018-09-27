@@ -100,7 +100,6 @@ fun main() {
     application.run()
 
     uiResources.release()
-    frame.renderer.release()
     frame.release()
     engine.quit()
 }

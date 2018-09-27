@@ -1,5 +1,4 @@
 import org.lanark.application.*
-import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
@@ -27,22 +26,22 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
         //backgroundMusic.stop()
     }
 
-    private fun renderItem(renderer: Renderer) {
-        renderer.draw(item, itemPosition)
+    private fun renderItem(frame: Frame) {
+        frame.draw(item, itemPosition)
     }
 
-    private fun renderBackground(renderer: Renderer) {
-        val vscale = renderer.size.height.toDouble() / background.size.height
-        val hscale = renderer.size.width.toDouble() / background.size.width
+    private fun renderBackground(frame: Frame) {
+        val vscale = frame.size.height.toDouble() / background.size.height
+        val hscale = frame.size.width.toDouble() / background.size.width
         val scale = maxOf(vscale, hscale)
         val destinationRect =
             Rect(0, 0, (background.size.width * scale).toInt(), (background.size.height * scale).toInt())
-        renderer.draw(background, destinationRect)
+        frame.draw(background, destinationRect)
     }
 
-    override fun render(renderer: Renderer) {
-        renderBackground(renderer)
-        renderItem(renderer)
+    override fun render(frame: Frame) {
+        renderBackground(frame)
+        renderItem(frame)
     }
 
     override fun event(event: Event, executor: TaskExecutor): Boolean {

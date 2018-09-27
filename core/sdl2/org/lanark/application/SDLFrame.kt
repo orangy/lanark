@@ -5,19 +5,26 @@ import kotlinx.cinterop.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
+import org.lanark.resources.*
 import org.lanark.system.*
 import sdl2.*
 
-actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<SDL_Window>) : Managed {
+actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<SDL_Window>) : ResourceOwner, Managed {
     val id: UInt get() = SDL_GetWindowID(windowPtr)
-
-    actual val renderer = createRenderer()
     
+    internal val rendererPtr = SDL_CreateRenderer(
+        windowPtr,
+        -1,
+        SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC
+    ).sdlError("SDL_CreateRenderer")
+
     override fun release() {
         engine.unregisterFrame(id, this)
         val captureId = id
         SDL_DestroyWindow(windowPtr)
         engine.logger.system("Released window #$captureId ${windowPtr.rawValue}")
+        SDL_DestroyRenderer(rendererPtr)
+        engine.logger.system("Released renderer $rendererPtr")
     }
 
     actual fun setBordered(enable: Boolean) {
@@ -40,6 +47,10 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
 
     actual fun setIcon(icon: Canvas) {
         SDL_SetWindowIcon(windowPtr, icon.surfacePtr)
+    }
+
+    actual fun resize(size: Size) {
+        SDL_RenderSetLogicalSize(rendererPtr, size.width, size.height)
     }
 
     actual val size: Size
@@ -102,10 +113,50 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         engine.messageBox(title, message, icon, this)
     }
 
-    private fun createRenderer(rendererFlags: UInt = SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC): Renderer {
-        val renderer = SDL_CreateRenderer(windowPtr, -1, rendererFlags).sdlError("SDL_CreateRenderer")
-        return Renderer(this, renderer)
+    actual fun clear(color: Color?) {
+        if (color != null)
+            color(color)
+        SDL_RenderClear(rendererPtr).sdlError("SDL_RenderClear")
     }
+
+    actual fun color(color: Color) {
+        SDL_SetRenderDrawColor(
+            rendererPtr,
+            color.red,
+            color.green,
+            color.blue,
+            color.alpha
+        ).sdlError("SDL_SetRenderDrawColor")
+    }
+
+    actual fun scale(scale: Float) {
+        SDL_RenderSetScale(rendererPtr, scale, scale).sdlError("SDL_RenderSetScale")
+    }
+
+    actual fun drawLine(from: Point, to: Point) {
+        SDL_RenderDrawLine(rendererPtr, from.x, from.y, to.x, to.y).sdlError("SDL_RenderDrawLine")
+    }
+
+    actual fun present() {
+        SDL_RenderPresent(rendererPtr)
+    }
+
+    actual var clip: Rect?
+        get() = memScoped {
+            val rect = alloc<SDL_Rect>()
+            SDL_RenderGetClipRect(rendererPtr, rect.ptr)
+            if (rect.w == 0 && rect.h == 0)
+                null
+            else
+                Rect(rect.x, rect.y, rect.w, rect.h)
+        }
+        set(value) = memScoped {
+            if (value == null)
+                SDL_RenderSetClipRect(rendererPtr, null)
+            else
+                SDL_RenderSetClipRect(rendererPtr, SDL_Rect(value))
+        }
+
 
     actual companion object {
         actual val UndefinedPosition = SDL_WINDOWPOS_UNDEFINED.toInt()

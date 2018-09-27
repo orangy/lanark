@@ -1,5 +1,6 @@
 package org.lanark.ui
 
+import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.resources.*
@@ -11,7 +12,7 @@ class Button(val position: Point, private val resources: ResourceContext) : Cont
     private val buttonPressed = tiles["button-pressed"]
     private val buttonDisabled = tiles["button-disabled"]
 
-    override fun render(area: Rect, renderer: Renderer) {
-        renderer.draw(button, position.relativeTo(area.origin))
+    override fun render(area: Rect, frame: Frame) {
+        frame.draw(button, position.relativeTo(area.origin))
     }
 }

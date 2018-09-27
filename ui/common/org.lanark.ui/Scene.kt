@@ -8,7 +8,7 @@ interface Scene {
     fun activate(executor: TaskExecutor)
     fun deactivate(executor: TaskExecutor)
 
-    fun render(renderer: Renderer)
+    fun render(frame: Frame)
     fun event(event: Event, executor: TaskExecutor): Boolean
 }
 

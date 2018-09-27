@@ -68,11 +68,14 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         y: Int,
         windowFlags: UInt
     ): Frame {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE) // the window will be resizable
         val window = glfwCreateWindow(width, height, title, 0L, NULL)
-        if (window == NULL) throw AssertionError("Failed to create the GLFW window")
+        if (window == NULL) throw EngineException("Failed to create the GLFW window")
 
         glfwMakeContextCurrent(window)
         GL.createCapabilities()
+        glfwSwapInterval(1) // vsync
         glfwShowWindow(window)
         return Frame(this, window)
     }

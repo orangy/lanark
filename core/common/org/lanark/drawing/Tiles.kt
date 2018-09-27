@@ -1,5 +1,6 @@
 package org.lanark.drawing
 
+import org.lanark.application.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 
@@ -21,5 +22,5 @@ class Tile(val name: String, val texture: Texture, val rectangle: Rect, val orig
     override fun toString() = "Tile $name $rectangle"
 }
 
-expect fun Renderer.draw(tile: Tile, position: Point)
-expect fun Renderer.fill(tile: Tile, destinationRect: Rect)
+expect fun Frame.draw(tile: Tile, position: Point)
+expect fun Frame.fill(tile: Tile, destinationRect: Rect)
