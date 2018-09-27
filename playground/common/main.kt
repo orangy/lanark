@@ -6,7 +6,7 @@ import org.lanark.resources.*
 import org.lanark.system.*
 import org.lanark.ui.*
 
-fun SDL_main() {
+fun main() {
     println("Starting Lanark Demo…")
     val engine = Engine {
         consoleLogger {
@@ -87,7 +87,7 @@ fun SDL_main() {
         }
 
     }
-    engine.logger.switch(Events.LogCategory, true)
+    engine.logger.switch(Events.LogCategory, false)
 
     val application = SceneApplication(frame, executor)
     val dialog = Dialog(Rect(140, 140, 412, 234), uiResources, listOf(
@@ -95,7 +95,7 @@ fun SDL_main() {
             Button(Point(20, 80), uiResources)))
     val welcome = WelcomeScene(engine, resources)
 
-    application.scene = SceneLayered("main", listOf(welcome))
+    application.scene = SceneLayered("main", listOf(welcome, dialog))
 
     application.run()
 

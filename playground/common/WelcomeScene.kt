@@ -1,4 +1,5 @@
 import org.lanark.application.*
+import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
@@ -8,15 +9,17 @@ import org.lanark.ui.*
 class WelcomeScene(val engine: Engine, private val resources: ResourceContext) : Scene {
     private val background = resources.loadTexture("welcome/background-image")
     //private val backgroundMusic = resources.loadMusic("welcome/background-music")
+/*
     private val normalCursor = resources.loadCursor("cursors/normal")
     private val hotCursor = resources.loadCursor("cursors/hot")
+*/
 
     private val item = resources.loadTexture("welcome/item")
     private val itemPosition = Point(100, 100)
     private val itemRect = Rect(itemPosition, item.size)
 
     override fun activate(executor: TaskExecutor) {
-        engine.activeCursor = normalCursor
+        //engine.activeCursor = normalCursor
         //backgroundMusic.play()
     }
 
@@ -43,7 +46,7 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
     }
 
     override fun event(event: Event, executor: TaskExecutor): Boolean {
-        when (event) {
+ /*       when (event) {
             is EventMouseMotion -> {
                 if (event.position in itemRect) {
                     engine.activeCursor = hotCursor
@@ -52,6 +55,7 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
                 }
             }
         }
+ */
         return true
     }
 

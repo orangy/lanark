@@ -55,13 +55,13 @@ kotlin {
     }
 }
 
-/*kotlin.targets.all {
+kotlin.targets.all {
     compilations.all { compilation ->
         tasks.getByName(compilation.compileKotlinTaskName) {
             kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
         }
     }
-}*/
+}
 
 afterEvaluate {
     kotlin.targets.sdl2macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
@@ -107,7 +107,7 @@ afterEvaluate {
 
 
 
-    task installDebugExecutableSdl2ios(type: Exec, dependsOn: [compilePlistDebugExecutableSdl2ios]) {
+    task installDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios]) {
         def appId = linkDebugExecutableSdl2ios.outputFile.get().name
         doFirst {
             println "Installing `$appId` on a simulator…"
