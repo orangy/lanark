@@ -4,19 +4,47 @@ import org.lanark.application.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.system.*
-import org.lwjgl.opengl.GL11C.*
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.*
 
-actual class Texture(val textureHandle: Int, actual val size: Size) : Managed {
+
+actual class Texture(val textureId: Int, actual val size: Size) : Managed {
     override fun release() {
 
     }
 }
 
-actual fun Frame.draw(texture: Texture) {}
+actual fun Frame.draw(texture: Texture) {
+
+}
+
+
 actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect) {}
-actual fun Frame.draw(texture: Texture, destinationRect: Rect) {}
+actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    glOrtho(0.0, size.width.toDouble(), 0.0, size.height.toDouble(), 0.0, 1.0)
+    glMatrixMode(GL_MODELVIEW)
+    glColor4f(1f, 1f, 1f, 1f)
+    
+    glBindTexture(GL_TEXTURE_2D, texture.textureId)
+
+    glBegin(GL_TRIANGLE_STRIP)
+    glTexCoord2f(0f, 0f)
+    glVertex2f(destinationRect.left.toFloat(), destinationRect.top.toFloat()) // Upper left
+
+    glTexCoord2f(1f, 0f)
+    glVertex2f(destinationRect.right.toFloat(), destinationRect.top.toFloat()) // Upper right
+
+    glTexCoord2f(1f, 1f)
+    glVertex2f(destinationRect.right.toFloat(), destinationRect.bottom.toFloat()) // Lower right
+
+    glTexCoord2f(0f, 1f)
+    glVertex2f(destinationRect.left.toFloat(), destinationRect.bottom.toFloat()) // Lower left
+    glEnd()
+}
+
 actual fun Frame.fill(texture: Texture, destinationRect: Rect) {}
 actual fun Frame.draw(texture: Texture, position: Point) {}
 actual fun Frame.draw(texture: Texture, position: Point, size: Size) {}

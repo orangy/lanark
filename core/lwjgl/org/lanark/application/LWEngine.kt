@@ -9,6 +9,7 @@ import org.lanark.system.*
 import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.*
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
@@ -75,6 +76,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         glfwMakeContextCurrent(window)
         GL.createCapabilities()
+        glEnable(GL_TEXTURE_2D)
         glfwSwapInterval(1) // vsync
         glfwShowWindow(window)
         return Frame(this, window)

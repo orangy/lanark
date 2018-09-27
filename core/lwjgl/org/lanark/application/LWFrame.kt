@@ -5,6 +5,7 @@ import org.lanark.geometry.*
 import org.lanark.resources.*
 import org.lanark.system.*
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.opengl.GL11.*
 
 actual class Frame(actual val engine: Engine, val windowHandle: Long) : ResourceOwner, Managed {
     override fun release() {
@@ -57,8 +58,16 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         set(value) {}
 
-    actual fun clear(color: Color?) {}
-    actual fun color(color: Color) {}
+    actual fun clear(color: Color?) {
+        if (color != null)
+            color(color)
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
+    }
+
+    actual fun color(color: Color) {
+        glClearColor(color.red.toInt().toFloat() / 255.0f, color.green.toInt().toFloat() / 255.0f, color.blue.toInt().toFloat() / 255.0f, color.alpha.toInt().toFloat() / 255.0f)
+    }
+
     actual fun scale(scale: Float) {}
     actual fun drawLine(from: Point, to: Point) {}
     actual fun present() {
