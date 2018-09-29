@@ -13,11 +13,7 @@ class Signal<T>(val tag: String) {
 
     fun raise(event: T) {
         for (handler in handlers) {
-            try {
-                handler(event)
-            } catch (e: Throwable) {
-                //logger.error("Error handling $tag event $event: $e")
-            }
+            handler(event)
         }
     }
 }
