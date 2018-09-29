@@ -4,6 +4,7 @@ import cnames.structs.SDL_Window
 import kotlinx.cinterop.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
+import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.resources.*
 import org.lanark.system.*
@@ -11,14 +12,26 @@ import sdl2.*
 
 actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<SDL_Window>) : ResourceOwner, Managed {
     val id: UInt get() = SDL_GetWindowID(windowPtr)
-    
+
     internal val rendererPtr = SDL_CreateRenderer(
         windowPtr,
         -1,
         SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC
     ).sdlError("SDL_CreateRenderer")
 
+    private val resizeHandler: (EventWindow) -> Unit = {
+        if (it is EventWindowResized && it.frame == this) {
+            val drawableSize = canvasSize // need this for HIDPI
+            SDL_RenderSetLogicalSize(rendererPtr, drawableSize.width, drawableSize.height)
+        }
+    }
+
+    init {
+        engine.events.window.subscribe(resizeHandler)
+    }
+
     override fun release() {
+        engine.events.window.unsubscribe(resizeHandler)
         engine.unregisterFrame(id, this)
         val captureId = id
         SDL_DestroyRenderer(rendererPtr)
@@ -49,15 +62,19 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         SDL_SetWindowIcon(windowPtr, icon.surfacePtr)
     }
 
-    actual fun resize(size: Size) {
-        SDL_RenderSetLogicalSize(rendererPtr, size.width, size.height)
-    }
-
     actual val size: Size
         get() = memScoped {
             val w = alloc<IntVar>()
             val h = alloc<IntVar>()
             SDL_GetWindowSize(windowPtr, w.ptr, h.ptr)
+            Size(w.value, h.value)
+        }
+
+    actual val canvasSize: Size
+        get() = memScoped {
+            val w = alloc<IntVar>()
+            val h = alloc<IntVar>()
+            SDL_GL_GetDrawableSize(windowPtr, w.ptr, h.ptr)
             Size(w.value, h.value)
         }
 

@@ -8,6 +8,7 @@ import org.lanark.system.*
 expect class Frame : ResourceOwner, Managed {
     val engine: Engine
     val size: Size
+    val canvasSize: Size
     var minimumSize: Size
     var maximumSize: Size
     var brightness: Float
@@ -30,8 +31,6 @@ expect class Frame : ResourceOwner, Managed {
     fun drawLine(from: Point, to: Point)
 
     fun present()
-    fun resize(size: Size)
-
 
     companion object {
         val UndefinedPosition: Int

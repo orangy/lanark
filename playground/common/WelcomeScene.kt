@@ -31,8 +31,8 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
     }
 
     private fun renderBackground(frame: Frame) {
-        val vscale = frame.size.height.toDouble() / background.size.height
-        val hscale = frame.size.width.toDouble() / background.size.width
+        val vscale = frame.canvasSize.height.toDouble() / background.size.height
+        val hscale = frame.canvasSize.width.toDouble() / background.size.width
         val scale = maxOf(vscale, hscale)
         val destinationRect =
             Rect(0, 0, (background.size.width * scale).toInt(), (background.size.height * scale).toInt())

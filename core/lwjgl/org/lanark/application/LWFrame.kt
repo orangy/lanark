@@ -73,7 +73,4 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
     actual fun present() {
         glfwSwapBuffers(windowHandle) // swap the color buffers
     }
-
-    actual fun resize(size: Size) {}
-
 }

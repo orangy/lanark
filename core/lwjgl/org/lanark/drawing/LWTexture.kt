@@ -24,7 +24,7 @@ actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect)
 actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(0.0, size.width.toDouble(), 0.0, size.height.toDouble(), 0.0, 1.0)
+    glOrtho(0.0, canvasSize.width.toDouble(), 0.0, canvasSize.height.toDouble(), 0.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
     glColor4f(1f, 1f, 1f, 1f)
     

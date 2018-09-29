@@ -77,13 +77,6 @@ class SceneApplication(val frame: Frame) {
 
         frame.engine.events.keyboard.subscribe { activeScene?.event(frame, it) }
         frame.engine.events.mouse.subscribe { activeScene?.event(frame, it) }
-        frame.engine.events.window.subscribe {
-            // TODO: Decide on automatic resizing?
-            if (it is EventWindowResized) {
-                frame.resize(Size(it.width, it.height))
-            }
-        }
-
         frame.engine.events.application.subscribe {
             when (it) {
                 is EventAppQuit -> executor.stop()
