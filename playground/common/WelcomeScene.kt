@@ -14,7 +14,7 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
 */
 
     private val item = resources.loadTexture("welcome/item")
-    private val itemPosition = Point(100, 100)
+    private val itemPosition = Point(10, 10)
     private val itemRect = Rect(itemPosition, item.size)
 
     override fun activate(frame: Frame) {
@@ -45,16 +45,17 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
     }
 
     override fun event(frame: Frame, event: Event): Boolean {
- /*       when (event) {
+        when (event) {
             is EventMouseMotion -> {
+/*
                 if (event.position in itemRect) {
                     engine.activeCursor = hotCursor
                 } else {
                     engine.activeCursor = normalCursor
                 }
+*/
             }
         }
- */
         return true
     }
 

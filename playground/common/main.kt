@@ -22,7 +22,7 @@ fun main() {
 
     val title = "Lanark Demo"
     @Suppress("NAMED_ARGUMENTS_NOT_ALLOWED")
-    val frame = engine.createFrame(title, 800, 600, windowFlags = Frame.CreateHiDPI or Frame.CreateShown or Frame.CreateOpenGL).apply {
+    val frame = engine.createFrame(title, 800, 600, flags = FrameFlag.CreateHiDPI + FrameFlag.CreateVisible).apply {
         minimumSize = Size(800, 600)
         setBordered(true)
         setResizable(true)

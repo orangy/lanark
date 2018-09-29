@@ -34,12 +34,19 @@ expect class Frame : ResourceOwner, Managed {
 
     companion object {
         val UndefinedPosition: Int
+    }
+}
 
-        val CreateShown: UInt
-        val CreateResizable: UInt
-        val CreateFullscreen: UInt
-        val CreateHiDPI: UInt
-        val CreateOpenGL: UInt
+expect class FrameFlag {
+    operator fun plus(flag: FrameFlag): FrameFlag
+
+    operator fun contains(flag: FrameFlag): Boolean
+
+    companion object {
+        val CreateVisible: FrameFlag
+        val CreateResizable: FrameFlag
+        val CreateFullscreen: FrameFlag
+        val CreateHiDPI: FrameFlag
     }
 }
 
@@ -52,7 +59,7 @@ enum class FrameMode {
 inline fun Frame.clip(rectangle: Rect, body: () -> Unit) {
     val old = clip
     try {
-        clip = rectangle
+        //clip = rectangle
         body()
     } finally {
         clip = old

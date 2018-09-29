@@ -8,7 +8,7 @@ data class Rect(val x: Int, val y: Int, val width: Int, val height: Int) {
     val right get() = x + width
     val top get() = y
     val bottom get() = y + height
-    
+
     constructor(origin: Point, size: Size) : this(origin.x, origin.y, size.width, size.height)
 
     override fun toString() = "R($x, $y, $width, $height)"
@@ -25,5 +25,9 @@ data class Rect(val x: Int, val y: Int, val width: Int, val height: Int) {
 
     fun isEmpty(): Boolean {
         return width == 0 || height == 0
+    }
+
+    companion object {
+        val Empty = Rect(0, 0, 0, 0)
     }
 }

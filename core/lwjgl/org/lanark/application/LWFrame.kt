@@ -20,6 +20,14 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
             return Size(width[0], height[0])
         }
 
+    actual val canvasSize: Size
+        get() {
+            val width = IntArray(1)
+            val height = IntArray(1)
+            glfwGetFramebufferSize(windowHandle, width, height)
+            return Size(width[0], height[0])
+        }
+
     actual var minimumSize: Size
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         set(value) {}
@@ -47,15 +55,10 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
 
     actual companion object {
         actual val UndefinedPosition: Int = 0
-        actual val CreateShown: UInt = 0u
-        actual val CreateResizable: UInt = 0u
-        actual val CreateFullscreen: UInt = 0u
-        actual val CreateHiDPI: UInt = 0u
-        actual val CreateOpenGL: UInt = 0u
     }
 
     actual var clip: Rect?
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = Rect.Empty
         set(value) {}
 
     actual fun clear(color: Color?) {
@@ -65,7 +68,12 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
     }
 
     actual fun color(color: Color) {
-        glClearColor(color.red.toInt().toFloat() / 255.0f, color.green.toInt().toFloat() / 255.0f, color.blue.toInt().toFloat() / 255.0f, color.alpha.toInt().toFloat() / 255.0f)
+        glClearColor(
+            color.red.toInt().toFloat() / 255.0f,
+            color.green.toInt().toFloat() / 255.0f,
+            color.blue.toInt().toFloat() / 255.0f,
+            color.alpha.toInt().toFloat() / 255.0f
+        )
     }
 
     actual fun scale(scale: Float) {}
@@ -73,4 +81,16 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
     actual fun present() {
         glfwSwapBuffers(windowHandle) // swap the color buffers
     }
+}
+
+actual class FrameFlag(val value: Int) {
+    actual companion object {
+        actual val CreateVisible = FrameFlag(GLFW_VISIBLE)
+        actual val CreateResizable = FrameFlag(GLFW_RESIZABLE)
+        actual val CreateFullscreen = FrameFlag(0)
+        actual val CreateHiDPI = FrameFlag(0)
+    }
+
+    actual operator fun plus(flag: FrameFlag) = FrameFlag(value or flag.value)
+    actual operator fun contains(flag: FrameFlag) = (flag.value and value) != 0
 }

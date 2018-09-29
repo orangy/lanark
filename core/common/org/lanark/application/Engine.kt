@@ -24,7 +24,7 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
                     height: Int,
                     x: Int = Frame.UndefinedPosition,
                     y: Int = Frame.UndefinedPosition,
-                    windowFlags: UInt = Frame.CreateShown
+                    flags: FrameFlag = FrameFlag.CreateVisible
     ): Frame
 
     fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor

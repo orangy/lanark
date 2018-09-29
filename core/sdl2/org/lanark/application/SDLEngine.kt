@@ -139,8 +139,8 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             SDL_DisableScreenSaver()
     }
 
-    actual fun createFrame(title: String, width: Int, height: Int, x: Int, y: Int, windowFlags: UInt): Frame {
-        val sdlWindow = SDL_CreateWindow(title, x, y, width, height, windowFlags).sdlError("SDL_CreateWindow")
+    actual fun createFrame(title: String, width: Int, height: Int, x: Int, y: Int, flags: FrameFlag): Frame {
+        val sdlWindow = SDL_CreateWindow(title, x, y, width, height, flags.value).sdlError("SDL_CreateWindow")
         return Frame(this, sdlWindow).also {
             windows[it.id] = it
             logger.system("Created $it")

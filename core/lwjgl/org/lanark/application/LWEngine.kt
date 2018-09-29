@@ -18,7 +18,12 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     actual val events: Events
     actual val executor: TaskExecutor
 
-    private val version: Version = Version(org.lwjgl.Version.VERSION_MAJOR, org.lwjgl.Version.VERSION_MINOR, org.lwjgl.Version.VERSION_REVISION, org.lwjgl.Version.BUILD_TYPE.name)
+    private val version: Version = Version(
+        org.lwjgl.Version.VERSION_MAJOR,
+        org.lwjgl.Version.VERSION_MINOR,
+        org.lwjgl.Version.VERSION_REVISION,
+        org.lwjgl.Version.BUILD_TYPE.name
+    )
     private val platform: String = "${System.getProperty("os.name")} v${System.getProperty("os.version")}"
     private val cpus: Int = Runtime.getRuntime().availableProcessors()
     private val memorySize: Long = Runtime.getRuntime().maxMemory() / 1024 / 1024
@@ -32,7 +37,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
         logger = configuration.logger
         events = configuration.events ?: Events(this)
-        executor= configuration.executor ?: TaskExecutorIterative(this)
+        executor = configuration.executor ?: TaskExecutorIterative(this)
 
         logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing LWJGL3 v$version")
@@ -72,18 +77,27 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         height: Int,
         x: Int,
         y: Int,
-        windowFlags: UInt
+        flags: FrameFlag
     ): Frame {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE) // the window will be resizable
-        val window = glfwCreateWindow(width, height, title, 0L, NULL)
-        if (window == NULL) throw EngineException("Failed to create the GLFW window")
+        glfwWindowHint(GLFW_RESIZABLE, if (FrameFlag.CreateResizable in flags) GLFW_TRUE else GLFW_FALSE) // the window will stay hidden after creation
+
+        val monitor = if (FrameFlag.CreateFullscreen in flags)
+            glfwGetPrimaryMonitor()
+        else
+            0L
+
+        val window = glfwCreateWindow(width, height, title, monitor, NULL)
+        if (window == NULL)
+            throw EngineException("Failed to create the GLFW window")
 
         glfwMakeContextCurrent(window)
         GL.createCapabilities()
         glEnable(GL_TEXTURE_2D)
         glfwSwapInterval(1) // vsync
-        glfwShowWindow(window)
+        
+        if (FrameFlag.CreateVisible in flags) 
+            glfwShowWindow(window)
         return Frame(this, window)
     }
 

@@ -177,13 +177,19 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
 
     actual companion object {
         actual val UndefinedPosition = SDL_WINDOWPOS_UNDEFINED.toInt()
-
-        actual val CreateShown: UInt = SDL_WINDOW_SHOWN
-        actual val CreateResizable: UInt = SDL_WINDOW_RESIZABLE
-        actual val CreateFullscreen: UInt = SDL_WINDOW_FULLSCREEN
-        actual val CreateHiDPI: UInt = SDL_WINDOW_ALLOW_HIGHDPI
-        actual val CreateOpenGL: UInt = SDL_WINDOW_OPENGL
     }
 
     override fun toString() = "Window #$id ${windowPtr.rawValue}"
+}
+
+actual class FrameFlag(val value: UInt) {
+    actual companion object {
+        actual val CreateVisible = FrameFlag(SDL_WINDOW_SHOWN)
+        actual val CreateResizable = FrameFlag(SDL_WINDOW_RESIZABLE)
+        actual val CreateFullscreen = FrameFlag(SDL_WINDOW_FULLSCREEN)
+        actual val CreateHiDPI = FrameFlag(SDL_WINDOW_ALLOW_HIGHDPI)
+    }
+
+    actual operator fun plus(flag: FrameFlag) = FrameFlag(value or flag.value)
+    actual operator fun contains(flag: FrameFlag): Boolean = (flag.value and value) != 0u
 }
