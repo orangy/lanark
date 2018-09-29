@@ -4,10 +4,9 @@ import org.lanark.application.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.system.*
-import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL14.*
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.*
-
 
 actual class Texture(val textureId: Int, actual val size: Size) : Managed {
     override fun release() {
@@ -97,7 +96,8 @@ private inline fun Frame.prepareContextFor2D(texture: Texture) {
     glMatrixMode(GL_MODELVIEW)
     glColor4f(1f, 1f, 1f, 1f)
     glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+    glBlendEquation(GL_FUNC_ADD)
     glBindTexture(GL_TEXTURE_2D, texture.textureId)
 }
 

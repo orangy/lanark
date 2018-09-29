@@ -5,7 +5,7 @@ import org.lanark.geometry.*
 import org.lanark.resources.*
 import org.lanark.system.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL14.*
 
 actual class Frame(actual val engine: Engine, val windowHandle: Long) : ResourceOwner, Managed {
     override fun release() {
@@ -57,9 +57,16 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
         actual val UndefinedPosition: Int = 0
     }
 
-    actual var clip: Rect?
-        get() = Rect.Empty
-        set(value) {}
+    actual var clip: Rect? = null
+        set(value) {
+            field = value
+            if (value == null) {
+                glDisable(GL_SCISSOR_TEST)
+            } else {
+                glEnable(GL_SCISSOR_TEST)
+                glScissor(value.x, value.y, value.width, value.height)
+            }
+        }
 
     actual fun clear(color: Color?) {
         if (color != null)
