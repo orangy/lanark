@@ -1,12 +1,15 @@
 package org.lanark.application
 
 import org.lanark.diagnostics.*
+import org.lanark.events.*
 import org.lanark.system.*
 import sdl2.*
 
 actual class EngineConfiguration(actual val platform: String, actual val cpus: Int, actual val version: Version) {
     internal var flags: UInt = 0u
     actual var logger: Logger = LoggerNone
+    actual var events: Events? = null
+    actual var executor: TaskExecutor? = null
 
     actual fun enableEverything() {
         flags = flags or SDL_INIT_EVERYTHING

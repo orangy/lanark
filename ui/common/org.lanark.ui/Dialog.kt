@@ -68,7 +68,7 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
                 area.height - topRightY - bottomRightTile.origin.y))
     }
 
-    override fun event(event: Event, executor: TaskExecutor): Boolean {
+    override fun event(frame: Frame, event: Event): Boolean {
         when (event) {
             is EventMouseMotion -> {
                 return event.position in area

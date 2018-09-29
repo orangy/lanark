@@ -3,6 +3,7 @@ package org.lanark.application
 import kotlinx.cinterop.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
+import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.media.*
@@ -11,7 +12,9 @@ import sdl2.*
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
     actual val logger: Logger
-
+    actual val events: Events
+    actual val executor: TaskExecutor
+    
     private val version: Version
     private val mixVersion: Version
     private val platform: String
@@ -44,6 +47,8 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
         logger = configuration.logger
+        events = configuration.events ?: Events(this)
+        executor= configuration.executor ?: TaskExecutorIterative(this)
 
         logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing SDL v$version")

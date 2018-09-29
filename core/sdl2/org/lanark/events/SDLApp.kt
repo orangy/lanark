@@ -6,6 +6,7 @@ import sdl2.*
 
 actual abstract class EventApp(private val sdlEvent: SDL_CommonEvent) : Event(sdlEvent.timestamp.toULong()) {
     companion object {
+        @Suppress("UNUSED_PARAMETER")
         fun createEvent(sdlEvent: SDL_Event, engine: Engine): EventApp {
             val type = sdlEvent.type
             return when (type) {

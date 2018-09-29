@@ -5,15 +5,15 @@ import org.lanark.drawing.*
 import org.lanark.events.*
 
 class SceneLayered(val name: String, val layers: List<Scene>) : Scene {
-    override fun activate(executor: TaskExecutor) {
+    override fun activate(frame: Frame) {
         layers.forEach {
-            it.activate(executor)
+            it.activate(frame)
         }
     }
 
-    override fun deactivate(executor: TaskExecutor) {
+    override fun deactivate(frame: Frame) {
         layers.forEach {
-            it.deactivate(executor)
+            it.deactivate(frame)
         }
     }
 
@@ -23,8 +23,8 @@ class SceneLayered(val name: String, val layers: List<Scene>) : Scene {
         }
     }
 
-    override fun event(event: Event, executor: TaskExecutor): Boolean {
-        return layers.asReversed().any { it.event(event, executor) }
+    override fun event(frame: Frame, event: Event): Boolean {
+        return layers.asReversed().any { it.event(frame, event) }
     }
 
     override fun toString(): String = "SceneLayered($name)"

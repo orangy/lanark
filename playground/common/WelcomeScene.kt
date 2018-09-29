@@ -17,12 +17,12 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
     private val itemPosition = Point(100, 100)
     private val itemRect = Rect(itemPosition, item.size)
 
-    override fun activate(executor: TaskExecutor) {
+    override fun activate(frame: Frame) {
         //engine.activeCursor = normalCursor
         //backgroundMusic.play()
     }
 
-    override fun deactivate(executor: TaskExecutor) {
+    override fun deactivate(frame: Frame) {
         //backgroundMusic.stop()
     }
 
@@ -44,7 +44,7 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
         renderItem(frame)
     }
 
-    override fun event(event: Event, executor: TaskExecutor): Boolean {
+    override fun event(frame: Frame, event: Event): Boolean {
  /*       when (event) {
             is EventMouseMotion -> {
                 if (event.position in itemRect) {

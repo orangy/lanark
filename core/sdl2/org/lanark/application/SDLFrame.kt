@@ -21,10 +21,10 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
     override fun release() {
         engine.unregisterFrame(id, this)
         val captureId = id
-        SDL_DestroyWindow(windowPtr)
-        engine.logger.system("Released window #$captureId ${windowPtr.rawValue}")
         SDL_DestroyRenderer(rendererPtr)
         engine.logger.system("Released renderer $rendererPtr")
+        SDL_DestroyWindow(windowPtr)
+        engine.logger.system("Released window #$captureId ${windowPtr.rawValue}")
     }
 
     actual fun setBordered(enable: Boolean) {

@@ -1,6 +1,7 @@
 package org.lanark.application
 
 import org.lanark.diagnostics.*
+import org.lanark.events.*
 import org.lanark.system.*
 
 expect class EngineConfiguration {
@@ -8,8 +9,10 @@ expect class EngineConfiguration {
     val cpus: Int
     val version: Version
     
-    var logger: Logger 
-
+    var logger: Logger
+    var events: Events?
+    var executor: TaskExecutor?
+    
     fun enableEverything()
     fun enableTimer()
     fun enableAudio()

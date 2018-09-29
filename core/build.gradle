@@ -60,7 +60,8 @@ kotlin {
                 resources.srcDirs = ["sdl2Resources"]
             }
             sdl2iosMain {
-                dependsOn sdl2macosMain
+                kotlin.srcDirs = ["sdl2"]
+                resources.srcDirs = ["sdl2Resources"]
             }
 
             sdl2macosTest {

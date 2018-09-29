@@ -5,10 +5,10 @@ import org.lanark.drawing.*
 import org.lanark.events.*
 
 interface Scene {
-    fun activate(executor: TaskExecutor)
-    fun deactivate(executor: TaskExecutor)
+    fun activate(frame: Frame)
+    fun deactivate(frame: Frame)
 
     fun render(frame: Frame)
-    fun event(event: Event, executor: TaskExecutor): Boolean
+    fun event(frame: Frame, event: Event): Boolean
 }
 

@@ -2,6 +2,7 @@ package org.lanark.application
 
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
+import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.media.*
@@ -10,6 +11,8 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
     fun quit()
     
     val logger: Logger
+    val events: Events
+    val executor: TaskExecutor
     
     fun sleep(millis: UInt)
     fun setScreenSaver(enabled: Boolean)

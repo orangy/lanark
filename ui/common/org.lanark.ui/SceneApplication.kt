@@ -7,9 +7,11 @@ import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 
-class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
-    private val events = Events(frame.engine)
+class SceneApplication(val frame: Frame) {
     private val metrics = Metrics()
+    private val events = frame.engine.events
+    private val logger = frame.engine.logger
+    private val executor = frame.engine.executor
 
     private val dumpStatsClock = Clock()
     private val statsClock = Clock()
@@ -23,7 +25,7 @@ class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
 
     private fun deactivate(activeScene: Scene?) {
         activeScene?.also { scene ->
-            scene.deactivate(executor)
+            scene.deactivate(frame)
             this.activeScene = null
             frame.engine.logger.composer("Deactivated $scene")
         }
@@ -32,7 +34,7 @@ class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
     private fun activate(activeScene: Scene?) {
         activeScene?.also { scene ->
             frame.engine.logger.composer("Activating $scene")
-            scene.activate(executor)
+            scene.activate(frame)
         }
     }
 
@@ -43,7 +45,7 @@ class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
             activeScene = scene
             activate(activeScene)
         }
-        events.poll()
+        frame.engine.events.poll()
     }
 
     private val afterHandler: (Unit) -> Unit = {
@@ -73,16 +75,16 @@ class SceneApplication(val frame: Frame, val executor: TaskExecutor) {
         executor.before.subscribe(beforeHandler)
         executor.after.subscribe(afterHandler)
 
-        events.keyboard.subscribe { activeScene?.event(it, executor) }
-        events.mouse.subscribe { activeScene?.event(it, executor) }
-        events.window.subscribe {
+        frame.engine.events.keyboard.subscribe { activeScene?.event(frame, it) }
+        frame.engine.events.mouse.subscribe { activeScene?.event(frame, it) }
+        frame.engine.events.window.subscribe {
             // TODO: Decide on automatic resizing?
             if (it is EventWindowResized) {
                 frame.resize(Size(it.width, it.height))
             }
         }
 
-        events.application.subscribe {
+        frame.engine.events.application.subscribe {
             when (it) {
                 is EventAppQuit -> executor.stop()
             }

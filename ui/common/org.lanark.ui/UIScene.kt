@@ -4,15 +4,15 @@ import org.lanark.application.*
 import org.lanark.events.*
 
 abstract class UIScene : Scene {
-    override fun activate(executor: TaskExecutor) {
+    override fun activate(frame: Frame) {
 
     }
 
-    override fun deactivate(executor: TaskExecutor) {
+    override fun deactivate(frame: Frame) {
 
     }
 
-    override fun event(event: Event, executor: TaskExecutor): Boolean {
+    override fun event(frame: Frame, event: Event): Boolean {
         return false
     }
 

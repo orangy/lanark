@@ -34,11 +34,11 @@ class HexScene(resources: ResourceContext) : Scene {
 
     private val map = HexMap.buildCircle(20, HexCellDescriptor(HexLandType.Water)).buildLand(listOf(HexCell(0, 0)))
 
-    override fun activate(executor: TaskExecutor) {
+    override fun activate(frame: Frame) {
 
     }
 
-    override fun deactivate(executor: TaskExecutor) {
+    override fun deactivate(frame: Frame) {
     }
 
     override fun render(frame: Frame) {
@@ -62,7 +62,7 @@ class HexScene(resources: ResourceContext) : Scene {
         draw(texture, center)
     }
 
-    override fun event(event: Event, executor: TaskExecutor): Boolean {
+    override fun event(frame: Frame, event: Event): Boolean {
         when (event) {
             is EventKeyDown -> {
                 when (event.scanCode) {

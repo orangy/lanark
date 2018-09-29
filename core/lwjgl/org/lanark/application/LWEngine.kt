@@ -2,6 +2,7 @@ package org.lanark.application
 
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
+import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.media.*
@@ -13,6 +14,10 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.*
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
+    actual val logger: Logger
+    actual val events: Events
+    actual val executor: TaskExecutor
+
     private val version: Version = Version(org.lwjgl.Version.VERSION_MAJOR, org.lwjgl.Version.VERSION_MINOR, org.lwjgl.Version.VERSION_REVISION, org.lwjgl.Version.BUILD_TYPE.name)
     private val platform: String = "${System.getProperty("os.name")} v${System.getProperty("os.version")}"
     private val cpus: Int = Runtime.getRuntime().availableProcessors()
@@ -22,12 +27,12 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val displayHeight: Int
     private val refreshRate: Int
     private val windows = mutableMapOf<UInt, Frame>()
-    actual val logger: Logger
-
 
     init {
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
         logger = configuration.logger
+        events = configuration.events ?: Events(this)
+        executor= configuration.executor ?: TaskExecutorIterative(this)
 
         logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing LWJGL3 v$version")

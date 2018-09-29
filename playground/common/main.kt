@@ -22,7 +22,7 @@ fun main() {
 
     val title = "Lanark Demo"
     @Suppress("NAMED_ARGUMENTS_NOT_ALLOWED")
-    val frame = engine.createFrame(title, 800, 600, windowFlags = Frame.CreateFullscreen or Frame.CreateHiDPI or Frame.CreateShown or Frame.CreateOpenGL).apply {
+    val frame = engine.createFrame(title, 800, 600, windowFlags = Frame.CreateHiDPI or Frame.CreateShown or Frame.CreateOpenGL).apply {
         minimumSize = Size(800, 600)
         setBordered(true)
         setResizable(true)
@@ -89,7 +89,7 @@ fun main() {
     }
     engine.logger.switch(Events.LogCategory, false)
 
-    val application = SceneApplication(frame, executor)
+    val application = SceneApplication(frame)
     val dialog = Dialog(Rect(140, 140, 412, 234), uiResources, listOf(
             Button(Point(20, 20), uiResources),
             Button(Point(20, 80), uiResources)))
