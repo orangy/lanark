@@ -35,6 +35,8 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
     fun loadMusic(path: String, fileSystem: FileSystem): Music
     fun loadSound(path: String, fileSystem: FileSystem): Sound
     fun loadVideo(path: String, fileSystem: FileSystem): Video
+    
+    fun postQuitEvent()
 }
 
 class EngineException(message: String) : Exception(message)

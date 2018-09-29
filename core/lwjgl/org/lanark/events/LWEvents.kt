@@ -12,6 +12,26 @@ actual class Events actual constructor(engine: Engine) {
     actual val keyboard: Signal<EventKey> = all.filter()
     actual val mouse: Signal<EventMouse> = all.filter()
 
+    internal fun attachEvents(frame: Frame) {
+        glfwSetKeyCallback(frame.id) { windowId, key, scancode, action, mods ->
+            val event = when (action) {
+                GLFW_PRESS -> EventKeyDown(frame, key, scancode.toUInt(), false)
+                GLFW_REPEAT -> EventKeyDown(frame, key, scancode.toUInt(), false)
+                GLFW_RELEASE -> EventKeyUp(frame, key, scancode.toUInt())
+                else -> throw EngineException("Unknown action $action")
+            }
+            all.raise(event)
+        }
+        
+        glfwSetWindowCloseCallback(frame.id) {
+            all.raise(EventWindowClose(frame))
+        }
+
+        glfwSetWindowSizeCallback(frame.id) { windowId, width, height ->
+            all.raise(EventWindowSizeChanged(frame, width, height))
+        }
+    }
+
     actual fun poll() {
         glfwPollEvents()
     }

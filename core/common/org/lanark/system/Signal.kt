@@ -1,5 +1,7 @@
 package org.lanark.system
 
+import org.lanark.events.*
+
 class Signal<T>(val tag: String) {
     private val handlers = mutableListOf<(T) -> Unit>()
 
@@ -18,7 +20,7 @@ class Signal<T>(val tag: String) {
     }
 }
 
-inline fun <TEvent, reified TDerivedEvent : TEvent> Signal<TEvent>.filter(): Signal<TDerivedEvent> {
+inline fun <reified TDerivedEvent : Event> Signal<*>.filter(): Signal<TDerivedEvent> {
     val signal = Signal<TDerivedEvent>("$tag.${TDerivedEvent::class.simpleName}")
     subscribe {
         if (it is TDerivedEvent)

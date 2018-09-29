@@ -203,15 +203,19 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         }
     }
 
-
-
-    internal fun unregisterFrame(sdlWindowId: UInt, frame: Frame) {
-        val registered = windows[sdlWindowId]
-        require(registered == frame) { "Window #$sdlWindowId must be unregistered with the same instance" }
-        windows.remove(sdlWindowId)
+    actual fun postQuitEvent() : Unit = memScoped{
+        val event = alloc<SDL_Event>()
+        event.type = SDL_QUIT
+        SDL_PushEvent(event.ptr)
     }
 
-    fun tryGetFrame(sdlWindowId: UInt) = windows[sdlWindowId]
+    internal fun unregisterFrame(windowId: UInt, frame: Frame) {
+        val registered = windows[windowId]
+        require(registered == frame) { "Window #$windowId must be unregistered with the same instance" }
+        windows.remove(windowId)
+    }
 
-    fun getFrame(sdlWindowId: UInt) = windows[sdlWindowId] ?: throw EngineException("Cannot find SDL Frame for ID $sdlWindowId")
+    fun tryGetFrame(windowId: UInt) = windows[windowId]
+
+    fun getFrame(windowId: UInt) = windows[windowId] ?: throw EngineException("Cannot find Frame for ID $windowId")
 }

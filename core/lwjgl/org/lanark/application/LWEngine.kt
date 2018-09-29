@@ -31,7 +31,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val displayWidth: Int
     private val displayHeight: Int
     private val refreshRate: Int
-    private val windows = mutableMapOf<UInt, Frame>()
+    private val windows = mutableMapOf<Long, Frame>()
 
     init {
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
@@ -65,8 +65,14 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         logger.info("Quit LWJGL3")
     }
 
-    actual fun sleep(millis: UInt) {}
-    actual fun setScreenSaver(enabled: Boolean) {}
+    actual fun sleep(millis: UInt) {
+        TODO()
+    }
+
+    actual fun setScreenSaver(enabled: Boolean) {
+        TODO()
+    }
+
     actual var activeCursor: Cursor?
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         set(value) {}
@@ -80,7 +86,10 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         flags: FrameFlag
     ): Frame {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, if (FrameFlag.CreateResizable in flags) GLFW_TRUE else GLFW_FALSE) // the window will stay hidden after creation
+        glfwWindowHint(
+            GLFW_RESIZABLE,
+            if (FrameFlag.CreateResizable in flags) GLFW_TRUE else GLFW_FALSE
+        ) // the window will stay hidden after creation
 
         val monitor = if (FrameFlag.CreateFullscreen in flags)
             glfwGetPrimaryMonitor()
@@ -95,10 +104,14 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         GL.createCapabilities()
         glEnable(GL_TEXTURE_2D)
         glfwSwapInterval(1) // vsync
-        
-        if (FrameFlag.CreateVisible in flags) 
+
+        if (FrameFlag.CreateVisible in flags)
             glfwShowWindow(window)
-        return Frame(this, window)
+        return Frame(this, window).also {
+            windows[it.id] = it
+            logger.system("Created $it")
+            events.attachEvents(it)
+        }
     }
 
     actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor {
@@ -110,23 +123,32 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual fun createCanvas(size: Size, bitsPerPixel: Int): Canvas {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO()
     }
 
     actual fun loadCanvas(path: String, fileSystem: FileSystem): Canvas {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO()
     }
 
     actual fun loadMusic(path: String, fileSystem: FileSystem): Music {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO()
     }
 
     actual fun loadSound(path: String, fileSystem: FileSystem): Sound {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO()
     }
 
     actual fun loadVideo(path: String, fileSystem: FileSystem): Video {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO()
     }
 
+    actual fun postQuitEvent() {
+        events.all.raise(EventAppQuit())
+    }
+    
+    internal fun unregisterFrame(windowId: Long, frame: Frame) {
+        val registered = windows[windowId]
+        require(registered == frame) { "Window #$windowId must be unregistered with the same instance" }
+        windows.remove(windowId)
+    }
 }

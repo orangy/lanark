@@ -11,7 +11,6 @@ expect class Frame : ResourceOwner, Managed {
     val canvasSize: Size
     var minimumSize: Size
     var maximumSize: Size
-    var brightness: Float
     var title: String
     val borders: Margins
 

@@ -22,7 +22,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
     private val resizeHandler: (EventWindow) -> Unit = {
         if (it is EventWindowResized && it.frame == this) {
             val drawableSize = canvasSize // need this for HIDPI
-            SDL_RenderSetLogicalSize(rendererPtr, drawableSize.width, drawableSize.height)
+            //SDL_RenderSetLogicalSize(rendererPtr, drawableSize.width, drawableSize.height)
         }
     }
 
@@ -37,7 +37,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         SDL_DestroyRenderer(rendererPtr)
         engine.logger.system("Released renderer $rendererPtr")
         SDL_DestroyWindow(windowPtr)
-        engine.logger.system("Released window #$captureId ${windowPtr.rawValue}")
+        engine.logger.system("Released frame #$captureId ${windowPtr.rawValue}")
     }
 
     actual fun setBordered(enable: Boolean) {
@@ -99,11 +99,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         set(value) {
             SDL_SetWindowMaximumSize(windowPtr, value.width, value.height)
         }
-
-    actual var brightness: Float
-        get() = SDL_GetWindowBrightness(windowPtr)
-        set(value) = SDL_SetWindowBrightness(windowPtr, value).sdlError("SDL_SetWindowBrightness")
-
+    
     actual var title: String
         get() = SDL_GetWindowTitle(windowPtr).sdlError("SDL_GetWindowTitle").toKString()
         set(value) = SDL_SetWindowTitle(windowPtr, value)
@@ -179,7 +175,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         actual val UndefinedPosition = SDL_WINDOWPOS_UNDEFINED.toInt()
     }
 
-    override fun toString() = "Window #$id ${windowPtr.rawValue}"
+    override fun toString() = "Frame #$id ${windowPtr.rawValue}"
 }
 
 actual class FrameFlag(val value: UInt) {

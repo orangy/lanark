@@ -1,6 +1,7 @@
 package org.lanark.drawing
 
 import org.lanark.application.*
+import org.lanark.diagnostics.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.system.*
@@ -8,10 +9,13 @@ import org.lwjgl.opengl.GL14.*
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.*
 
-actual class Texture(val textureId: Int, actual val size: Size) : Managed {
+actual class Texture(val engine: Engine, val textureId: Int, actual val size: Size) : Managed {
     override fun release() {
-
+        glDeleteTextures(textureId)
+        engine.logger.system("Released $this")
     }
+
+    override fun toString() = "Texture $textureId"
 }
 
 actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
@@ -35,7 +39,10 @@ actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
          */
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
         stbi_image_free(image)
-        return Texture(texture, Size(width, height))
+        return Texture(engine, texture, Size(width, height)).also {
+            engine.logger.system("Loaded $it from $path at $fileSystem")
+        } 
+        
     }
 }
 

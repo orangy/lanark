@@ -88,10 +88,17 @@ fun main() {
     }
     engine.logger.switch(Events.LogCategory, false)
 
+    engine.events.window.filter<EventWindowClose>().subscribe {
+        engine.postQuitEvent()
+    }
+    
     val application = SceneApplication(frame)
-    val dialog = Dialog(Rect(140, 140, 412, 234), uiResources, listOf(
+    val dialog = Dialog(
+        Rect(140, 140, 412, 234), uiResources, listOf(
             Button(Point(20, 20), uiResources),
-            Button(Point(20, 80), uiResources)))
+            Button(Point(20, 80), uiResources)
+        )
+    )
     val welcome = WelcomeScene(engine, resources)
 
     application.scene = SceneLayered("main", listOf(welcome, dialog))

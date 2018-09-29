@@ -1,5 +1,6 @@
 package org.lanark.application
 
+import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.resources.*
@@ -7,16 +8,19 @@ import org.lanark.system.*
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL14.*
 
-actual class Frame(actual val engine: Engine, val windowHandle: Long) : ResourceOwner, Managed {
+actual class Frame(actual val engine: Engine, val id: Long) : ResourceOwner, Managed {
+
     override fun release() {
-        glfwDestroyWindow(windowHandle)
+        engine.unregisterFrame(id, this)
+        glfwDestroyWindow(id)
+        engine.logger.system("Released frame #$id")
     }
 
     actual val size: Size
         get() {
             val width = IntArray(1)
             val height = IntArray(1)
-            glfwGetWindowSize(windowHandle, width, height)
+            glfwGetWindowSize(id, width, height)
             return Size(width[0], height[0])
         }
 
@@ -24,28 +28,41 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
         get() {
             val width = IntArray(1)
             val height = IntArray(1)
-            glfwGetFramebufferSize(windowHandle, width, height)
+            glfwGetFramebufferSize(id, width, height)
             return Size(width[0], height[0])
         }
 
-    actual var minimumSize: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        set(value) {}
-    actual var maximumSize: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        set(value) {}
-    actual var brightness: Float
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        set(value) {}
+    actual var minimumSize: Size = Size.Empty
+        set(value) {
+            field = value
+            updateLimits()
+        }
 
+    actual var maximumSize: Size = Size.Empty
+        set(value) {
+            field = value
+            updateLimits()
+        }
+
+    private fun updateLimits() = when  {
+        minimumSize == Size.Empty && maximumSize == Size.Empty -> 
+            glfwSetWindowSizeLimits(id, GLFW_DONT_CARE, GLFW_DONT_CARE, GLFW_DONT_CARE, GLFW_DONT_CARE)
+        minimumSize == Size.Empty ->
+            glfwSetWindowSizeLimits(id, GLFW_DONT_CARE, GLFW_DONT_CARE, maximumSize.width, maximumSize.height)
+        maximumSize == Size.Empty ->
+            glfwSetWindowSizeLimits(id, minimumSize.width, minimumSize.height, GLFW_DONT_CARE, GLFW_DONT_CARE)
+        else -> 
+            glfwSetWindowSizeLimits(id, minimumSize.width, minimumSize.height, maximumSize.width, maximumSize.height)
+    }
+    
     actual var title: String = ""
         set(value) {
             field = value
-            glfwSetWindowTitle(windowHandle, value)
+            glfwSetWindowTitle(id, value)
         }
 
     actual val borders: Margins
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = TODO()
 
     actual fun setBordered(enable: Boolean) {}
     actual fun setResizable(enable: Boolean) {}
@@ -83,11 +100,19 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
         )
     }
 
-    actual fun scale(scale: Float) {}
-    actual fun drawLine(from: Point, to: Point) {}
-    actual fun present() {
-        glfwSwapBuffers(windowHandle) // swap the color buffers
+    actual fun scale(scale: Float) {
+        TODO()
     }
+
+    actual fun drawLine(from: Point, to: Point) {
+        TODO()
+    }
+
+    actual fun present() {
+        glfwSwapBuffers(id) // swap the color buffers
+    }
+
+    override fun toString() = "Frame #$id"
 }
 
 actual class FrameFlag(val value: Int) {

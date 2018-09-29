@@ -2,42 +2,22 @@ package org.lanark.events
 
 import org.lanark.application.*
 
-actual abstract class EventWindow : Event() {
-    actual val frame: Frame
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+actual abstract class EventWindow(actual val frame: Frame) : Event() {
 }
 
-actual class EventWindowShown : EventWindow()
-actual class EventWindowHidden : EventWindow()
-actual class EventWindowExposed : EventWindow()
-actual class EventWindowMinimized : EventWindow()
-actual class EventWindowMaximized : EventWindow()
-actual class EventWindowRestored : EventWindow()
-actual class EventWindowMouseEntered : EventWindow()
-actual class EventWindowMouseLeft : EventWindow()
-actual class EventWindowGotFocus : EventWindow()
-actual class EventWindowLostFocus : EventWindow()
-actual class EventWindowOfferedFocus : EventWindow()
-actual class EventWindowClose : EventWindow()
-actual class EventWindowHitTest : EventWindow()
-
-actual class EventWindowMoved : EventWindow() {
-    actual val x: Int
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    actual val y: Int
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-}
-
-actual class EventWindowResized : EventWindow() {
-    actual val width: Int
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    actual val height: Int
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-}
-
-actual class EventWindowSizeChanged : EventWindow() {
-    actual val width: Int
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    actual val height: Int
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-}
+actual class EventWindowShown(frame: Frame) : EventWindow(frame)
+actual class EventWindowHidden(frame: Frame) : EventWindow(frame)
+actual class EventWindowExposed(frame: Frame) : EventWindow(frame)
+actual class EventWindowMinimized(frame: Frame) : EventWindow(frame)
+actual class EventWindowMaximized(frame: Frame) : EventWindow(frame)
+actual class EventWindowRestored(frame: Frame) : EventWindow(frame)
+actual class EventWindowMouseEntered(frame: Frame) : EventWindow(frame)
+actual class EventWindowMouseLeft(frame: Frame) : EventWindow(frame)
+actual class EventWindowGotFocus(frame: Frame) : EventWindow(frame)
+actual class EventWindowLostFocus(frame: Frame) : EventWindow(frame)
+actual class EventWindowOfferedFocus(frame: Frame) : EventWindow(frame)
+actual class EventWindowClose(frame: Frame) : EventWindow(frame)
+actual class EventWindowHitTest(frame: Frame) : EventWindow(frame)
+actual class EventWindowMoved(frame: Frame, actual val x: Int, actual val y: Int) : EventWindow(frame)
+actual class EventWindowResized(frame: Frame, actual val width: Int, actual val height: Int) : EventWindow(frame)
+actual class EventWindowSizeChanged(frame: Frame, actual val width: Int, actual val height: Int) : EventWindow(frame) 

@@ -9,7 +9,7 @@ import org.lanark.io.*
 import org.lanark.system.*
 import sdl2.*
 
-actual class Texture(val texturePtr: CPointer<SDL_Texture>) : Managed {
+actual class Texture(val engine: Engine, val texturePtr: CPointer<SDL_Texture>) : Managed {
     actual val size: Size
         get() = memScoped {
             val width = alloc<IntVar>()
@@ -20,6 +20,7 @@ actual class Texture(val texturePtr: CPointer<SDL_Texture>) : Managed {
 
     override fun release() {
         SDL_DestroyTexture(texturePtr)
+        engine.logger.system("Released $this")
     }
 
     override fun toString() = "Texture ${texturePtr.rawValue}"
@@ -60,7 +61,7 @@ actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
         try {
             val texturePtr = SDL_CreateTextureFromSurface(rendererPtr, surfacePtr)
                 .sdlError("SDL_CreateTextureFromSurface")
-            Texture(texturePtr).also {
+            Texture(engine, texturePtr).also {
                 engine.logger.system("Loaded $it from $path at $fileSystem")
             }
         } finally {
