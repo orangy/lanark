@@ -58,7 +58,7 @@ enum class FrameMode {
 inline fun Frame.clip(rectangle: Rect, body: () -> Unit) {
     val old = clip
     try {
-        //clip = rectangle
+        clip = rectangle
         body()
     } finally {
         clip = old
