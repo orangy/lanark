@@ -2,30 +2,31 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     targets {
-        fromPreset(presets.macosX64, 'sdl2macos') {
-            compilations.main {
-                extraOpts '-Xdisable', 'devirtualization'
-                cinterops {
-                    sdl {
-                        defFile = file("sdl2/sdl2.def")
+        if (project.property("lanark.sdl2.enable") != "false") {
+            fromPreset(presets.macosX64, 'sdl2macos') {
+                compilations.main {
+                    extraOpts '-Xdisable', 'devirtualization'
+                    cinterops {
+                        sdl {
+                            defFile = file("sdl2/sdl2.def")
+                        }
+                    }
+                }
+            }
+
+            fromPreset(presets.iosX64, 'sdl2ios') {
+                compilations.main {
+                    extraOpts '-Xdisable', 'devirtualization'
+                    cinterops {
+                        sdl {
+                            defFile = file("sdl2/sdl2.def")
+                        }
                     }
                 }
             }
         }
 
-        fromPreset(presets.iosX64, 'sdl2ios') {
-            compilations.main {
-                extraOpts '-Xdisable', 'devirtualization'
-                cinterops {
-                    sdl {
-                        defFile = file("sdl2/sdl2.def")
-                    }
-                }
-            }
-        }
-
-
-        fromPreset(presets.jvm, 'lwjgl') 
+        fromPreset(presets.jvm, 'lwjgl')
 
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
@@ -52,16 +53,18 @@ kotlin {
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
             }
         }
-        
-        sdl2macosMain {
-            kotlin.srcDirs = ["sdl2"]
-            resources.srcDirs = ["sdl2Resources"]
-        }
-        sdl2iosMain {
-            dependsOn sdl2macosMain
-        }
 
-        sdl2macosTest {
+        if (project.property("lanark.sdl2.enable") != "false") {
+            sdl2macosMain {
+                kotlin.srcDirs = ["sdl2"]
+                resources.srcDirs = ["sdl2Resources"]
+            }
+            sdl2iosMain {
+                dependsOn sdl2macosMain
+            }
+
+            sdl2macosTest {
+            }
         }
 
         lwjglMain {
@@ -102,11 +105,13 @@ kotlin.targets.all {
     }
 }
 
-afterEvaluate {
-    kotlin.targets.sdl2macos.compilations.test.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
-        copy {
-            from file('testResources')
-            into task.outputFile.get().parent
+if (project.property("lanark.sdl2.enable") != "false") {
+    afterEvaluate {
+        kotlin.targets.sdl2macos.compilations.test.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
+            copy {
+                from file('testResources')
+                into task.outputFile.get().parent
+            }
         }
     }
 }

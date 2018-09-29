@@ -2,9 +2,11 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     targets {
-        fromPreset(presets.macosX64, 'sdl2macos')
-        fromPreset(presets.iosX64, 'sdl2ios')
-
+        if (project.property("lanark.sdl2.enable") != "false") {
+            fromPreset(presets.macosX64, 'sdl2macos')
+            fromPreset(presets.iosX64, 'sdl2ios')
+        }
+        
         fromPreset(presets.jvm, 'lwjgl')
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
@@ -29,11 +31,13 @@ kotlin {
             }
         }
 
-        sdl2macosMain {
-            kotlin.srcDirs = ["sdl2"]
-        }
-        sdl2iosMain {
-            dependsOn sdl2macosMain
+        if (project.property("lanark.sdl2.enable") != "false") {
+            sdl2macosMain {
+                kotlin.srcDirs = ["sdl2"]
+            }
+            sdl2iosMain {
+                dependsOn sdl2macosMain
+            }
         }
 
         lwjglMain {
