@@ -10,13 +10,5 @@ actual fun Frame.draw(tile: Tile, position: Point) {
 }
 
 actual fun Frame.fill(tile: Tile, destinationRect: Rect) {
-    val srcRect = tile.rectangle
-    clip(destinationRect) {
-        for (x in destinationRect.left..destinationRect.right step tile.width) {
-            for (y in destinationRect.top..destinationRect.bottom step tile.height) {
-                val destRec = Rect(x, y, tile.width, tile.height)
-                draw(tile.texture, srcRect, destRec)
-            }
-        }
-    }
+    draw(tile.texture, tile.rectangle, destinationRect)
 }

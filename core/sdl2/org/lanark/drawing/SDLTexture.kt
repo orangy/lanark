@@ -43,20 +43,7 @@ actual fun Frame.draw(texture: Texture, destinationRect: Rect) = memScoped {
 }
 
 actual fun Frame.fill(texture: Texture, destinationRect: Rect) = memScoped {
-    clip(destinationRect) {
-        val rect = alloc<SDL_Rect>().apply {
-            w = texture.width
-            h = texture.height
-        }
-
-        for (x in destinationRect.left..destinationRect.right step texture.width) {
-            for (y in destinationRect.top..destinationRect.bottom step texture.height) {
-                rect.x = x
-                rect.y = y
-                SDL_RenderCopy(rendererPtr, texture.texturePtr, null, rect.ptr).sdlError("SDL_RenderCopy")
-            }
-        }
-    }
+    SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect)).sdlError("SDL_RenderCopy")
 }
 
 actual fun Frame.draw(texture: Texture, position: Point) = memScoped {

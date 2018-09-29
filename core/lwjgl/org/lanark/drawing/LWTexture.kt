@@ -61,13 +61,8 @@ actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
 }
 
 actual fun Frame.fill(texture: Texture, destinationRect: Rect) {
-    clip(destinationRect) {
-        for (x in destinationRect.left..destinationRect.right step texture.width) {
-            for (y in destinationRect.top..destinationRect.bottom step texture.height) {
-                draw(texture, destinationRect)
-            }
-        }
-    }
+    prepareContextFor2D(texture)
+    drawStrip(0f, 1f, 1f, 0f, destinationRect)
 }
 
 actual fun Frame.draw(texture: Texture, position: Point) {
