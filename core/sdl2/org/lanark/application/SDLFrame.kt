@@ -61,7 +61,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         get() = memScoped {
             val w = alloc<IntVar>()
             val h = alloc<IntVar>()
-            SDL_GL_GetDrawableSize(windowPtr, w.ptr, h.ptr)
+            SDL_GetRendererOutputSize(rendererPtr, w.ptr, h.ptr)
             Size(w.value, h.value)
         }
 
