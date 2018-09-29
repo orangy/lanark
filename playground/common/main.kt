@@ -74,10 +74,9 @@ fun main() {
 
     val uiResources = resources.loadScope("ui")
 
-    val executor = TaskExecutorIterative(engine)
     var frames = 0
     val clock = Clock()
-    executor.after.subscribe {
+    engine.executor.after.subscribe {
         frames++
         val seconds = clock.elapsedMillis()
         if (seconds > 1000u) {

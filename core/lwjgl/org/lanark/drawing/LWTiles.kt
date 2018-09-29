@@ -14,7 +14,8 @@ actual fun Frame.fill(tile: Tile, destinationRect: Rect) {
     clip(destinationRect) {
         for (x in destinationRect.left..destinationRect.right step tile.width) {
             for (y in destinationRect.top..destinationRect.bottom step tile.height) {
-                draw(tile.texture, srcRect, destinationRect)
+                val destRec = Rect(x, y, tile.width, tile.height)
+                draw(tile.texture, srcRect, destRec)
             }
         }
     }

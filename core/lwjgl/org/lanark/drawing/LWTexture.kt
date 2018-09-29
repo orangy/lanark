@@ -57,7 +57,7 @@ actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect)
 
 actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
     prepareContextFor2D(texture)
-    drawStrip(0f, 0f, 1f, 1f, destinationRect)
+    drawStrip(0f, 1f, 1f, 0f, destinationRect)
 }
 
 actual fun Frame.fill(texture: Texture, destinationRect: Rect) {
@@ -101,8 +101,8 @@ private inline fun Frame.prepareContextFor2D(texture: Texture) {
     glOrtho(0.0, canvasSize.width.toDouble(), 0.0, canvasSize.height.toDouble(), 0.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
     glColor4f(1f, 1f, 1f, 1f)
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glBindTexture(GL_TEXTURE_2D, texture.textureId)
 }
 
