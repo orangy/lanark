@@ -45,3 +45,14 @@ apple_team_id=<YOUR APPLE TEAM ID IF YOU HAVE IT>
 apple.identity=<FIND OUT IDENTITY USING "security find-identity -pcodesigning -v">
 ```
 
+To deploy to a device you need to install `ios-deploy`:
+
+```
+brew install ios-deploy
+```
+
+and add this to `local.properties`
+
+```
+apple.device.id=<YOUR DEVICE ID, AS FOUND IN XCODE>
+```

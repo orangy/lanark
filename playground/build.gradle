@@ -151,32 +151,32 @@ if (project.property("lanark.sdl2.enable") == "true") {
             }
 
             task compilePlistDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios]) {
-                def appId = linkDebugExecutableSdl2ios.outputFile.get().name
+                def appId = project.property("apple_application_id")
                 doFirst {
                     println "Compiling Info.plist for `$appId`…"
                 }
-                def appFolder = bundleDebugExecutableSdl2ios.destinationDir
+                def appBundle = bundleDebugExecutableSdl2ios.destinationDir
                 executable "sh"
-                args "-c", "plutil -convert binary1 $appFolder/Info.plist"
+                args "-c", "plutil -convert binary1 $appBundle/Info.plist"
             }
 
-            task signDebugExecutableSdl2ios(type: Exec, dependsOn: [compilePlistDebugExecutableSdl2ios]) {
-                def appFolder = bundleDebugExecutableSdl2ios.destinationDir
+            task signDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios, compilePlistDebugExecutableSdl2ios]) {
+                def appBundle = bundleDebugExecutableSdl2ios.destinationDir
                 // run "security find-identity -pcodesigning -v" to find your apple.identity and put it into local.properties
                 def identity = project.property("apple.identity")
                 executable "sh"
-                args "-c", "codesign -s $identity --entitlements $appFolder/Entitlements.plist $appFolder"
+                args "-c", "codesign -s $identity --entitlements $appBundle/Entitlements.plist $appBundle"
             }
 
             task installDebugExecutableSdl2isim(type: Exec, dependsOn: [bundleDebugExecutableSdl2isim]) {
-                def appId = linkDebugExecutableSdl2isim.outputFile.get().name
+                def appId = project.property("apple_application_id")
                 doFirst {
                     println "Installing `$appId` on a simulator…"
                 }
                 executable "sh"
 
-                def appFolder = bundleDebugExecutableSdl2isim.destinationDir
-                args "-c", "xcrun simctl install booted '${appFolder.absolutePath}'"
+                def appBundle = bundleDebugExecutableSdl2isim.destinationDir
+                args "-c", "xcrun simctl install booted '${appBundle.absolutePath}'"
 
                 doLast {
                     exec {
@@ -190,7 +190,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
             }
 
             task runDebugExecutableSdl2isim(type: Exec, dependsOn: [installDebugExecutableSdl2isim, startSimulator]) {
-                def appId = linkDebugExecutableSdl2ios.outputFile.get().name
+                def appId = project.property("apple_application_id")
                 doFirst {
                     println "Starting `$appId` on a simulator…"
                 }
@@ -199,6 +199,19 @@ if (project.property("lanark.sdl2.enable") == "true") {
                 args "-c", "xcrun simctl launch --console-pty booted $appId"
             }
             runDebugExecutableSdl2isim.group = RUN_GROUP
+            
+            task runDebugExecutableSdl2ios(type: Exec, dependsOn: [signDebugExecutableSdl2ios]) {
+                def deviceId = project.property("apple.device.id")
+                def appId = project.property("apple_application_id")
+                def appBundle = bundleDebugExecutableSdl2ios.destinationDir
+                doFirst {
+                    println "Starting `$appId` on a device…"
+                }
+
+                executable "sh"
+                args "-c", "ios-deploy --id $deviceId --justlaunch --debug --bundle $appBundle"
+            }
+            runDebugExecutableSdl2ios.group = RUN_GROUP
         }
     }
 }
