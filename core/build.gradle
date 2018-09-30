@@ -14,7 +14,17 @@ kotlin {
                 }
             }
 
-            fromPreset(presets.iosX64, 'sdl2ios') {
+            fromPreset(presets.iosX64, 'sdl2isim') {
+                compilations.main {
+                    extraOpts '-Xdisable', 'devirtualization'
+                    cinterops {
+                        sdl {
+                            defFile = file("sdl2/sdl2.def")
+                        }
+                    }
+                }
+            }
+            fromPreset(presets.iosArm64, 'sdl2ios') {
                 compilations.main {
                     extraOpts '-Xdisable', 'devirtualization'
                     cinterops {
@@ -60,11 +70,10 @@ kotlin {
                 resources.srcDirs = ["sdl2Resources"]
             }
             sdl2iosMain {
-                kotlin.srcDirs = ["sdl2"]
-                resources.srcDirs = ["sdl2Resources"]
+                dependsOn sdl2macosMain
             }
-
-            sdl2macosTest {
+            sdl2isimMain {
+                dependsOn sdl2macosMain
             }
         }
 

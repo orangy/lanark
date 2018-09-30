@@ -15,6 +15,11 @@ buildscript {
     }
 }
 
+// Load unversioned `local.properties` file
+def localProperties = new Properties()
+localProperties.load(new FileInputStream("$project.rootDir/local.properties"))
+localProperties.each { prop -> project.ext.set(prop.key, prop.value) }
+
 apply plugin: 'kotlin-multiplatform'
 
 allprojects {

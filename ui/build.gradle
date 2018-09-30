@@ -4,7 +4,8 @@ kotlin {
     targets {
         if (project.property("lanark.sdl2.enable") != "false") {
             fromPreset(presets.macosX64, 'sdl2macos')
-            fromPreset(presets.iosX64, 'sdl2ios')
+            fromPreset(presets.iosArm64, 'sdl2ios')
+            fromPreset(presets.iosX64, 'sdl2isim')
         }
         
         fromPreset(presets.jvm, 'lwjgl')
@@ -36,6 +37,9 @@ kotlin {
                 kotlin.srcDirs = ["sdl2"]
             }
             sdl2iosMain {
+                dependsOn sdl2macosMain
+            }
+            sdl2isimMain {
                 dependsOn sdl2macosMain
             }
         }
