@@ -135,7 +135,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             val w = stack.mallocInt(1)
             val h = stack.mallocInt(1)
             val comp = stack.mallocInt(1)
-            STBImage.stbi_set_flip_vertically_on_load(true)
+            STBImage.stbi_set_flip_vertically_on_load(false)
             val pixels = STBImage.stbi_load(path, w, h, comp, 4)
                 ?: throw EngineException("Failed to load a texture file: ${STBImage.stbi_failure_reason()}")
 

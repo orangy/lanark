@@ -27,7 +27,7 @@ actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
         val w = stack.mallocInt(1)
         val h = stack.mallocInt(1)
         val comp = stack.mallocInt(1)
-        stbi_set_flip_vertically_on_load(true)
+        stbi_set_flip_vertically_on_load(false)
         val image = stbi_load(path, w, h, comp, 4)
             ?: throw EngineException("Failed to load a texture file: ${stbi_failure_reason()}")
 
@@ -48,14 +48,14 @@ actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
 
 actual fun Frame.draw(texture: Texture) {
     prepareContextFor2D(texture)
-    drawStrip(0f, 1f, 1f, 0f, Rect(0, 0, texture.width, texture.height))
+    drawStrip(0f, 0f, 1f, 1f, Rect(0, 0, texture.width, texture.height))
 }
 
 actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect) {
     val minU = sourceRect.left.toFloat() / texture.width
     val maxU = sourceRect.right.toFloat() / texture.width
-    val minV = 1.0f - sourceRect.top.toFloat() / texture.height // 1.0f - is because texture is upside down
-    val maxV = 1.0f - sourceRect.bottom.toFloat() / texture.height
+    val minV = sourceRect.top.toFloat() / texture.height // 1.0f - is because texture is upside down
+    val maxV = sourceRect.bottom.toFloat() / texture.height
     prepareContextFor2D(texture)
     drawStrip(minU, minV, maxU, maxV, destinationRect)
 }
@@ -63,12 +63,12 @@ actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect)
 
 actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
     prepareContextFor2D(texture)
-    drawStrip(0f, 1f, 1f, 0f, destinationRect)
+    drawStrip(0f, 0f, 1f, 1f, destinationRect)
 }
 
 actual fun Frame.fill(texture: Texture, destinationRect: Rect) {
     prepareContextFor2D(texture)
-    drawStrip(0f, 1f, 1f, 0f, destinationRect)
+    drawStrip(0f, 0f, 1f, 1f, destinationRect)
 }
 
 actual fun Frame.draw(texture: Texture, position: Point) {
