@@ -27,7 +27,7 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
     private fun Frame.renderControls() {
         clip(area) {
             controls.forEach {
-                it.render(area, this)
+                it.render(this, area)
             }
         }
     }

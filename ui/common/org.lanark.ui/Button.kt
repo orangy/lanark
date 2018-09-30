@@ -12,7 +12,7 @@ class Button(val position: Point, private val resources: ResourceContext) : Cont
     private val buttonPressed = tiles["button-pressed"]
     private val buttonDisabled = tiles["button-disabled"]
 
-    override fun render(area: Rect, frame: Frame) {
+    override fun render(frame: Frame, area: Rect) {
         frame.draw(button, position.relativeTo(area.origin))
     }
 }
