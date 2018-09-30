@@ -6,18 +6,21 @@ kotlin {
             fromPreset(presets.macosX64, 'sdl2macos') {
                 compilations.main {
                     outputKinds = [EXECUTABLE]
+                    linkerOpts += ["-macosx_version_min 10.13"]
                 }
             }
 
             fromPreset(presets.iosX64, 'sdl2isim') {
                 compilations.main {
                     outputKinds = [EXECUTABLE]
+                    linkerOpts += ["-ios_simulator_version_min 11.0"]
                     extraOpts "-nomain"
                 }
             }
             fromPreset(presets.iosArm64, 'sdl2ios') {
                 compilations.main {
                     outputKinds = [EXECUTABLE]
+                    linkerOpts += ["-ios_version_min 11.0"]
                     extraOpts "-nomain"
                 }
             }
