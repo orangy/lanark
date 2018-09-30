@@ -1,8 +1,15 @@
 package org.lanark.system
 
+import org.lanark.application.*
 import org.lwjgl.glfw.*
 
 actual class Clock actual constructor() {
+    init {
+        GLFW.glfwInit()
+        GLFW.glfwSetErrorCallback { code, str ->
+            throw EngineException(GLFWErrorCallback.getDescription(str))
+        }
+    }
     private val frequency = GLFW.glfwGetTimerFrequency().toULong()
 
     actual var start: ULong = GLFW.glfwGetTimerValue().toULong()

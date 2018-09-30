@@ -6,6 +6,10 @@ import platform.posix.*
 import sdl2.*
 
 class SDLFileSystem : FileSystem {
+    override fun delete(path: String) {
+        remove(path)
+    }
+
     override fun open(path: String, mode: FileOpenMode): File {
         val handle = SDL_RWFromFile(path, mode.value).sdlError("SDL_RWFromFile $path")
         return File(handle)

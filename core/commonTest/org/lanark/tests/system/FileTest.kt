@@ -8,7 +8,7 @@ class FileTest {
     // workaround for different test directories for JVM & Native
     private val root = FileSystems.Default.currentDirectory()
         .removeSuffix("build/test-results")
-        .removeSuffix(".") + "build/resources/test"
+        .removeSuffix(".").removeSuffix("/") + "/testResources"
 
     @Test
     fun readFile() {
@@ -20,13 +20,16 @@ class FileTest {
 
     @Test
     fun writeFile() {
-        FileSystems.Default.open("$root/testFile-temp.txt", FileOpenMode.Truncate).use { file ->
+        val tempFile = "$root/testFile-temp.txt"
+        FileSystems.Default.open(tempFile, FileOpenMode.Truncate).use { file ->
             file.write(byteArrayOf(1, 2, 3))
         }
 
-        FileSystems.Default.open("$root/testFile-temp.txt", FileOpenMode.Read).use { file ->
+        FileSystems.Default.open(tempFile, FileOpenMode.Read).use { file ->
             val array = file.read(3)
             assertEquals(listOf<Byte>(1, 2, 3), array.toList())
         }
+
+        FileSystems.Default.delete(tempFile)
     }
 }

@@ -7,6 +7,10 @@ actual object FileSystems {
 }
 
 class LWFileSystem : FileSystem {
+    override fun delete(path: String) {
+        Files.delete(Paths.get(path))
+    }
+
     override fun open(path: String, mode: FileOpenMode): File {
         return File(Files.newByteChannel(Paths.get(path), *mode.value))
     }
