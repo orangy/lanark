@@ -80,6 +80,6 @@ actual class Canvas(private val engine: Engine, internal val surfacePtr: CPointe
         ).sdlError("SDL_UpperBlit")
     }
 
-    override fun toString() = "Surface ${surfacePtr.rawValue}"
+    override fun toString() = "Canvas ${surfacePtr.rawValue}"
 }
 

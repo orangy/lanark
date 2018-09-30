@@ -12,11 +12,7 @@ actual class Canvas(val image: GLFWImage) : Managed {
     actual val size: Size
         get() = Size(image.width(), image.height())
 
-    actual var blendMode: BlendMode
-        get() = TODO()
-        set(value) {
-            TODO()
-        }
+    actual var blendMode: BlendMode = BlendMode.None
 
     actual fun blit(source: Canvas) {
 
@@ -28,4 +24,5 @@ actual class Canvas(val image: GLFWImage) : Managed {
     actual fun fill(color: Color) {}
     actual fun fill(color: Color, rectangle: Rect) {}
 
+    override fun toString() = "Canvas ${image}"
 }

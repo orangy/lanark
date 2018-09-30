@@ -17,8 +17,6 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
     fun sleep(millis: UInt)
     fun setScreenSaver(enabled: Boolean)
     
-    var activeCursor: Cursor?
-
     fun createFrame(title: String,
                     width: Int,
                     height: Int,
@@ -27,8 +25,8 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
                     flags: FrameFlag = FrameFlag.CreateVisible
     ): Frame
 
-    fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor
-    fun createCursor(systemCursor: SystemCursor): Cursor
+    fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor?
+    fun createCursor(systemCursor: SystemCursor): Cursor?
     fun createCanvas(size: Size, bitsPerPixel: Int): Canvas 
 
     fun loadCanvas(path: String, fileSystem: FileSystem): Canvas

@@ -13,7 +13,7 @@ actual class Events actual constructor(engine: Engine) {
     actual val mouse: Signal<EventMouse> = all.filter()
 
     internal fun attachEvents(frame: Frame) {
-        glfwSetKeyCallback(frame.id) { windowId, key, scancode, action, mods ->
+        glfwSetKeyCallback(frame.windowHandle) { windowId, key, scancode, action, mods ->
             val event = when (action) {
                 GLFW_PRESS -> EventKeyDown(frame, key, scancode.toUInt(), false)
                 GLFW_REPEAT -> EventKeyDown(frame, key, scancode.toUInt(), false)
@@ -22,12 +22,20 @@ actual class Events actual constructor(engine: Engine) {
             }
             all.raise(event)
         }
+
+        glfwSetMouseButtonCallback(frame.windowHandle) { window, button, action, mods ->
+
+        }
         
-        glfwSetWindowCloseCallback(frame.id) {
+        glfwSetCursorPosCallback(frame.windowHandle) { window, xpos, ypos ->
+            all.raise(EventMouseMotion(frame, xpos.toInt(), ypos.toInt()))
+        }
+
+        glfwSetWindowCloseCallback(frame.windowHandle) {
             all.raise(EventWindowClose(frame))
         }
 
-        glfwSetWindowSizeCallback(frame.id) { windowId, width, height ->
+        glfwSetWindowSizeCallback(frame.windowHandle) { windowId, width, height ->
             all.raise(EventWindowSizeChanged(frame, width, height))
         }
     }

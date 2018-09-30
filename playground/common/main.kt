@@ -30,6 +30,8 @@ fun main() {
 
     val ui = resources("ui") {
         texture("background", "ui-background.png")
+        image("logo", "lanark-60.png")
+        image("logo2x", "lanark-60x2.png")
         tiles("elements", "ui-tileset.png") {
             tile("border-top-left", 855, 188, 24, 24, 14, 14)
             tile("border-top", 893, 188, 72, 24, 0, 14)
@@ -73,7 +75,8 @@ fun main() {
     }.bind(frame)
 
     val uiResources = resources.loadScope("ui")
-
+    frame.setIcon(uiResources.loadImage("logo"))
+    
     var frames = 0
     val clock = Clock()
     engine.executor.after.subscribe {

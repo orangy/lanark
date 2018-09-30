@@ -27,6 +27,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         engine.logger.system("Released frame #$captureId ${windowPtr.rawValue}")
     }
 
+    
     actual fun setBordered(enable: Boolean) {
         SDL_SetWindowBordered(windowPtr, enable.toSDLBoolean())
     }
@@ -44,6 +45,26 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
             }
         )
     }
+
+    actual var cursor: Cursor? = SDL_GetCursor()?.let { Cursor(engine.logger, it) }
+        set(value) {
+            if (field == value)
+                return
+
+            field = value
+            if (value == null) {
+                val shown = SDL_ShowCursor(SDL_QUERY)
+                if (shown != SDL_DISABLE)
+                    SDL_ShowCursor(SDL_DISABLE)
+            } else {
+                val shown = SDL_ShowCursor(SDL_QUERY)
+                if (shown == SDL_DISABLE)
+                    SDL_ShowCursor(SDL_ENABLE)
+                val oldCursor = SDL_GetCursor()
+                if (oldCursor != value.cursorPtr)
+                    SDL_SetCursor(value.cursorPtr)
+            }
+        }
 
     actual fun setIcon(icon: Canvas) {
         SDL_SetWindowIcon(windowPtr, icon.surfacePtr)

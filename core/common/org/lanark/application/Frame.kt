@@ -12,6 +12,7 @@ expect class Frame : ResourceOwner, Managed {
     var minimumSize: Size
     var maximumSize: Size
     var title: String
+    var cursor: Cursor?
     val borders: Margins
 
     fun setBordered(enable: Boolean)

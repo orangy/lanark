@@ -89,6 +89,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         logger.info("Quit SDL")
     }
 
+    val isMouseEnabled get() = SDL_GetDefaultCursor() != null
     val isVideoEnabled get() = SDL_WasInit(SDL_INIT_VIDEO) != 0u
     val isAudioEnabled get() = SDL_WasInit(SDL_INIT_AUDIO) != 0u
     val isTimerEnabled get() = SDL_WasInit(SDL_INIT_TIMER) != 0u
@@ -96,29 +97,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     val isControllerEnabled get() = SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 0u
     val isJoystickEnabled get() = SDL_WasInit(SDL_INIT_JOYSTICK) != 0u
     val isHapticEnabled get() = SDL_WasInit(SDL_INIT_HAPTIC) != 0u
-
-    actual var activeCursor: Cursor?
-        get() {
-            val shown = SDL_ShowCursor(SDL_QUERY)
-            if (shown == SDL_DISABLE)
-                return null
-            return SDL_GetCursor()?.let { Cursor(logger, it) } // TODO: store current cursor??
-        }
-        set(value) {
-            if (value == null) {
-                val shown = SDL_ShowCursor(SDL_QUERY)
-                if (shown != SDL_DISABLE)
-                    SDL_ShowCursor(SDL_DISABLE)
-            } else {
-                val shown = SDL_ShowCursor(SDL_QUERY)
-                if (shown == SDL_DISABLE)
-                    SDL_ShowCursor(SDL_ENABLE)
-                val oldCursor = SDL_GetCursor()
-                if (oldCursor != value.cursorPtr)
-                    SDL_SetCursor(value.cursorPtr)
-            }
-        }
-
+    
     actual fun sleep(millis: UInt) {
         SDL_Delay(millis)
     }
@@ -147,14 +126,22 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         }
     }
 
-    actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor {
+    actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor? {
+        if (!isMouseEnabled) {
+            logger.system("Skipping creating a Cursor because there is no mouse support on this platform")
+            return null
+        }
         val cursor = SDL_CreateColorCursor(canvas.surfacePtr, hotX, hotY).sdlError("SDL_CreateColorCursor")
         return Cursor(logger, cursor).also {
             logger.system("Created $it")
         }
     }
 
-    actual fun createCursor(systemCursor: SystemCursor): Cursor {
+    actual fun createCursor(systemCursor: SystemCursor): Cursor? {
+        if (!isMouseEnabled) {
+            logger.system("Skipping creating a Cursor because there is no mouse support on this platform")
+            return null
+        }
         val cursor = SDL_CreateSystemCursor(systemCursor.handle).sdlError("SDL_CreateSystemCursor")
         return Cursor(logger, cursor).also {
             logger.system("Created $it")

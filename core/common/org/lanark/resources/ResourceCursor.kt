@@ -5,8 +5,8 @@ import org.lanark.io.*
 import org.lanark.system.*
 
 class ResourceCursor(name: String, val location: FileLocation, val hotX: Int, val hotY: Int) :
-    Resource<Cursor>(name, resourceType) {
-    override fun load(context: ResourceContext, progress: (Double) -> Unit): Cursor {
+    Resource<Cursor?>(name, resourceType) {
+    override fun load(context: ResourceContext, progress: (Double) -> Unit): Cursor? {
         return context.loadIfAbsent(this) {
             val (file, fileSystem) = location
             context.engine.loadCanvas(file, fileSystem).use { canvas ->

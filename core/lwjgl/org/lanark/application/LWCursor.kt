@@ -7,6 +7,8 @@ actual class Cursor(val cursorHandle: Long) : Managed {
     override fun release() {
         glfwDestroyCursor(cursorHandle)
     }
+
+    override fun toString() = "Cursor ${cursorHandle}"
 }
 
 actual enum class SystemCursor(val cursorId: kotlin.Int) {

@@ -7,7 +7,7 @@ class ResourceContext private constructor(
     val engine: Engine,
     val owner: ResourceOwner,
     private val resources: ResourceScope,
-    private val cache: MutableMap<Resource<*>, Managed>
+    private val cache: MutableMap<Resource<*>, Managed?>
 ) : Managed {
 
     constructor(engine: Engine, owner: ResourceOwner, resources: ResourceScope) : this(engine, owner, resources, mutableMapOf())
@@ -18,11 +18,11 @@ class ResourceContext private constructor(
     }
 
     override fun release() {
-        cache.forEach { it.value.release() }
+        cache.forEach { it.value?.release() }
         cache.clear()
     }
 
-    fun <TResource : Managed> loadIfAbsent(resource: Resource<TResource>, loader: () -> TResource): TResource {
+    fun <TResource : Managed?> loadIfAbsent(resource: Resource<TResource>, loader: () -> TResource): TResource {
         @Suppress("UNCHECKED_CAST")
         return cache.getOrPut(resource, loader) as TResource
     }
