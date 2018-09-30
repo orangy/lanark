@@ -2,7 +2,7 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     targets {
-        if (project.property("lanark.sdl2.enable") != "false") {
+        if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos') {
                 compilations.main {
                     extraOpts '-Xdisable', 'devirtualization'
@@ -64,16 +64,18 @@ kotlin {
             }
         }
 
-        if (project.property("lanark.sdl2.enable") != "false") {
+        if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
                 kotlin.srcDirs = ["sdl2"]
                 resources.srcDirs = ["sdl2Resources"]
             }
-            sdl2iosMain {
-                dependsOn sdl2macosMain
-            }
-            sdl2isimMain {
-                dependsOn sdl2macosMain
+            if (project.property("lanark.sdl2.ios") == "true") {
+                sdl2iosMain {
+                    dependsOn sdl2macosMain
+                }
+                sdl2isimMain {
+                    dependsOn sdl2macosMain
+                }
             }
         }
 
@@ -115,7 +117,7 @@ kotlin.targets.all {
     }
 }
 
-if (project.property("lanark.sdl2.enable") != "false") {
+if (project.property("lanark.sdl2.enable") == "true") {
     afterEvaluate {
         kotlin.targets.sdl2macos.compilations.test.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
             copy {

@@ -2,7 +2,7 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     targets {
-        if (project.property("lanark.sdl2.enable") != "false") {
+        if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos')
             fromPreset(presets.iosArm64, 'sdl2ios')
             fromPreset(presets.iosX64, 'sdl2isim')
@@ -32,15 +32,17 @@ kotlin {
             }
         }
 
-        if (project.property("lanark.sdl2.enable") != "false") {
+        if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
                 kotlin.srcDirs = ["sdl2"]
             }
-            sdl2iosMain {
-                dependsOn sdl2macosMain
-            }
-            sdl2isimMain {
-                dependsOn sdl2macosMain
+            if (project.property("lanark.sdl2.ios") == "true") {
+                sdl2iosMain {
+                    dependsOn sdl2macosMain
+                }
+                sdl2isimMain {
+                    dependsOn sdl2macosMain
+                }
             }
         }
 

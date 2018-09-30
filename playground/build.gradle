@@ -2,7 +2,7 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     targets {
-        if (project.property("lanark.sdl2.enable") != "false") {
+        if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos') {
                 compilations.main {
                     outputKinds = [EXECUTABLE]
@@ -53,15 +53,17 @@ kotlin {
             }
         }
 
-        if (project.property("lanark.sdl2.enable") != "false") {
+        if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
                 kotlin.srcDirs = ["sdl2"]
             }
-            sdl2iosMain {
-                dependsOn sdl2macosMain
-            }
-            sdl2isimMain {
-                dependsOn sdl2macosMain
+            if (project.property("lanark.sdl2.ios") == "true") {
+                sdl2iosMain {
+                    dependsOn sdl2macosMain
+                }
+                sdl2isimMain {
+                    dependsOn sdl2macosMain
+                }
             }
         }
 
@@ -82,7 +84,7 @@ kotlin.targets.all {
     }
 }
 
-if (project.property("lanark.sdl2.enable") != "false") {
+if (project.property("lanark.sdl2.enable") == "true") {
     afterEvaluate {
         kotlin.targets.sdl2macos.compilations.main.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
             copy {
@@ -105,16 +107,25 @@ task shutdownSimulator(type: Exec) {
     args "-c", "xcrun simctl shutdown booted"
 }
 
-if (project.property("lanark.sdl2.enable") != "false") {
+if (project.property("lanark.sdl2.enable") == "true") {
+    def RUN_GROUP = 'Run'
 
     afterEvaluate {
         task runDebugExecutableSdl2macos(type: Exec, dependsOn: [linkDebugExecutableSdl2macos]) {
             executable linkDebugExecutableSdl2macos.outputFile.get()
         }
+        runDebugExecutableSdl2macos.group = RUN_GROUP        
 
         task resourcesDebugExecutableSdl2ios(type: Copy, dependsOn: [linkDebugExecutableSdl2ios]) {
             def target = linkDebugExecutableSdl2ios.target
             from linkDebugExecutableSdl2ios.outputFile.get()
+            from file('resources')
+            into file("build/bundle/$target/${project.name}.app/")
+        }
+        
+        task resourcesDebugExecutableSdl2isim(type: Copy, dependsOn: [linkDebugExecutableSdl2isim]) {
+            def target = linkDebugExecutableSdl2isim.target
+            from linkDebugExecutableSdl2isim.outputFile.get()
             from file('resources')
             into file("build/bundle/$target/${project.name}.app/")
         }
@@ -124,6 +135,13 @@ if (project.property("lanark.sdl2.enable") != "false") {
             // add the following to your local.properties file
             // apple_application_id=lanark.playground
             // apple_team_id=<your apple TeamID>
+            expand(project.properties)
+            from file('iosBundleFiles')
+            into file("build/bundle/$target/${project.name}.app/")
+        }
+        
+        task bundleDebugExecutableSdl2isim(type: Copy, dependsOn: [resourcesDebugExecutableSdl2isim]) {
+            def target = linkDebugExecutableSdl2isim.target
             expand(project.properties)
             from file('iosBundleFiles')
             into file("build/bundle/$target/${project.name}.app/")
@@ -147,14 +165,14 @@ if (project.property("lanark.sdl2.enable") != "false") {
             args "-c", "codesign -s $identity --entitlements $appFolder/Entitlements.plist $appFolder"
         }
 
-        task installDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios]) {
-            def appId = linkDebugExecutableSdl2ios.outputFile.get().name
+        task installDebugExecutableSdl2isim(type: Exec, dependsOn: [bundleDebugExecutableSdl2isim]) {
+            def appId = linkDebugExecutableSdl2isim.outputFile.get().name
             doFirst {
                 println "Installing `$appId` on a simulator…"
             }
             executable "sh"
 
-            def appFolder = bundleDebugExecutableSdl2ios.destinationDir
+            def appFolder = bundleDebugExecutableSdl2isim.destinationDir
             args "-c", "xcrun simctl install booted '${appFolder.absolutePath}'"
 
             doLast {
@@ -168,7 +186,7 @@ if (project.property("lanark.sdl2.enable") != "false") {
             // open `xcrun simctl get_app_container booted BUNDLEID_OF_YOUR_APP data` -a Finder
         }
 
-        task runDebugExecutableSdl2ios(type: Exec, dependsOn: [installDebugExecutableSdl2ios, startSimulator]) {
+        task runDebugExecutableSdl2isim(type: Exec, dependsOn: [installDebugExecutableSdl2isim, startSimulator]) {
             def appId = linkDebugExecutableSdl2ios.outputFile.get().name
             doFirst {
                 println "Starting `$appId` on a simulator…"
@@ -177,5 +195,6 @@ if (project.property("lanark.sdl2.enable") != "false") {
             executable "sh"
             args "-c", "xcrun simctl launch --console-pty booted $appId"
         }
+        runDebugExecutableSdl2isim.group = RUN_GROUP
     }
 }
