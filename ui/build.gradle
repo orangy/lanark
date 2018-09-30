@@ -4,8 +4,10 @@ kotlin {
     targets {
         if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos')
-            fromPreset(presets.iosArm64, 'sdl2ios')
-            fromPreset(presets.iosX64, 'sdl2isim')
+            if (project.property("lanark.sdl2.ios") == "true") {
+                fromPreset(presets.iosArm64, 'sdl2ios')
+                fromPreset(presets.iosX64, 'sdl2isim')
+            }
         }
         
         fromPreset(presets.jvm, 'lwjgl')

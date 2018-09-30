@@ -14,22 +14,24 @@ kotlin {
                 }
             }
 
-            fromPreset(presets.iosX64, 'sdl2isim') {
-                compilations.main {
-                    extraOpts '-Xdisable', 'devirtualization'
-                    cinterops {
-                        sdl {
-                            defFile = file("sdl2/sdl2.def")
+            if (project.property("lanark.sdl2.ios") == "true") {
+                fromPreset(presets.iosX64, 'sdl2isim') {
+                    compilations.main {
+                        extraOpts '-Xdisable', 'devirtualization'
+                        cinterops {
+                            sdl {
+                                defFile = file("sdl2/sdl2.def")
+                            }
                         }
                     }
                 }
-            }
-            fromPreset(presets.iosArm64, 'sdl2ios') {
-                compilations.main {
-                    extraOpts '-Xdisable', 'devirtualization'
-                    cinterops {
-                        sdl {
-                            defFile = file("sdl2/sdl2.def")
+                fromPreset(presets.iosArm64, 'sdl2ios') {
+                    compilations.main {
+                        extraOpts '-Xdisable', 'devirtualization'
+                        cinterops {
+                            sdl {
+                                defFile = file("sdl2/sdl2.def")
+                            }
                         }
                     }
                 }
