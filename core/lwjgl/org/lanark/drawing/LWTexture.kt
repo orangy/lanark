@@ -80,26 +80,27 @@ actual fun Frame.draw(texture: Texture, position: Point, size: Size) {
 }
 
 private fun Frame.drawStrip(minU: Float, minV: Float, maxU: Float, maxV: Float, destinationRect: Rect) {
-    val canvasSize = canvasSize
+    val logicalSize = size
     draw(GL_TRIANGLE_STRIP) {
         glTexCoord2f(minU, minV)
-        glVertex2f(destinationRect.left.toFloat(), canvasSize.height - destinationRect.top.toFloat()) // Upper left
+        glVertex2f(destinationRect.left.toFloat(), logicalSize.height - destinationRect.top.toFloat()) // Upper left
 
         glTexCoord2f(minU, maxV)
-        glVertex2f(destinationRect.left.toFloat(), canvasSize.height - destinationRect.bottom.toFloat()) // Lower left
+        glVertex2f(destinationRect.left.toFloat(), logicalSize.height - destinationRect.bottom.toFloat()) // Lower left
 
         glTexCoord2f(maxU, minV)
-        glVertex2f(destinationRect.right.toFloat(), canvasSize.height - destinationRect.top.toFloat()) // Upper right
+        glVertex2f(destinationRect.right.toFloat(), logicalSize.height - destinationRect.top.toFloat()) // Upper right
 
         glTexCoord2f(maxU, maxV)
-        glVertex2f(destinationRect.right.toFloat(), canvasSize.height - destinationRect.bottom.toFloat()) // Lower right
+        glVertex2f(destinationRect.right.toFloat(), logicalSize.height - destinationRect.bottom.toFloat()) // Lower right
     }
 }
 
 private inline fun Frame.prepareContextFor2D(texture: Texture) {
+    val logicalSize = size
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(0.0, canvasSize.width.toDouble(), 0.0, canvasSize.height.toDouble(), 0.0, 1.0)
+    glOrtho(0.0, logicalSize.width.toDouble(), 0.0, logicalSize.height.toDouble(), 0.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
     glColor4f(1f, 1f, 1f, 1f)
     glEnable(GL_BLEND)

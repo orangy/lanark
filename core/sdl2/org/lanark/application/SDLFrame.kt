@@ -4,6 +4,7 @@ import cnames.structs.SDL_Window
 import kotlinx.cinterop.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
+import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.resources.*
 import org.lanark.system.*
@@ -18,7 +19,19 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC
     ).sdlError("SDL_CreateRenderer")
 
+    // need this for HIDPI
+    private val resizeHandler: (EventWindow) -> Unit = {
+        if (it is EventWindowSizeChanged && it.frame == this) {
+            SDL_RenderSetLogicalSize(rendererPtr, it.width, it.height)
+        }
+    }
+
+    init {
+        engine.events.window.subscribe(resizeHandler)
+    }
+
     override fun release() {
+        engine.events.window.unsubscribe(resizeHandler)
         engine.unregisterFrame(id, this)
         val captureId = id
         SDL_DestroyRenderer(rendererPtr)
