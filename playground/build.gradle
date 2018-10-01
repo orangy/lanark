@@ -6,6 +6,7 @@ kotlin {
             fromPreset(presets.macosX64, 'sdl2macos') {
                 compilations.main {
                     outputKinds = [EXECUTABLE]
+                    buildTypes = [DEBUG]
                     linkerOpts += ["-macosx_version_min 10.13"]
                 }
             }
@@ -14,6 +15,7 @@ kotlin {
                 fromPreset(presets.iosX64, 'sdl2isim') {
                     compilations.main {
                         outputKinds = [EXECUTABLE]
+                        buildTypes = [DEBUG]
                         linkerOpts += ["-ios_simulator_version_min 11.0"]
                         extraOpts "-nomain"
                     }
@@ -21,6 +23,7 @@ kotlin {
                 fromPreset(presets.iosArm64, 'sdl2ios') {
                     compilations.main {
                         outputKinds = [EXECUTABLE]
+                        buildTypes = [DEBUG]
                         linkerOpts += ["-ios_version_min 11.0"]
                         extraOpts "-nomain"
                     }
@@ -61,10 +64,18 @@ kotlin {
             }
             if (project.property("lanark.sdl2.ios") == "true") {
                 sdl2iosMain {
-                    dependsOn sdl2macosMain
+                    if (System.getProperty("idea.active") != "true") {
+                        kotlin.srcDirs = ["sdl2"]
+                    } else {
+                        dependsOn.clear()
+                    }
                 }
                 sdl2isimMain {
-                    dependsOn sdl2macosMain
+                    if (System.getProperty("idea.active") != "true") {
+                        kotlin.srcDirs = ["sdl2"]
+                    } else {
+                        dependsOn.clear()
+                    }
                 }
             }
         }

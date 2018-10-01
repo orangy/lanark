@@ -3,13 +3,26 @@ apply plugin: 'kotlin-multiplatform'
 kotlin {
     targets {
         if (project.property("lanark.sdl2.enable") == "true") {
-            fromPreset(presets.macosX64, 'sdl2macos')
+            fromPreset(presets.macosX64, 'sdl2macos') {
+                compilations.main {
+                    buildTypes = [DEBUG]
+                }
+            }
             if (project.property("lanark.sdl2.ios") == "true") {
-                fromPreset(presets.iosArm64, 'sdl2ios')
-                fromPreset(presets.iosX64, 'sdl2isim')
+                fromPreset(presets.iosArm64, 'sdl2ios') {
+                    compilations.main {
+                        buildTypes = [DEBUG]
+                    }
+                }
+
+                fromPreset(presets.iosX64, 'sdl2isim') {
+                    compilations.main {
+                        buildTypes = [DEBUG]
+                    }
+                }
             }
         }
-        
+
         fromPreset(presets.jvm, 'lwjgl')
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
@@ -40,10 +53,18 @@ kotlin {
             }
             if (project.property("lanark.sdl2.ios") == "true") {
                 sdl2iosMain {
-                    dependsOn sdl2macosMain
+                    if (System.getProperty("idea.active") != "true") {
+                        kotlin.srcDirs = ["sdl2"]
+                    } else {
+                        dependsOn.clear()
+                    }
                 }
                 sdl2isimMain {
-                    dependsOn sdl2macosMain
+                    if (System.getProperty("idea.active") != "true") {
+                        kotlin.srcDirs = ["sdl2"]
+                    } else {
+                        dependsOn.clear()
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ kotlin {
         if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos') {
                 compilations.main {
+                    buildTypes = [DEBUG]
                     extraOpts '-Xdisable', 'devirtualization'
                     cinterops {
                         sdl {
@@ -17,6 +18,7 @@ kotlin {
             if (project.property("lanark.sdl2.ios") == "true") {
                 fromPreset(presets.iosX64, 'sdl2isim') {
                     compilations.main {
+                        buildTypes = [DEBUG]
                         extraOpts '-Xdisable', 'devirtualization'
                         cinterops {
                             sdl {
@@ -27,6 +29,7 @@ kotlin {
                 }
                 fromPreset(presets.iosArm64, 'sdl2ios') {
                     compilations.main {
+                        buildTypes = [DEBUG]
                         extraOpts '-Xdisable', 'devirtualization'
                         cinterops {
                             sdl {
@@ -66,7 +69,7 @@ kotlin {
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
             }
         }
-
+        
         if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
                 kotlin.srcDirs = ["sdl2"]
@@ -78,16 +81,24 @@ kotlin {
             }
             if (project.property("lanark.sdl2.ios") == "true") {
                 sdl2iosMain {
-                    kotlin.srcDirs = ["sdl2"]
-                    resources.srcDirs = ["sdl2Resources"]
+                    if (System.getProperty("idea.active") != "true") {
+                        kotlin.srcDirs = ["sdl2"]
+                        resources.srcDirs = ["sdl2Resources"]
+                    } else {
+                        dependsOn.clear()
+                    }
                     dependencies {
                         api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-native_debug_ios_arm64', version: coroutines_version
                         api group: 'org.jetbrains.kotlinx', name: 'atomicfu-native_debug_ios_arm64', version: atomicfu_version
                     }
                 }
                 sdl2isimMain {
-                    kotlin.srcDirs = ["sdl2"]
-                    resources.srcDirs = ["sdl2Resources"]
+                    if (System.getProperty("idea.active") != "true") {
+                        kotlin.srcDirs = ["sdl2"]
+                        resources.srcDirs = ["sdl2Resources"]
+                    } else {
+                        dependsOn.clear()
+                    }
                     dependencies {
                         api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-native_debug_ios_x64', version: coroutines_version
                         api group: 'org.jetbrains.kotlinx', name: 'atomicfu-native_debug_ios_x64', version: atomicfu_version
