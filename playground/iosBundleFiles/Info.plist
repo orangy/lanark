@@ -45,6 +45,10 @@
         <string>10A255</string>
         <key>LSRequiresIPhoneOS</key>
         <true/>
+        <key>NSMainNibFile</key>
+        <string></string>
+        <key>UILaunchStoryboardName</key>
+        <string>iOS Launch Screen</string>
         <key>MinimumOSVersion</key>
         <string>10.2</string>
         <key>UIDeviceFamily</key>
