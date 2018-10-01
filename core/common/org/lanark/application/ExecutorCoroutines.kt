@@ -50,4 +50,6 @@ class ExecutorCoroutines(val engine: Engine) : Executor {
         }
         engine.logger.system("Stopped $this")
     }
+
+    override fun toString(): String = "Executor(Coroutines)"
 }

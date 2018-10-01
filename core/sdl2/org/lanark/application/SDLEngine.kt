@@ -46,9 +46,9 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         memorySize = SDL_GetSystemRAM()
 
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
-        logger = configuration.logger
+        logger = configuration.logger ?: NSLogger()
         events = configuration.events ?: Events(this)
-        executor= configuration.executor ?: ExecutorCoroutines(this)
+        executor = configuration.executor ?: ExecutorCoroutines(this)
 
         logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing SDL v$version")
@@ -57,9 +57,28 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         val displayMode = memScoped {
             val displayMode = alloc<SDL_DisplayMode>()
-            // TODO: Support multiply displays
-            SDL_GetCurrentDisplayMode(0, displayMode.ptr.reinterpret()).sdlError("SDL_GetCurrentDisplayMode")
-            logger.info("Display mode: ${displayMode.w}x${displayMode.h}, ${displayMode.refresh_rate} Hz")
+            val bounds = alloc<SDL_Rect>()
+            val usable = alloc<SDL_Rect>()
+            val count = SDL_GetNumVideoDisplays()
+            repeat(count) { display ->
+                val name = SDL_GetDisplayName(display)
+                SDL_GetDisplayBounds(display, bounds.ptr)
+                SDL_GetDisplayUsableBounds(display, usable.ptr)
+                val usableRect = Rect(usable.x, usable.y, usable.w, usable.h)
+                val boundsRect = Rect(bounds.x, bounds.y, bounds.w, bounds.h)
+                logger.info("Display #$display: $name, $boundsRect, usable $usableRect")
+                SDL_GetDesktopDisplayMode(display, displayMode.ptr)
+                logger.info("  Desktop display mode: ${displayMode.w}x${displayMode.h}, ${displayMode.refresh_rate} Hz")
+
+                val modes = SDL_GetNumDisplayModes(display)
+                repeat(modes) { mode ->
+                    SDL_GetDisplayMode(display, mode, displayMode.ptr).sdlError("SDL_GetCurrentDisplayMode")
+                    logger.info("  Display mode #$mode: ${displayMode.w}x${displayMode.h}, ${displayMode.refresh_rate} Hz")
+                }
+            }
+            
+            SDL_GetCurrentDisplayMode(0, displayMode.ptr).sdlError("SDL_GetCurrentDisplayMode")
+            logger.info("Current display mode: ${displayMode.w}x${displayMode.h}, ${displayMode.refresh_rate} Hz")
             displayMode
         }
 

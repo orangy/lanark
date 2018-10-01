@@ -23,6 +23,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
     private val resizeHandler: (EventWindow) -> Unit = {
         if (it is EventWindowSizeChanged && it.frame == this) {
             SDL_RenderSetLogicalSize(rendererPtr, it.width, it.height)
+            engine.logger.system("Resized $this")
         }
     }
 
@@ -196,7 +197,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         actual val UndefinedPosition = SDL_WINDOWPOS_UNDEFINED.toInt()
     }
 
-    override fun toString() = "Frame #$id ${windowPtr.rawValue}"
+    override fun toString() = "Frame #$id ${windowPtr.rawValue} ($size / $canvasSize)"
 }
 
 actual class FrameFlag(val value: UInt) {
@@ -204,6 +205,7 @@ actual class FrameFlag(val value: UInt) {
         actual val CreateVisible = FrameFlag(SDL_WINDOW_SHOWN)
         actual val CreateResizable = FrameFlag(SDL_WINDOW_RESIZABLE)
         actual val CreateFullscreen = FrameFlag(SDL_WINDOW_FULLSCREEN)
+        actual val CreateFullscreenDesktop = FrameFlag(SDL_WINDOW_FULLSCREEN_DESKTOP)
         actual val CreateHiDPI = FrameFlag(SDL_WINDOW_ALLOW_HIGHDPI)
     }
 

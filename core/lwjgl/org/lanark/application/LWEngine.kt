@@ -40,7 +40,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
     init {
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
-        logger = configuration.logger
+        logger = configuration.logger ?: LoggerConsole()
         events = configuration.events ?: Events(this)
         executor = configuration.executor ?: ExecutorCoroutines(this)
 

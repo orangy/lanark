@@ -7,7 +7,7 @@ import sdl2.*
 
 actual class EngineConfiguration(actual val platform: String, actual val cpus: Int, actual val version: Version) {
     internal var flags: UInt = 0u
-    actual var logger: Logger = LoggerNone
+    actual var logger: Logger? = null
     actual var events: Events? = null
     actual var executor: Executor? = null
 

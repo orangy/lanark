@@ -46,6 +46,7 @@ expect class FrameFlag {
         val CreateVisible: FrameFlag
         val CreateResizable: FrameFlag
         val CreateFullscreen: FrameFlag
+        val CreateFullscreenDesktop: FrameFlag
         val CreateHiDPI: FrameFlag
     }
 }

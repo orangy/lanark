@@ -9,7 +9,8 @@ expect class EngineConfiguration {
     val cpus: Int
     val version: Version
     
-    var logger: Logger
+    var logger: Logger?
+    
     var events: Events?
     var executor: Executor?
     

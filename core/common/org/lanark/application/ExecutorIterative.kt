@@ -90,5 +90,5 @@ class ExecutorIterative(val engine: Engine) : Executor {
         after.raise(Unit)
     }
 
-    override fun toString(): String = "TaskExecutor(Iterative)"
+    override fun toString(): String = "Executor(Iterative)"
 }
