@@ -13,7 +13,7 @@ import sdl2.*
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
     actual val logger: Logger
     actual val events: Events
-    actual val executor: TaskExecutor
+    actual val executor: Executor
     
     private val version: Version
     private val mixVersion: Version
@@ -48,7 +48,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
         logger = configuration.logger
         events = configuration.events ?: Events(this)
-        executor= configuration.executor ?: TaskExecutorIterative(this)
+        executor= configuration.executor ?: ExecutorCoroutines(this)
 
         logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing SDL v$version")

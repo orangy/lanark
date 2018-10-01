@@ -1,13 +1,14 @@
 package org.lanark.application
 
+import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
 import org.lanark.system.*
 
-class TaskExecutorIterative(val engine: Engine) : TaskExecutor {
+class ExecutorIterative(val engine: Engine) : Executor {
     var running = false
         private set
 
-    private var queue = ArrayList<(() -> Unit)?>(2).apply {
+    private var queue = ArrayList<(suspend CoroutineScope.() -> Unit)?>(2).apply {
         add(null)
         add(null)
     }
@@ -22,7 +23,7 @@ class TaskExecutorIterative(val engine: Engine) : TaskExecutor {
         running = false
     }
 
-    override fun submit(task: () -> Unit) {
+    override fun submit(task: suspend CoroutineScope.() -> Unit) {
         if (queueHead == queueTail + 1) {
             // queue is filled, expand it (improve algorithm by adding more)
             queue.add(null)
@@ -45,7 +46,7 @@ class TaskExecutorIterative(val engine: Engine) : TaskExecutor {
         //logger.system("Submitted task: ${queue.size} [$queueHead, $queueTail]")
     }
 
-    private fun peek(): (() -> Unit)? {
+    private fun peek(): (suspend CoroutineScope.() -> Unit)? {
         if (queueHead == queueTail) return null
         val task = queue[queueHead]
         queue[queueHead] = null
@@ -75,7 +76,9 @@ class TaskExecutorIterative(val engine: Engine) : TaskExecutor {
     private fun runIteration() {
         while (running) {
             val taskToExecute = peek() ?: break
-            taskToExecute()
+            coroutineLoop {
+                taskToExecute()
+            }
         }
     }
 

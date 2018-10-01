@@ -12,7 +12,7 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
     
     val logger: Logger
     val events: Events
-    val executor: TaskExecutor
+    val executor: Executor
     
     fun sleep(millis: UInt)
     fun setScreenSaver(enabled: Boolean)

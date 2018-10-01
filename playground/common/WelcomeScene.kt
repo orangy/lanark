@@ -1,3 +1,4 @@
+import kotlinx.coroutines.*
 import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.events.*
@@ -12,11 +13,23 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
     private val hotCursor = resources.loadCursor("cursors/hot")
 
     private val item = resources.loadTexture("welcome/item")
-    private val itemPosition = Point(10, 10)
+    private var itemPosition = Point(10, 10)
     private val itemRect = Rect(itemPosition, item.size)
 
     override fun activate(frame: Frame) {
         frame.cursor = normalCursor
+        engine.executor.submit {
+            while (true) {
+                repeat(100) {
+                    itemPosition += Vector(1, 0)
+                    yield()
+                }
+                repeat(100) {
+                    itemPosition -= Vector(1, 0)
+                    yield()
+                }
+            }
+        }
         //backgroundMusic.play()
     }
 

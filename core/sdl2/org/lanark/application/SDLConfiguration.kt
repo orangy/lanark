@@ -9,7 +9,7 @@ actual class EngineConfiguration(actual val platform: String, actual val cpus: I
     internal var flags: UInt = 0u
     actual var logger: Logger = LoggerNone
     actual var events: Events? = null
-    actual var executor: TaskExecutor? = null
+    actual var executor: Executor? = null
 
     actual fun enableEverything() {
         flags = flags or SDL_INIT_EVERYTHING
