@@ -1,6 +1,5 @@
 import kotlinx.coroutines.*
 import org.lanark.application.*
-import org.lanark.diagnostics.*
 import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.resources.*
@@ -27,7 +26,7 @@ fun main() {
     @Suppress("NAMED_ARGUMENTS_NOT_ALLOWED")
     val frame = engine.createFrame(
         title, 800, 600,
-        flags = FrameFlag.CreateResizable + FrameFlag.CreateFullscreenDesktop + FrameFlag.CreateHiDPI + FrameFlag.CreateVisible
+        flags = FrameFlag.CreateResizable + FrameFlag.CreateHiDPI + FrameFlag.CreateVisible
     ).apply {
         minimumSize = Size(800, 600)
     }
@@ -106,7 +105,7 @@ fun main() {
             Button(Point(20, 80), uiResources)
         )
     )
-    val welcome = WelcomeScene(engine, resources)
+    val welcome = WelcomeScene(application, resources)
 
     application.scene = SceneLayered("main", listOf(welcome))
 

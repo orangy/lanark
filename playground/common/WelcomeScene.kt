@@ -7,7 +7,7 @@ import org.lanark.resources.*
 import org.lanark.ui.*
 import kotlin.random.*
 
-class WelcomeScene(val engine: Engine, private val resources: ResourceContext) : Scene {
+class WelcomeScene(private val application: SceneApplication, resources: ResourceContext) : Scene {
     private val background = resources.loadTexture("welcome/background-image")
     //private val backgroundMusic = resources.loadMusic("welcome/background-music")
     private val normalCursor = resources.loadCursor("cursors/normal")
@@ -15,50 +15,25 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
     private val tiles = resources.loadTiles("ui/elements")
     private val item = tiles["button"]
 
-    class Shield(
-        private val texture: Tile,
-        position: Point,
-        val minPosition: Int,
-        val maxPosition: Int,
-        val speed: Int
-    ) {
-        private var itemPosition = position
-
-        suspend fun run() {
-            while (true) {
-                while(itemPosition.x < maxPosition) {
-                    itemPosition += Vector(speed, 0)
-                    yield()
-                }
-                while(itemPosition.x > minPosition) {
-                    itemPosition -= Vector(speed, 0)
-                    yield()
-                }
-            }
-        }
-
-        fun render(frame: Frame) {
-            frame.draw(texture, itemPosition)
-        }
-    }
-    
     private val minPosition = 10
-    private val maxPosition = 600 - item.width
+    private val maxPosition = 600 - item.width - 10
 
     private val items = List(5) {
         Shield(
             item,
             Point(Random.nextInt(minPosition, maxPosition), 5 + item.height * 2 * it),
             minPosition,
-            maxPosition, 
-            Random.nextInt(4)
+            maxPosition,
+            Random.nextInt(1, 5),
+            normalCursor,
+            hotCursor
         )
     }
 
     override fun activate(frame: Frame) {
         frame.cursor = normalCursor
 
-        engine.executor.submit {
+        application.frame.engine.executor.submit {
             items.forEach {
                 launch { it.run() }
             }
@@ -82,7 +57,10 @@ class WelcomeScene(val engine: Engine, private val resources: ResourceContext) :
     }
 
     override fun event(frame: Frame, event: Event): Boolean {
-        return true
+        val handled = items.any { it.handle(frame, event) }
+        if (!handled)
+            frame.cursor = normalCursor
+        return handled
     }
 
     override fun toString() = "WelcomeScene"
