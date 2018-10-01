@@ -104,7 +104,7 @@ fun main() {
     )
     val welcome = WelcomeScene(engine, resources)
 
-    application.scene = SceneLayered("main", listOf(welcome, dialog))
+    application.scene = SceneLayered("main", listOf(welcome))
 
     application.run()
 
