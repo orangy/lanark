@@ -129,16 +129,16 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
         glfwSwapBuffers(windowHandle) // swap the color buffers
     }
 
-    override fun toString() = "Frame #$windowHandle"
+    override fun toString() = "Frame #$windowHandle ($size / $canvasSize)"
 }
 
 actual class FrameFlag(val value: Int) {
     actual companion object {
-        actual val CreateVisible = FrameFlag(GLFW_VISIBLE)
-        actual val CreateResizable = FrameFlag(GLFW_RESIZABLE)
-        actual val CreateFullscreen = FrameFlag(1)
-        actual val CreateFullscreenDesktop = FrameFlag(2)
-        actual val CreateHiDPI = FrameFlag(4)
+        actual val CreateVisible = FrameFlag(1)
+        actual val CreateResizable = FrameFlag(2)
+        actual val CreateFullscreen = FrameFlag(4)
+        actual val CreateFullscreenDesktop = FrameFlag(8)
+        actual val CreateHiDPI = FrameFlag(16)
     }
 
     actual operator fun plus(flag: FrameFlag) = FrameFlag(value or flag.value)
