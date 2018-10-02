@@ -17,7 +17,9 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         windowPtr,
         -1,
         SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC
-    ).sdlError("SDL_CreateRenderer")
+    ).sdlError("SDL_CreateRenderer").also {
+        SDL_RenderSetLogicalSize(it, size.width, size.height)
+    }
 
     // need this for HIDPI
     private val resizeHandler: (EventWindow) -> Unit = {
