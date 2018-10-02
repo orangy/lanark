@@ -3,11 +3,11 @@ package org.lanark.io
 import org.lanark.system.*
 
 expect class File : Managed {
-    val size: Long
-    val position: Long
+    val size: ULong
+    val position: ULong
     fun read(count: Int): ByteArray 
     fun write(source: ByteArray): ULong
-    fun seek(position: Long, seekFrom: SeekFrom = SeekFrom.Start) : Long
+    fun seek(position: Long, seekFrom: SeekFrom = SeekFrom.Start): ULong
     fun close()
 }
 

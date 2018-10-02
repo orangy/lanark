@@ -52,6 +52,12 @@ kotlin {
                 jvmTarget = '1.8'
             }
         }
+
+        configure([webgl]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                sourceMap = true
+            }
+        }
     }
 
     sourceSets {

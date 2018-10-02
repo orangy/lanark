@@ -6,11 +6,11 @@ import java.nio.channels.*
 import java.nio.file.*
 
 actual class File(val file: SeekableByteChannel) : Managed {
-    actual val size: Long
-        get() = file.size()
+    actual val size: ULong
+        get() = file.size().toULong()
     
-    actual val position: Long
-        get() = file.position()
+    actual val position: ULong
+        get() = file.position().toULong()
 
     actual fun read(count: Int): ByteArray {
         val buffer = ByteBuffer.allocate(count)
@@ -22,9 +22,9 @@ actual class File(val file: SeekableByteChannel) : Managed {
         return file.write(ByteBuffer.wrap(source)).toULong()
     }
 
-    actual fun seek(position: Long, seekFrom: SeekFrom): Long {
+    actual fun seek(position: Long, seekFrom: SeekFrom): ULong {
         file.position(position)
-        return file.position()
+        return file.position().toULong()
     }
 
     override fun release() {

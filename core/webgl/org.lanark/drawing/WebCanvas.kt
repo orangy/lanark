@@ -5,7 +5,6 @@ import org.lanark.system.*
 
 actual class Canvas : Managed {
     override fun release() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     actual val size: Size

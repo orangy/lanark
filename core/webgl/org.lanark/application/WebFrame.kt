@@ -1,35 +1,35 @@
 package org.lanark.application
 
+import org.khronos.webgl.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.resources.*
 import org.lanark.system.*
 
-actual class Frame : ResourceOwner, Managed {
+actual class Frame(actual val engine: Engine, val context: WebGLRenderingContext) : ResourceOwner, Managed {
     override fun release() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        
     }
-
-    actual val engine: Engine
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     actual val size: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
+    
     actual val canvasSize: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
+    
     actual var minimumSize: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        set(value) {}
+        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
+        set(value) {  }
     actual var maximumSize: Size
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        set(value) {}
+        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
+        set(value) {  }
     actual var title: String
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        set(value) {}
+        get() = context.canvas.title
+        set(value) { context.canvas.title = value }
     actual var cursor: Cursor?
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = null
         set(value) {}
     actual val borders: Margins
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = Margins.Empty
 
     actual fun setBordered(enable: Boolean) {}
     actual fun setResizable(enable: Boolean) {}
@@ -47,10 +47,8 @@ actual class Frame : ResourceOwner, Managed {
     actual fun present() {}
 
     actual companion object {
-        actual val UndefinedPosition: Int
-            get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        actual val UndefinedPosition: Int = -1
     }
-
 }
 
 actual class FrameFlag(val value: Int) {

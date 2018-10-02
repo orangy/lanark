@@ -10,17 +10,17 @@ actual class File(val handle: CPointer<SDL_RWops>) : Managed {
         close()
     }
 
-    actual val size: Long
+    actual val size: ULong
         get() {
             val fn = handle.pointed.size.sdlError("File.size")
-            return fn(handle)
+            return fn(handle).toULong()
         }
 
-    actual val position: Long get() = seek(0, SeekFrom.Current)
+    actual val position: ULong get() = seek(0u, SeekFrom.Current)
 
-    actual fun seek(position: Long, seekFrom: SeekFrom): Long {
+    actual fun seek(position: ULong, seekFrom: SeekFrom): ULong {
         val fn = handle.pointed.seek.sdlError("File.seek")
-        return fn(handle, position, seekFrom.value)
+        return fn(handle, position.toLong(), seekFrom.value).toULong()
     }
 
     actual fun write(source: ByteArray): ULong = memScoped {

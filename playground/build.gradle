@@ -39,6 +39,11 @@ kotlin {
                 jvmTarget = '1.8'
             }
         }
+        configure([webgl]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                sourceMap = true
+            }
+        }
     }
 
     sourceSets {
@@ -129,14 +134,31 @@ task shutdownSimulator(type: Exec) {
     args "-c", "xcrun simctl shutdown booted"
 }
 
+afterEvaluate {
+    task webglAssembleWeb(type: Sync, dependsOn: compileKotlinWebgl) {
+        configurations.webglCompileClasspath.each { File file ->
+            from(zipTree(file.absolutePath), {
+                includeEmptyDirs = false
+                include { fileTreeElement ->
+                    def path = fileTreeElement.path
+                    (path.endsWith(".js") || path.endsWith(".js.map")) && (path.startsWith("META-INF/resources/") ||
+                            !path.startsWith("META-INF/"))
+                }
+            })
+        }
+        
+        from compileKotlinWebgl.destinationDir
+        into "${project.buildDir}/web"
+    }
+}
+
 if (project.property("lanark.sdl2.enable") == "true") {
     def RUN_GROUP = 'Run'
 
     afterEvaluate {
-        task runDebugExecutableSdl2macos(type: Exec, dependsOn: [linkDebugExecutableSdl2macos]) {
+        task runDebugExecutableSdl2macos(type: Exec, group: RUN_GROUP, dependsOn: [linkDebugExecutableSdl2macos]) {
             executable linkDebugExecutableSdl2macos.outputFile.get()
         }
-        runDebugExecutableSdl2macos.group = RUN_GROUP
 
         if (project.property("lanark.sdl2.ios") == "true") {
             task resourcesDebugExecutableSdl2ios(type: Copy, dependsOn: [linkDebugExecutableSdl2ios]) {
@@ -209,7 +231,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
                 // open `xcrun simctl get_app_container booted BUNDLEID_OF_YOUR_APP data` -a Finder
             }
 
-            task runDebugExecutableSdl2isim(type: Exec, dependsOn: [installDebugExecutableSdl2isim, startSimulator]) {
+            task runDebugExecutableSdl2isim(type: Exec, group: RUN_GROUP, dependsOn: [installDebugExecutableSdl2isim, startSimulator]) {
                 def appId = project.property("apple_application_id")
                 doFirst {
                     println "Starting `$appId` on a simulator…"
@@ -218,9 +240,8 @@ if (project.property("lanark.sdl2.enable") == "true") {
                 executable "sh"
                 args "-c", "xcrun simctl launch --console-pty booted $appId"
             }
-            runDebugExecutableSdl2isim.group = RUN_GROUP
             
-            task runDebugExecutableSdl2ios(type: Exec, dependsOn: [signDebugExecutableSdl2ios]) {
+            task runDebugExecutableSdl2ios(type: Exec, group: RUN_GROUP, dependsOn: [signDebugExecutableSdl2ios]) {
                 def deviceId = project.property("apple.device.id")
                 def appId = project.property("apple_application_id")
                 def appBundle = bundleDebugExecutableSdl2ios.destinationDir
@@ -231,7 +252,6 @@ if (project.property("lanark.sdl2.enable") == "true") {
                 executable "sh"
                 args "-c", "ios-deploy --id $deviceId --justlaunch --debug --bundle $appBundle"
             }
-            runDebugExecutableSdl2ios.group = RUN_GROUP
         }
     }
 }

@@ -2,26 +2,26 @@ package org.lanark.io
 
 import org.lanark.system.*
 
-actual class File : Managed {
+actual class File(val path: String) : Managed {
     override fun release() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    actual val size: Long
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    actual val position: Long
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    actual val size: ULong
+        get() = 0u
+
+    actual val position: ULong
+        get() = 0u
 
     actual fun read(count: Int): ByteArray {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ByteArray(0)
     }
 
     actual fun write(source: ByteArray): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return 0u
     }
 
-    actual fun seek(position: Long, seekFrom: SeekFrom): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    actual fun seek(position: Long, seekFrom: SeekFrom): ULong {
+        return 0u
     }
 
     actual fun close() {}
