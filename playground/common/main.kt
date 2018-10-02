@@ -53,6 +53,12 @@ fun main() {
     }
 
     val resources = resources("main") {
+        scope("logo") {
+            texture("icon", "lanark-60.png")
+            texture("icon-x2", "lanark-60x2.png")
+            texture("logo", "lanark-logo.png")
+        }
+        
         scope("cursors") {
             cursor("normal", "cursor.png", 0, 0)
             cursor("hot", "cursor-outline-red.png", 0, 0)
@@ -105,9 +111,10 @@ fun main() {
             Button(Point(20, 80), uiResources)
         )
     )
-    val welcome = WelcomeScene(application, resources)
+    val shieldScene = BouncerScene(application, resources)
+    val welcome = WelcomeScene(application, shieldScene, resources)
 
-    application.scene = SceneLayered("main", listOf(welcome))
+    application.scene = welcome
 
     try {
         application.run()

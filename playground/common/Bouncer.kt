@@ -4,7 +4,7 @@ import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
 
-class Shield(
+class Bouncer(
     private val tile: Tile,
     initialPosition: Point,
     private val minPosition: Int,
