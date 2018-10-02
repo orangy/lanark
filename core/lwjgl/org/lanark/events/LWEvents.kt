@@ -24,7 +24,18 @@ actual class Events actual constructor(engine: Engine) {
         }
 
         glfwSetMouseButtonCallback(frame.windowHandle) { window, button, action, mods ->
-
+            val x = DoubleArray(1)
+            val y = DoubleArray(1)
+            glfwGetCursorPos(frame.windowHandle, x, y)
+            val mouseButton = when (button) {
+                GLFW_MOUSE_BUTTON_LEFT -> MouseButton.Left
+                GLFW_MOUSE_BUTTON_MIDDLE -> MouseButton.Middle
+                GLFW_MOUSE_BUTTON_RIGHT -> MouseButton.Right
+                GLFW_MOUSE_BUTTON_4 -> MouseButton.X1
+                GLFW_MOUSE_BUTTON_5 -> MouseButton.X2
+                else -> return@glfwSetMouseButtonCallback // unknown button, skip the click
+            }
+            all.raise(EventMouseButtonDown(frame, mouseButton, x[0].toInt(), y[0].toInt()))
         }
         
         glfwSetCursorPosCallback(frame.windowHandle) { window, xpos, ypos ->
