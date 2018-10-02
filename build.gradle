@@ -11,7 +11,7 @@ buildscript {
         // maven { url 'https://teamcity.jetbrains.com/guestAuth/repository/download/Kotlin_130_CompilerAllPlugins/1646207:id/maven' }
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.0-rc-131'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.0-rc-145'
     }
 }
 

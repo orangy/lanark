@@ -118,7 +118,7 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
     }
 
     actual fun scale(scale: Float) {
-        TODO()
+        
     }
 
     actual fun drawLine(from: Point, to: Point) {

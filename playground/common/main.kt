@@ -2,6 +2,7 @@ import kotlinx.coroutines.*
 import org.lanark.application.*
 import org.lanark.events.*
 import org.lanark.geometry.*
+import org.lanark.playground.hex.*
 import org.lanark.resources.*
 import org.lanark.system.*
 import org.lanark.ui.*
@@ -112,7 +113,8 @@ fun main() {
         )
     )
     val shieldScene = BouncerScene(application, resources)
-    val welcome = WelcomeScene(application, shieldScene, resources)
+    val hexScene = HexScene(resources)
+    val welcome = WelcomeScene(application, hexScene, resources)
 
     application.scene = welcome
 

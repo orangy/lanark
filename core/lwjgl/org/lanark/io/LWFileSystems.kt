@@ -19,3 +19,9 @@ class LWFileSystem : FileSystem {
 
     override fun toString() = "FileSystem(LWJGL)"
 }
+
+actual enum class SeekFrom {
+    Start,
+    Current,
+    End,
+}

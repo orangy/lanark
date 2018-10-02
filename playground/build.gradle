@@ -32,7 +32,8 @@ kotlin {
         }
         
         fromPreset(presets.jvm, 'lwjgl')
-        
+        fromPreset(presets.js, 'webgl')
+
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = '1.8'
@@ -84,6 +85,14 @@ kotlin {
             kotlin.srcDirs = ["lwjgl"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-reflect'
+            }
+        }
+
+        webglMain {
+            kotlin.srcDirs = ["webgl"]
+            resources.srcDirs = ["webglResources"]
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
             }
         }
     }

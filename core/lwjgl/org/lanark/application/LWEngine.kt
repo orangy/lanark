@@ -161,7 +161,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual fun postQuitEvent() {
-        events.all.raise(EventAppQuit())
+        events.all.raise(EventAppQuit(0u))
     }
     
     internal fun unregisterFrame(windowId: Long, frame: Frame) {

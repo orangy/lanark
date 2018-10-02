@@ -3,39 +3,47 @@ package org.lanark.events
 import org.lanark.application.*
 import org.lanark.geometry.*
 
-expect abstract class EventMouse : Event {
-    val frame: Frame
+abstract class EventMouse(timestamp: ULong, val frame: Frame) : Event(timestamp) {
+
 }
 
-expect abstract class EventMouseButton : EventMouse {
-    val button: MouseButton
-    val clicks: UInt
-    val x: Int
+abstract class EventMouseButton(
+    timestamp: ULong,
+    frame: Frame,
+    val button: MouseButton,
+    val clicks: UInt,
+    val x: Int,
     val y: Int
-    val state: EventButtonState
+) : EventMouse(timestamp, frame) {
+
 }
 
 val EventMouseButton.position: Point get() = Point(x, y)
 
-expect class EventMouseButtonDown : EventMouseButton
-expect class EventMouseButtonUp : EventMouseButton
+class EventMouseButtonDown(timestamp: ULong, frame: Frame, button: MouseButton, x: Int, y: Int, clicks: UInt) :
+    EventMouseButton(timestamp, frame, button, clicks, x, y)
 
-expect class EventMouseMotion : EventMouse {
-    val x: Int
-    val y: Int
-    val deltaX: Int
+class EventMouseButtonUp(timestamp: ULong, frame: Frame, button: MouseButton, x: Int, y: Int, clicks: UInt) :
+    EventMouseButton(timestamp, frame, button, clicks, x, y)
+
+
+class EventMouseMotion(
+    timestamp: ULong,
+    frame: Frame,
+    val x: Int,
+    val y: Int,
+    val deltaX: Int,
     val deltaY: Int
+) : EventMouse(timestamp, frame) {
 }
 
 val EventMouseMotion.position: Point get() = Point(x, y)
 
-
-expect class EventMouseWheel : EventMouse {
-    val scrollX: Int
-    val scrollY: Int
+class EventMouseScroll(timestamp: ULong, frame: Frame, val scrollX: Int, val scrollY: Int) :
+    EventMouse(timestamp, frame) {
 }
 
-expect enum class MouseButton {
+enum class MouseButton {
     Left,
     Middle,
     Right,

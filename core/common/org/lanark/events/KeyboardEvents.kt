@@ -2,18 +2,26 @@ package org.lanark.events
 
 import org.lanark.application.*
 
+abstract class EventKey(timestamp: ULong, val frame: Frame, val keyCode: Int, val scanCode: UInt) :
+    Event(timestamp) {
 
-expect abstract class EventKey : Event {
-    val frame: Frame
-
-    val keyCode: Int
-    val scanCode: UInt
+    override fun toString() = "$frame '${getScanCodeName(scanCode)}'"
 }
 
-expect class EventKeyDown : EventKey
-expect class EventKeyUp : EventKey
+class EventKeyDown(timestamp: ULong, frame: Frame, keyCode: Int, scanCode: UInt, val repeat: Boolean) :
+    EventKey(timestamp, frame, keyCode, scanCode) {
+    override fun toString() = "EventKeyDown: ${super.toString()} ${if (repeat) "[Repeated]" else ""}"
 
-expect enum class EventButtonState {
+}
+
+class EventKeyUp(timestamp: ULong, frame: Frame, keyCode: Int, scanCode: UInt) :
+    EventKey(timestamp, frame, keyCode, scanCode) {
+    override fun toString() = "EventKeyUp: ${super.toString()}"
+}
+
+enum class EventButtonState {
     Pressed,
     Released
 }
+
+expect fun getScanCodeName(scanCode: UInt): String? 

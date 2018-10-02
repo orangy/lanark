@@ -4,7 +4,6 @@ import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
-import org.lanark.playground.hex.*
 import org.lanark.resources.*
 import org.lanark.ui.*
 
@@ -21,7 +20,7 @@ class HexScene(resources: ResourceContext) : Scene {
     )
 
     private val grass = resources.loadTexture("terrain/grass")
-    private val tree = resources.loadImage("terrain/tree")
+    private val tree = resources.loadTexture("terrain/tree")
     private val water = resources.loadTexture("terrain/water")
     private val select = resources.loadTexture("terrain/selected")
     private val hover = resources.loadTexture("terrain/hover")
@@ -70,7 +69,7 @@ class HexScene(resources: ResourceContext) : Scene {
                     81u /* down*/ -> scale -= 0.1f
                 }
             }
-            is EventMouseWheel -> {
+            is EventMouseScroll -> {
                 offset += Vector(-event.scrollX, event.scrollY) * 5.0
             }
             is EventMouseMotion -> {

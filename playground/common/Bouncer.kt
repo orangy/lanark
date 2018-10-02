@@ -18,8 +18,8 @@ class Bouncer(
     suspend fun run() {
         while (true) {
             while (itemPosition.x < maxPosition) {
-                itemPosition += Vector(speed, 0)
-                yield()
+                itemPosition += Vector(speed /* * dt */, 0)
+                yield() // dt = nextTick()
             }
             while (itemPosition.x > minPosition) {
                 itemPosition -= Vector(speed, 0)

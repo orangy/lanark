@@ -6,8 +6,6 @@ import org.lanark.diagnostics.*
 import org.lanark.system.*
 import sdl2.*
 
-actual abstract class Event(actual val timestamp: ULong)
-
 actual class Events actual constructor(private val engine: Engine) {
     actual val all: Signal<Event> = Signal("Event")
     actual val window: Signal<EventWindow> = all.filter()
@@ -27,16 +25,16 @@ actual class Events actual constructor(private val engine: Engine) {
             SDL_QUIT,
             SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
             SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> {
-                EventApp.createEvent(sdlEvent, engine)
+                createAppEvent(sdlEvent, engine)
             }
             SDL_WINDOWEVENT -> {
-                EventWindow.createEvent(sdlEvent, engine)
+                createWindowEvent(sdlEvent, engine)
             }
             SDL_KEYUP, SDL_KEYDOWN -> {
-                EventKey.createEvent(sdlEvent, engine)
+                createKeyEvent(sdlEvent, engine)
             }
             SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> {
-                EventMouse.createEvent(sdlEvent, engine)
+                createMouseEvent(sdlEvent, engine)
             }
             SDL_FINGERMOTION, SDL_FINGERDOWN, SDL_FINGERUP -> {
                 // ignore event and don't log it
@@ -60,6 +58,131 @@ actual class Events actual constructor(private val engine: Engine) {
     }
 
     actual companion object {
+        fun createKeyEvent(sdlEvent: SDL_Event, engine: Engine): EventKey {
+            val timestamp = sdlEvent.common.timestamp.toULong()
+            val keyEvent = sdlEvent.key
+            val frame = engine.getFrame(keyEvent.windowID)
+            return when (sdlEvent.type) {
+                SDL_KEYDOWN -> EventKeyDown(
+                    timestamp,
+                    frame,
+                    keyEvent.keysym.sym,
+                    keyEvent.keysym.scancode,
+                    keyEvent.repeat != 0.toUByte()
+                )
+                SDL_KEYUP -> EventKeyUp(timestamp, frame, keyEvent.keysym.sym, keyEvent.keysym.scancode)
+                else -> throw EngineException("EventKey.createEvent was called with unknown type of SDL_Event")
+            }
+        }
+
+
+        @Suppress("UNUSED_PARAMETER")
+        fun createAppEvent(sdlEvent: SDL_Event, engine: Engine): EventApp {
+            val timestamp = sdlEvent.common.timestamp.toULong()
+            val type = sdlEvent.type
+            return when (type) {
+                SDL_QUIT -> EventAppQuit(timestamp)
+                SDL_APP_TERMINATING -> EventAppTerminating(timestamp)
+                SDL_APP_LOWMEMORY -> EventAppLowMemory(timestamp)
+                SDL_APP_DIDENTERBACKGROUND -> EventAppEnteredBackground(timestamp)
+                SDL_APP_DIDENTERFOREGROUND -> EventAppEnteredForeground(timestamp)
+                SDL_APP_WILLENTERBACKGROUND -> EventAppEnteringBackground(timestamp)
+                SDL_APP_WILLENTERFOREGROUND -> EventAppEnteringForeground(timestamp)
+                else -> throw EngineException("EventApp.createEvent was called with unknown type of SDL_Event")
+            }
+        }
+
+        fun createMouseEvent(sdlEvent: SDL_Event, engine: Engine): EventMouse {
+            val timestamp = sdlEvent.common.timestamp.toULong()
+            return when (sdlEvent.type) {
+                SDL_MOUSEBUTTONDOWN -> {
+                    val buttonEvent = sdlEvent.button
+                    EventMouseButtonDown(
+                        timestamp,
+                        engine.getFrame(buttonEvent.windowID),
+                        mouseButtonFromValue(buttonEvent.button),
+                        buttonEvent.x,
+                        buttonEvent.y,
+                        buttonEvent.clicks.toUInt()
+                    )
+                }
+                SDL_MOUSEBUTTONUP -> {
+                    val buttonEvent = sdlEvent.button
+                    EventMouseButtonUp(
+                        timestamp,
+                        engine.getFrame(buttonEvent.windowID),
+                        mouseButtonFromValue(buttonEvent.button),
+                        buttonEvent.x,
+                        buttonEvent.y,
+                        buttonEvent.clicks.toUInt()
+                    )
+                }
+                SDL_MOUSEMOTION -> {
+                    val motionEvent = sdlEvent.motion
+                    EventMouseMotion(
+                        timestamp,
+                        engine.getFrame(motionEvent.windowID),
+                        motionEvent.x,
+                        motionEvent.y,
+                        motionEvent.xrel,
+                        motionEvent.yrel
+                    )
+                }
+                SDL_MOUSEWHEEL -> {
+                    val wheelEvent = sdlEvent.wheel
+                    EventMouseScroll(
+                        timestamp,
+                        engine.getFrame(wheelEvent.windowID),
+                        wheelEvent.x,
+                        wheelEvent.y
+                    )
+                }
+                else -> throw EngineException("EventMouse.createEvent was called with unknown type of SDL_Event")
+            }
+        }
+
+        fun createWindowEvent(sdlEvent: SDL_Event, engine: Engine): EventWindow {
+            val timestamp = sdlEvent.common.timestamp.toULong()
+            val windowEvent = sdlEvent.window
+            val frame = engine.getFrame(windowEvent.windowID)
+
+            val eventKind = SDL_WindowEventID.byValue(windowEvent.event.toUInt())
+            return when (eventKind) {
+                SDL_WindowEventID.SDL_WINDOWEVENT_NONE -> throw EngineException("SDL_WINDOWEVENT_NONE shouldn't be sent")
+                SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN -> EventWindowShown(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN -> EventWindowHidden(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED -> EventWindowExposed(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_MOVED -> EventWindowMoved(
+                    timestamp,
+                    frame,
+                    windowEvent.data1,
+                    windowEvent.data2
+                )
+                SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED -> EventWindowResized(
+                    timestamp,
+                    frame,
+                    windowEvent.data1,
+                    windowEvent.data2
+                )
+                SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED -> EventWindowSizeChanged(
+                    timestamp,
+                    frame,
+                    windowEvent.data1,
+                    windowEvent.data2
+                )
+                SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED -> EventWindowMinimized(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_MAXIMIZED -> EventWindowMaximized(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED -> EventWindowRestored(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_ENTER -> EventWindowMouseEntered(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE -> EventWindowMouseLeft(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED -> EventWindowGotFocus(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST -> EventWindowLostFocus(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE -> EventWindowClose(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_TAKE_FOCUS -> EventWindowOfferedFocus(timestamp, frame)
+                SDL_WindowEventID.SDL_WINDOWEVENT_HIT_TEST -> EventWindowHitTest(timestamp, frame)
+            }
+        }
+
         actual val LogCategory = LoggerCategory("Events")
 
         val eventNames = mapOf(

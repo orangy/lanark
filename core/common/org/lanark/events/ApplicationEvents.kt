@@ -1,11 +1,11 @@
 package org.lanark.events
 
-expect abstract class EventApp : Event
+abstract class EventApp(timestamp: ULong) : Event(timestamp)
 
-expect class EventAppQuit : EventApp
-expect class EventAppTerminating : EventApp
-expect class EventAppLowMemory : EventApp
-expect class EventAppEnteredBackground : EventApp
-expect class EventAppEnteredForeground : EventApp
-expect class EventAppEnteringBackground : EventApp
-expect class EventAppEnteringForeground : EventApp
+class EventAppQuit(timestamp: ULong) : EventApp(timestamp)
+class EventAppTerminating(timestamp: ULong) : EventApp(timestamp)
+class EventAppLowMemory(timestamp: ULong) : EventApp(timestamp)
+class EventAppEnteredBackground(timestamp: ULong) : EventApp(timestamp)
+class EventAppEnteredForeground(timestamp: ULong) : EventApp(timestamp)
+class EventAppEnteringBackground(timestamp: ULong) : EventApp(timestamp)
+class EventAppEnteringForeground(timestamp: ULong) : EventApp(timestamp)

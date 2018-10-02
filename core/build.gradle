@@ -42,6 +42,7 @@ kotlin {
         }
 
         fromPreset(presets.jvm, 'lwjgl')
+        fromPreset(presets.js, 'webgl')
 
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
@@ -133,6 +134,20 @@ kotlin {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test'
                 implementation 'org.jetbrains.kotlin:kotlin-test-junit'
+            }
+        }
+
+        webglMain {
+            kotlin.srcDirs = ["webgl"]
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-js', version: coroutines_version
+            }
+        }
+        webglTest {
+            kotlin.srcDirs = ["webglTest"]
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test-js'
             }
         }
     }

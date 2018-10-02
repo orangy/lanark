@@ -24,6 +24,8 @@ kotlin {
         }
 
         fromPreset(presets.jvm, 'lwjgl')
+        fromPreset(presets.js, 'webgl')
+
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = '1.8'
@@ -49,28 +51,23 @@ kotlin {
 
         if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
-                kotlin.srcDirs = ["sdl2"]
             }
             if (project.property("lanark.sdl2.ios") == "true") {
                 sdl2iosMain {
                     if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2"]
+                        // kotlin.srcDirs = ["sdl2"]
                     } else {
                         dependsOn.clear()
                     }
                 }
                 sdl2isimMain {
                     if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2"]
+                        // kotlin.srcDirs = ["sdl2"]
                     } else {
                         dependsOn.clear()
                     }
                 }
             }
-        }
-
-        lwjglMain {
-            kotlin.srcDirs = ["lwjgl"]
         }
     }
 }

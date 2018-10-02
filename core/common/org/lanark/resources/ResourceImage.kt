@@ -1,6 +1,5 @@
 package org.lanark.resources
 
-import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.io.*
 
