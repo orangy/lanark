@@ -3,13 +3,14 @@ package org.lanark.application
 import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
 import org.lanark.system.*
+import kotlin.browser.*
 
-class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
+class WebExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
     var running = false
         private set
 
     override val coroutineContext = Job()
-        
+
     override val before = Signal<Unit>("BeforeIteration")
     override val after = Signal<Unit>("AfterIteration")
 
@@ -33,12 +34,14 @@ class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
                 break
             }
 
-            val launching = scheduled
+            val toLaunch = scheduled
             scheduled = mutableListOf()
 
-            launching.forEach {
-                it() 
+            toLaunch.forEach {
+                it()
             }
+
+            val dt = window.awaitAnimationFrame()
 
             if (!running) {
                 coroutineContext.cancel()
@@ -46,8 +49,15 @@ class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
             }
             after.raise(Unit)
         }
-        engine.logger.system("Stopped $this")
     }
 
-    override fun toString(): String = "Executor(Coroutines)"
+    private fun loopCompleted(throwable: Throwable?) {
+        throwable?.let {
+            engine.logger.error(it.message ?: "<No Message>")
+            engine.logger.error(it.asDynamic().stack)
+        }
+    }
+
+    override fun toString(): String = "Executor(WebGL)"
+
 }

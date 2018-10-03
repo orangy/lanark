@@ -6,7 +6,7 @@ import org.lanark.system.*
 interface Executor {
     fun submit(task: suspend CoroutineScope.() -> Unit)
 
-    fun run()
+    suspend fun run()
     val before: Signal<Unit>
     val after: Signal<Unit>
     fun stop()

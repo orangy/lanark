@@ -1,6 +1,5 @@
 package org.lanark.application
 
-import org.khronos.webgl.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
@@ -16,34 +15,47 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     actual val events: Events
     actual val executor: Executor
 
-    private val context: WebGLRenderingContext
-    private val document = window.document
+    private val context: CanvasRenderingContext2D
+    private val canvas = window.document.getElementById("gl") as HTMLCanvasElement
 
     init {
-        val canvas = document.getElementById("gl") as HTMLCanvasElement
-        val gl = canvas.getContext("webgl")
+        val dpr = window.devicePixelRatio;
+        val boundingRect = canvas.getBoundingClientRect();
+
+/*
+        val context = canvas.getContext("webgl")
             ?: canvas.getContext("experimental-webgl")
             ?: canvas.getContext("moz-webgl")
             ?: canvas.getContext("webkit-3d")
             ?: throw EngineException("No support for WebGL found.")
+*/
+        val context = canvas.getContext("2d")
 
-        context = gl as WebGLRenderingContext
+        this.context = context as CanvasRenderingContext2D
 
+/*
         val vendor = context.getParameter(WebGLRenderingContext.VENDOR) as String
         val version = context.getParameter(WebGLRenderingContext.VERSION) as String
-        val configuration = EngineConfiguration("WebGL [$vendor]", 1, Version.parse(version)).apply(configure)
+        val renderer = context.getParameter(WebGLRenderingContext.RENDERER) as String
+*/
+        val configuration = EngineConfiguration("Web2D", 1, Version(1, 0, 0)).apply(configure)
         logger = configuration.logger ?: LoggerConsole()
         events = configuration.events ?: Events(this)
-        executor = configuration.executor ?: ExecutorCoroutines(this)
+        executor = configuration.executor ?: WebExecutorCoroutines(this)
 
         logger.info("Initializing WebGL")
+        logger.info("Device pixel ratio: $dpr")
+        logger.info("Canvas bounding rect: ${boundingRect.width}x${boundingRect.height}")
+        
+/*
         val extensions = context.getSupportedExtensions()
 
         logger.system("Extensions: ${extensions?.joinToString(prefix = "[", postfix = "]") ?: "[]"}")
+*/
 
-        val width = context.drawingBufferWidth
-        val height = context.drawingBufferHeight
-        logger.info("WebGL canvas size: ${width}x${height}")
+        canvas.width =  (boundingRect.width * dpr).toInt()
+        canvas.height =  (boundingRect.height * dpr).toInt()
+        logger.info("WebGL canvas size: ${canvas.width}x${canvas.height}")
     }
 
     actual fun quit() {}
@@ -58,7 +70,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         y: Int,
         flags: FrameFlag
     ): Frame {
-        return Frame(this, context)
+        return Frame(this, context, Size(width, height))
     }
 
     actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor? {

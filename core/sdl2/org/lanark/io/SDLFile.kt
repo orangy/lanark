@@ -16,9 +16,9 @@ actual class File(val handle: CPointer<SDL_RWops>) : Managed {
             return fn(handle).toULong()
         }
 
-    actual val position: ULong get() = seek(0u, SeekFrom.Current)
+    actual val position: ULong get() = seek(0, SeekFrom.Current)
 
-    actual fun seek(position: ULong, seekFrom: SeekFrom): ULong {
+    actual fun seek(position: Long, seekFrom: SeekFrom): ULong {
         val fn = handle.pointed.seek.sdlError("File.seek")
         return fn(handle, position.toLong(), seekFrom.value).toULong()
     }

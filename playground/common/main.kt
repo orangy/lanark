@@ -1,5 +1,6 @@
 import kotlinx.coroutines.*
 import org.lanark.application.*
+import org.lanark.diagnostics.*
 import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.playground.hex.*
@@ -10,16 +11,16 @@ import org.lanark.ui.*
 fun main() {
     println("Starting Lanark Demo…")
     val engine = Engine {
-/*
-        consoleLogger {
-            color(LoggerCategory.System, "\u001B[0;37m")
-            color(LoggerCategory.Info, "\u001B[0;34m")
-            color(LoggerCategory.Warn, "\u001B[0;33m")
-            color(LoggerCategory.Error, "\u001B[0;31m")
-            color(SceneApplication.LogCategory, "\u001B[0;35m")
-            color(Events.LogCategory, "\u001B[0;36m")
-        }
-*/
+        /*
+                consoleLogger {
+                    color(LoggerCategory.System, "\u001B[0;37m")
+                    color(LoggerCategory.Info, "\u001B[0;34m")
+                    color(LoggerCategory.Warn, "\u001B[0;33m")
+                    color(LoggerCategory.Error, "\u001B[0;31m")
+                    color(SceneApplication.LogCategory, "\u001B[0;35m")
+                    color(Events.LogCategory, "\u001B[0;36m")
+                }
+        */
         enableEverything()
     }
 
@@ -59,7 +60,7 @@ fun main() {
             texture("icon-x2", "lanark-60x2.png")
             texture("logo", "lanark-logo.png")
         }
-        
+
         scope("cursors") {
             cursor("normal", "cursor.png", 0, 0)
             cursor("hot", "cursor-outline-red.png", 0, 0)
@@ -86,7 +87,7 @@ fun main() {
 
     val uiResources = resources.loadScope("ui")
     frame.setIcon(uiResources.loadImage("logo"))
-    
+
     var frames = 0
     val clock = Clock()
     engine.executor.after.subscribe {
@@ -104,7 +105,7 @@ fun main() {
     engine.events.window.filter<EventWindowClose>().subscribe {
         engine.postQuitEvent()
     }
-    
+
     val application = SceneApplication(frame)
     val dialog = Dialog(
         Rect(140, 140, 412, 234), uiResources, listOf(
@@ -114,17 +115,19 @@ fun main() {
     )
     val shieldScene = BouncerScene(application, resources)
     val hexScene = HexScene(resources)
-    val welcome = WelcomeScene(application, hexScene, resources)
+    val welcome = WelcomeScene(application, shieldScene, resources)
 
-    application.scene = welcome
+    application.scene = shieldScene
 
     try {
-        application.run()
+        coroutineLoop {
+            application.run()
+            uiResources.release()
+            frame.release()
+            engine.quit()
+        }
     } catch (e: JobCancellationException) {
+        engine.logger.error(e.toString())
     }
-
-    uiResources.release()
-    frame.release()
-    engine.quit()
 }
 

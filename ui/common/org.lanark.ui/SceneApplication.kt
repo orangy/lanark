@@ -4,10 +4,9 @@ import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
-import org.lanark.geometry.*
 import org.lanark.system.*
 
-class SceneApplication(val frame: Frame) {
+class SceneApplication(val frame: Frame)  {
     private val metrics = Metrics()
     private val events = frame.engine.events
     private val logger = frame.engine.logger
@@ -27,13 +26,13 @@ class SceneApplication(val frame: Frame) {
         activeScene?.also { scene ->
             scene.deactivate(frame)
             this.activeScene = null
-            frame.engine.logger.composer("Deactivated $scene")
+            logger.composer("Deactivated $scene")
         }
     }
 
     private fun activate(activeScene: Scene?) {
         activeScene?.also { scene ->
-            frame.engine.logger.composer("Activating $scene")
+            logger.composer("Activating $scene")
             scene.activate(frame)
         }
     }
@@ -67,21 +66,17 @@ class SceneApplication(val frame: Frame) {
             val meanUpdate = updateStats.snapshot().mean()
             val meanRender = renderStats.snapshot().mean()
             val meanPresent = presentStats.snapshot().mean()
-            frame.engine.logger.system("Mean times: U[${round(meanUpdate, 2)}] R[${round(meanRender, 2)}] P[${round(meanPresent, 2)}]")
+            logger.system("Mean times: U[${round(meanUpdate, 2)}] R[${round(meanRender, 2)}] P[${round(meanPresent, 2)}]")
         }
     }
 
-    fun run() {
+    suspend fun run() {
         executor.before.subscribe(beforeHandler)
         executor.after.subscribe(afterHandler)
 
-        frame.engine.events.keyboard.subscribe { activeScene?.event(frame, it) }
-        frame.engine.events.mouse.subscribe { activeScene?.event(frame, it) }
-        frame.engine.events.application.subscribe {
-            when (it) {
-                is EventAppQuit -> executor.stop()
-            }
-        }
+        events.keyboard.subscribe { activeScene?.event(frame, it) }
+        events.mouse.subscribe { activeScene?.event(frame, it) }
+        events.application.subscribe { if (it is EventAppQuit) executor.stop() }
 
         executor.run()
         deactivate(activeScene)

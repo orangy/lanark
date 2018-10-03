@@ -1,26 +1,33 @@
 package org.lanark.system
 
-actual class Clock actual constructor() {
-    actual var start: ULong
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        private set(value) {}
+import kotlin.js.*
 
-    actual fun reset() {}
+actual class Clock actual constructor() {
+    private fun currentTime() = Date().getTime().toLong().toULong()
+    private val frequency = 1000u
+
     actual fun delay(millis: ULong) {}
-    actual fun elapsedTicks(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    actual var start: ULong = currentTime()
+        private set
+
+    actual fun reset() {
+        start = currentTime()
     }
 
+    actual fun elapsedTicks(): ULong = currentTime() - start
+
     actual fun elapsedMillis(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val elapsed = elapsedTicks() * 1000u
+        return (elapsed / frequency)
     }
 
     actual fun elapsedMicros(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val elapsed = elapsedTicks() * 1000_000u
+        return (elapsed / frequency)
     }
 
     actual fun elapsedSeconds(): ULong {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return (elapsedTicks() / frequency)
     }
-
 }

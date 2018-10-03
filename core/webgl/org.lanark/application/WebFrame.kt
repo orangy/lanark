@@ -1,30 +1,31 @@
 package org.lanark.application
 
-import org.khronos.webgl.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.resources.*
 import org.lanark.system.*
+import org.w3c.dom.*
 
-actual class Frame(actual val engine: Engine, val context: WebGLRenderingContext) : ResourceOwner, Managed {
+actual class Frame(actual val engine: Engine, val context: CanvasRenderingContext2D, actual val size: Size) :
+    ResourceOwner, Managed {
     override fun release() {
-        
+
     }
-    actual val size: Size
-        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
-    
+
     actual val canvasSize: Size
-        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
-    
+        get() = size
+
     actual var minimumSize: Size
-        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
-        set(value) {  }
+        get() = size
+        set(value) {}
     actual var maximumSize: Size
-        get() = Size(context.drawingBufferWidth, context.drawingBufferHeight)
-        set(value) {  }
+        get() = size
+        set(value) {}
     actual var title: String
         get() = context.canvas.title
-        set(value) { context.canvas.title = value }
+        set(value) {
+            context.canvas.title = value
+        }
     actual var cursor: Cursor?
         get() = null
         set(value) {}
@@ -40,8 +41,16 @@ actual class Frame(actual val engine: Engine, val context: WebGLRenderingContext
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         set(value) {}
 
-    actual fun clear(color: Color?) {}
-    actual fun color(color: Color) {}
+    actual fun clear(color: Color?) {
+        if (color != null)
+            color(color)
+        context.fillRect(0.0, 0.0, size.width.toDouble(), size.height.toDouble())
+    }
+
+    actual fun color(color: Color) {
+        context.fillStyle = color.toCSS()
+    }
+
     actual fun scale(scale: Float) {}
     actual fun drawLine(from: Point, to: Point) {}
     actual fun present() {}
@@ -49,6 +58,15 @@ actual class Frame(actual val engine: Engine, val context: WebGLRenderingContext
     actual companion object {
         actual val UndefinedPosition: Int = -1
     }
+}
+
+private fun Color.toCSS(): String {
+    return "#${red.hex2()}${green.hex2()}${blue.hex2()}"
+}
+
+private val hexDigits = "0123456789ABCDEF"
+private fun UByte.hex2(): String {
+    return "${hexDigits[(this/16u).toInt()]}${hexDigits[(this and 15u).toInt()]}"
 }
 
 actual class FrameFlag(val value: Int) {
