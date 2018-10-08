@@ -1,6 +1,7 @@
 package org.lanark.application
 
 import kotlinx.cinterop.*
+import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
@@ -225,3 +226,8 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
     fun getFrame(windowId: UInt) = windows[windowId] ?: throw EngineException("Cannot find Frame for ID $windowId")
 }
+
+actual suspend fun nextTick() : Double {
+    yield()
+    return 0.0
+} 

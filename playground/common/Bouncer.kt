@@ -19,11 +19,11 @@ class Bouncer(
         while (true) {
             while (itemPosition.x < maxPosition) {
                 itemPosition += Vector(speed /* * dt */, 0)
-                yield() // dt = nextTick()
+                nextTick()
             }
             while (itemPosition.x > minPosition) {
                 itemPosition -= Vector(speed, 0)
-                yield()
+                nextTick()
             }
         }
     }

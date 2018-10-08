@@ -5,12 +5,10 @@ import org.lanark.diagnostics.*
 import org.lanark.system.*
 import kotlin.coroutines.*
 
-class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
+class ExecutorCoroutines(val engine: Engine) : Executor {
     var running = false
         private set
 
-    override val coroutineContext = Job()
-        
     override val before = Signal<Unit>("BeforeIteration")
     override val after = Signal<Unit>("AfterIteration")
 
@@ -25,7 +23,8 @@ class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
     }
 
     override suspend fun run() {
-        engine.logger.system("Running $this")
+        val scope = CoroutineScope(kotlin.coroutines.coroutineContext)
+        engine.logger.system("Running $this in $scope")
         running = true
         while (running) {
             before.raise(Unit)
@@ -37,9 +36,8 @@ class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
             val launching = scheduled
             scheduled = mutableListOf()
 
-            val dp = kotlin.coroutines.coroutineContext[ContinuationInterceptor]!!
             launching.forEach {
-                CoroutineScope(coroutineContext + dp).it()
+                scope.launch {  it() }
             }
             
             yield()
@@ -48,7 +46,7 @@ class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
                 coroutineContext.cancel()
                 break
             }
-            after.raise(Unit)
+            after.raise(Unit) // vsync
         }
         engine.logger.system("Stopped $this")
     }

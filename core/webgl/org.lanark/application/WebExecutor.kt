@@ -6,11 +6,9 @@ import org.lanark.system.*
 import kotlin.browser.*
 import kotlin.coroutines.*
 
-class WebExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
+class WebExecutorCoroutines(val engine: Engine) : Executor {
     var running = false
         private set
-
-    override val coroutineContext = Job()
 
     override val before = Signal<Unit>("BeforeIteration")
     override val after = Signal<Unit>("AfterIteration")
@@ -26,7 +24,8 @@ class WebExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
     }
 
     override suspend fun run() {
-        engine.logger.system("Running $this")
+        val scope = CoroutineScope(coroutineContext)
+        engine.logger.system("Running $this in $scope")
         running = true
         while (running) {
             before.raise(Unit)
@@ -38,9 +37,8 @@ class WebExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
             val launching = scheduled
             scheduled = mutableListOf()
 
-            val dp = kotlin.coroutines.coroutineContext[ContinuationInterceptor]!!
             launching.forEach {
-                CoroutineScope(coroutineContext + dp).it()
+                scope.launch {  it() }
             }
 
             if (!running) {
@@ -60,5 +58,8 @@ class WebExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
     }
 
     override fun toString(): String = "Executor(WebGL)"
-
 }
+
+actual suspend fun nextTick() : Double {
+    return window.awaitAnimationFrame()
+} 

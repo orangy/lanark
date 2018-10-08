@@ -11,3 +11,5 @@ interface Executor {
     val after: Signal<Unit>
     fun stop()
 }
+
+expect suspend fun nextTick() : Double
