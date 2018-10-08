@@ -2,8 +2,6 @@
 !.idea/runConfigurations
 !.idea/runConfigurations/*
 !.idea/vcs.xml
-!.idea/dictionaries
-!.idea/dictionaries/*
 bin
 *.iml
 build
