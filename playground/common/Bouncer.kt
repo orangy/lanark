@@ -1,4 +1,3 @@
-import kotlinx.coroutines.*
 import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.events.*
@@ -16,15 +15,20 @@ class Bouncer(
     private var itemPosition = initialPosition
 
     suspend fun run() {
-        while (true) {
-            while (itemPosition.x < maxPosition) {
-                itemPosition += Vector(speed /* * dt */, 0)
-                nextTick()
+        try {
+            while (true) {
+                while (itemPosition.x < maxPosition) {
+                    itemPosition += Vector(speed /* * dt */, 0)
+                    nextTick()
+                }
+                while (itemPosition.x > minPosition) {
+                    itemPosition -= Vector(speed, 0)
+                    nextTick()
+                }
             }
-            while (itemPosition.x > minPosition) {
-                itemPosition -= Vector(speed, 0)
-                nextTick()
-            }
+        } catch (e: Throwable) {
+            println("Bouncer: $e")
+            throw e
         }
     }
 
@@ -38,7 +42,7 @@ class Bouncer(
                 if (event.position in Rect(itemPosition, tile.size)) {
                     frame.cursor = hotCursor
                     return true
-                } 
+                }
             }
         }
         return false

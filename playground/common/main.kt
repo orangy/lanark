@@ -121,7 +121,12 @@ fun main() {
 
     try {
         coroutineLoop {
-            application.run()
+            try {
+                application.run()
+            } catch (e: Throwable) {
+                println("Main: $e")
+                throw e
+            }
             uiResources.release()
             frame.release()
             engine.quit()

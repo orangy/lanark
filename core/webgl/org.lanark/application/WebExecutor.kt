@@ -25,10 +25,12 @@ class WebExecutorCoroutines(val engine: Engine) : Executor {
 
     override suspend fun run() {
         val scope = CoroutineScope(coroutineContext)
-        engine.logger.system("Running $this in $scope")
+        //engine.logger.system("Running $this in $scope")
         running = true
         while (running) {
+          //  engine.logger.system("Begin loop…")
             before.raise(Unit)
+            //engine.logger.system("Done before.")
             if (!running) {
                 coroutineContext.cancel()
                 break
@@ -38,6 +40,7 @@ class WebExecutorCoroutines(val engine: Engine) : Executor {
             scheduled = mutableListOf()
 
             launching.forEach {
+                //engine.logger.system("Launching $it")
                 scope.launch {  it() }
             }
 
@@ -45,8 +48,11 @@ class WebExecutorCoroutines(val engine: Engine) : Executor {
                 coroutineContext.cancel()
                 break
             }
-            after.raise(Unit)
+            //engine.logger.system("Awaiting frame…")
             window.awaitAnimationFrame()
+            //engine.logger.system("Got frame!")
+            after.raise(Unit)
+            //engine.logger.system("End loop.")
         }
     }
 
