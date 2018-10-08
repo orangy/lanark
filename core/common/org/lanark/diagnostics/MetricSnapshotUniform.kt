@@ -2,17 +2,11 @@ package org.lanark.diagnostics
 
 import kotlin.math.*
 
-class MetricSnapshotUniform : MetricSnapshot {
-    override val values: LongArray
+class MetricSnapshotUniform(values: LongArray) : MetricSnapshot {
+    override val values: LongArray = values.sortedArray()
     override val size: Int get() = values.size
 
-    constructor(values: LongArray) {
-        this.values = values.sortedArray()
-    }
-
-    constructor(values: Iterable<Long>) {
-        this.values = values.sorted().toLongArray()
-    }
+    constructor(values: Iterable<Long>) : this(values.toList().toLongArray())
 
     override fun valueAt(quantile: Double): Double {
         if (quantile < 0.0 || quantile > 1.0 || quantile.isNaN())
