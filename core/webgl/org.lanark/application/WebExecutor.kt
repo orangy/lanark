@@ -55,14 +55,7 @@ class WebExecutorCoroutines(val engine: Engine) : Executor {
             //engine.logger.system("End loop.")
         }
     }
-
-    private fun loopCompleted(throwable: Throwable?) {
-        throwable?.let {
-            engine.logger.error(it.message ?: "<No Message>")
-            engine.logger.error(it.asDynamic().stack)
-        }
-    }
-
+    
     override fun toString(): String = "Executor(WebGL)"
 }
 
