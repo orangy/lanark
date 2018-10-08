@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
 import org.lanark.system.*
 import kotlin.browser.*
+import kotlin.coroutines.*
 
 class WebExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
     var running = false
@@ -34,20 +35,20 @@ class WebExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
                 break
             }
 
-            val toLaunch = scheduled
+            val launching = scheduled
             scheduled = mutableListOf()
 
-            toLaunch.forEach {
-                it()
+            val dp = kotlin.coroutines.coroutineContext[ContinuationInterceptor]!!
+            launching.forEach {
+                CoroutineScope(coroutineContext + dp).it()
             }
-
-            val dt = window.awaitAnimationFrame()
 
             if (!running) {
                 coroutineContext.cancel()
                 break
             }
             after.raise(Unit)
+            window.awaitAnimationFrame()
         }
     }
 

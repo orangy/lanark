@@ -3,6 +3,7 @@ package org.lanark.application
 import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
 import org.lanark.system.*
+import kotlin.coroutines.*
 
 class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
     var running = false
@@ -36,10 +37,13 @@ class ExecutorCoroutines(val engine: Engine) : Executor, CoroutineScope {
             val launching = scheduled
             scheduled = mutableListOf()
 
+            val dp = kotlin.coroutines.coroutineContext[ContinuationInterceptor]!!
             launching.forEach {
-                it() 
+                CoroutineScope(coroutineContext + dp).it()
             }
-
+            
+            yield()
+            
             if (!running) {
                 coroutineContext.cancel()
                 break
