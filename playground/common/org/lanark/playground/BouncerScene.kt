@@ -1,3 +1,5 @@
+package org.lanark.playground
+
 import kotlinx.coroutines.*
 import org.lanark.application.*
 import org.lanark.drawing.*

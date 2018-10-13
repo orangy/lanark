@@ -15,12 +15,13 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     actual val logger: Logger
     actual val events: Events
     actual val executor: Executor
-    
+
+    val displayWidth: Int
+    val displayHeight: Int
+
     private val version: Version
     private val mixVersion: Version
     private val platform: String
-    private val displayWidth: Int
-    private val displayHeight: Int
     private val refreshRate: Int
     private val cpus: Int
     private val memorySize: Int
@@ -77,7 +78,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
                     logger.info("  Display mode #$mode: ${displayMode.w}x${displayMode.h}, ${displayMode.refresh_rate} Hz")
                 }
             }
-            
+
             SDL_GetCurrentDisplayMode(0, displayMode.ptr).sdlError("SDL_GetCurrentDisplayMode")
             logger.info("Current display mode: ${displayMode.w}x${displayMode.h}, ${displayMode.refresh_rate} Hz")
             displayMode
@@ -117,7 +118,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     val isControllerEnabled get() = SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 0u
     val isJoystickEnabled get() = SDL_WasInit(SDL_INIT_JOYSTICK) != 0u
     val isHapticEnabled get() = SDL_WasInit(SDL_INIT_HAPTIC) != 0u
-    
+
     actual fun sleep(millis: UInt) {
         SDL_Delay(millis)
     }
@@ -178,7 +179,8 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual fun createCanvas(size: Size, bitsPerPixel: Int): Canvas {
-        val surface = SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).sdlError("SDL_CreateRGBSurface")
+        val surface =
+            SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).sdlError("SDL_CreateRGBSurface")
         return Canvas(this, surface).also {
             logger.system("Created $it")
         }
@@ -210,7 +212,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         }
     }
 
-    actual fun postQuitEvent() : Unit = memScoped{
+    actual fun postQuitEvent(): Unit = memScoped {
         val event = alloc<SDL_Event>()
         event.type = SDL_QUIT
         SDL_PushEvent(event.ptr)
@@ -227,7 +229,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     fun getFrame(windowId: UInt) = windows[windowId] ?: throw EngineException("Cannot find Frame for ID $windowId")
 }
 
-actual suspend fun nextTick() : Double {
+actual suspend fun nextTick(): Double {
     yield()
     return 0.0
 } 

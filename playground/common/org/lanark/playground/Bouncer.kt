@@ -1,3 +1,5 @@
+package org.lanark.playground
+
 import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.events.*
@@ -27,7 +29,7 @@ class Bouncer(
                 }
             }
         } catch (e: Throwable) {
-            println("Bouncer: $e")
+            println("org.lanark.playground.Bouncer: $e")
             throw e
         }
     }

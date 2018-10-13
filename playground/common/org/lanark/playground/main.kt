@@ -1,3 +1,5 @@
+package org.lanark.playground
+
 import kotlinx.coroutines.*
 import org.lanark.application.*
 import org.lanark.diagnostics.*
@@ -8,30 +10,10 @@ import org.lanark.resources.*
 import org.lanark.system.*
 import org.lanark.ui.*
 
-fun main() {
-    println("Starting Lanark Demo…")
-    val engine = Engine {
-        /*
-                consoleLogger {
-                    color(LoggerCategory.System, "\u001B[0;37m")
-                    color(LoggerCategory.Info, "\u001B[0;34m")
-                    color(LoggerCategory.Warn, "\u001B[0;33m")
-                    color(LoggerCategory.Error, "\u001B[0;31m")
-                    color(SceneApplication.LogCategory, "\u001B[0;35m")
-                    color(Events.LogCategory, "\u001B[0;36m")
-                }
-        */
-        enableEverything()
-    }
+private val title = "Lanark Demo"
 
-    val title = "Lanark Demo"
-    @Suppress("NAMED_ARGUMENTS_NOT_ALLOWED")
-    val frame = engine.createFrame(
-        title, 800, 600,
-        flags = FrameFlag.CreateResizable + FrameFlag.CreateHiDPI + FrameFlag.CreateVisible
-    ).apply {
-        minimumSize = Size(800, 600)
-    }
+fun game(frame: Frame) {
+    val engine = frame.engine
 
     val ui = resources("ui") {
         texture("background", "ui-background.png")
@@ -54,7 +36,7 @@ fun main() {
         }
     }
 
-    val resources = resources("main") {
+    val resources = resources("org.lanark.playground.main") {
         scope("logo") {
             texture("icon", "lanark-60.png")
             texture("icon-x2", "lanark-60x2.png")

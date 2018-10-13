@@ -1,3 +1,5 @@
+package org.lanark.playground
+
 import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.events.*

@@ -30,7 +30,7 @@ kotlin {
                 }
             }
         }
-        
+
         fromPreset(presets.jvm, 'lwjgl')
         fromPreset(presets.js, 'webgl')
 
@@ -66,19 +66,16 @@ kotlin {
 
         if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
-                kotlin.srcDirs = ["sdl2"]
+                kotlin.srcDirs = ["macOS"]
             }
+            sdl2isimMain {
+                kotlin.srcDirs = ["iOS"]
+            }
+
             if (project.property("lanark.sdl2.ios") == "true") {
                 sdl2iosMain {
                     if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2"]
-                    } else {
-                        dependsOn.clear()
-                    }
-                }
-                sdl2isimMain {
-                    if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2"]
+                        kotlin.srcDirs = ["iOS"]
                     } else {
                         dependsOn.clear()
                     }
@@ -146,7 +143,7 @@ afterEvaluate {
                 }
             })
         }
-        
+
         from compileKotlinWebgl.destinationDir
         into "${project.buildDir}/web"
     }
@@ -181,14 +178,14 @@ if (project.property("lanark.sdl2.enable") == "true") {
                 // apple_application_id=lanark.playground
                 // apple_team_id=<your apple TeamID>
                 expand(project.properties)
-                from file('iosBundleFiles')
+                from file('ios/bundle')
                 into file("build/bundle/$target/${project.name}.app/")
             }
 
             task bundleDebugExecutableSdl2isim(type: Copy, dependsOn: [resourcesDebugExecutableSdl2isim]) {
                 def target = linkDebugExecutableSdl2isim.target
                 expand(project.properties)
-                from file('iosBundleFiles')
+                from file('ios/bundle')
                 into file("build/bundle/$target/${project.name}.app/")
             }
 
@@ -240,7 +237,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
                 executable "sh"
                 args "-c", "xcrun simctl launch --console-pty booted $appId"
             }
-            
+
             task runDebugExecutableSdl2ios(type: Exec, group: RUN_GROUP, dependsOn: [signDebugExecutableSdl2ios]) {
                 def deviceId = project.property("apple.device.id")
                 def appId = project.property("apple_application_id")

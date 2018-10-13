@@ -15,12 +15,9 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     actual val events: Events
     actual val executor: Executor
 
-    private val context: CanvasRenderingContext2D
-    private val canvas = window.document.getElementById("gl") as HTMLCanvasElement
+    private val dpr = window.devicePixelRatio;
 
     init {
-        val dpr = window.devicePixelRatio;
-        val boundingRect = canvas.getBoundingClientRect();
 
 /*
         val context = canvas.getContext("webgl")
@@ -29,9 +26,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             ?: canvas.getContext("webkit-3d")
             ?: throw EngineException("No support for WebGL found.")
 */
-        val context = canvas.getContext("2d")
 
-        this.context = context as CanvasRenderingContext2D
 
 /*
         val vendor = context.getParameter(WebGLRenderingContext.VENDOR) as String
@@ -43,25 +38,30 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         events = configuration.events ?: Events(this)
         executor = configuration.executor ?: WebExecutorCoroutines(this)
 
-        logger.info("Initializing WebGL")
         logger.info("Device pixel ratio: $dpr")
-        logger.info("Canvas bounding rect: ${boundingRect.width}x${boundingRect.height}")
-        
-/*
-        val extensions = context.getSupportedExtensions()
-
-        logger.system("Extensions: ${extensions?.joinToString(prefix = "[", postfix = "]") ?: "[]"}")
-*/
-
-        canvas.width =  (boundingRect.width * dpr).toInt()
-        canvas.height =  (boundingRect.height * dpr).toInt()
-        logger.info("WebGL canvas size: ${canvas.width}x${canvas.height}")
     }
 
-    actual fun quit() {}
+    actual fun quit() {
+        
+    }
 
-    actual fun sleep(millis: UInt) {}
-    actual fun setScreenSaver(enabled: Boolean) {}
+    actual fun sleep(millis: UInt) {
+        
+    }
+    
+    actual fun setScreenSaver(enabled: Boolean) {
+        
+    }
+    
+    fun attachFrame(canvasId: String): Frame {
+        val canvas = window.document.getElementById(canvasId) as HTMLCanvasElement
+        val context = canvas.getContext("2d") as CanvasRenderingContext2D
+        val boundingRect = canvas.getBoundingClientRect();
+        logger.info("Canvas bounding rect: ${boundingRect.width}x${boundingRect.height}")
+        logger.info("WebGL canvas size: ${canvas.width}x${canvas.height}")
+        return Frame(this, context, Size(canvas.width, canvas.height))
+    }
+    
     actual fun createFrame(
         title: String,
         width: Int,
@@ -70,6 +70,15 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         y: Int,
         flags: FrameFlag
     ): Frame {
+        val canvas = window.document.getElementById("gl") as HTMLCanvasElement
+        val context = canvas.getContext("2d") as CanvasRenderingContext2D
+        val boundingRect = canvas.getBoundingClientRect();
+        logger.info("Canvas bounding rect: ${boundingRect.width}x${boundingRect.height}")
+        
+        canvas.width = (boundingRect.width * dpr).toInt()
+        canvas.height = (boundingRect.height * dpr).toInt()
+        logger.info("WebGL canvas size: ${canvas.width}x${canvas.height}")
+
         return Frame(this, context, Size(width, height))
     }
 
