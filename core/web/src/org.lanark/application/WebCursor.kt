@@ -1,5 +1,7 @@
 package org.lanark.application
 
+import org.lanark.media.*
+import org.lanark.resources.*
 import org.lanark.system.*
 
 actual class Cursor : Managed {
@@ -25,3 +27,12 @@ actual enum class SystemCursor {
     No,
 */
 }
+
+actual fun ResourceContext.createCursor(image: Image, hotX: Int, hotY: Int): Cursor? {
+    return null
+}
+
+actual fun ResourceContext.createCursor(cursor: SystemCursor): Cursor? {
+    return null
+}
+

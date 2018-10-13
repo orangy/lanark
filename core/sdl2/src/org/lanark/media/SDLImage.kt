@@ -1,16 +1,19 @@
-package org.lanark.drawing
+package org.lanark.media
 
 import kotlinx.cinterop.*
 import org.lanark.application.*
 import org.lanark.diagnostics.*
+import org.lanark.drawing.*
 import org.lanark.geometry.*
+import org.lanark.io.*
+import org.lanark.resources.*
 import org.lanark.system.*
 import sdl2.*
 
-actual class Canvas(private val engine: Engine, internal val surfacePtr: CPointer<SDL_Surface>) : Managed {
+actual class Image(private val logger: Logger, internal val surfacePtr: CPointer<SDL_Surface>) : Managed {
     override fun release() {
         SDL_FreeSurface(surfacePtr)
-        engine.logger.system("Released $this")
+        logger.system("Released $this")
     }
 
     actual val size: Size get() = Size(surfacePtr.pointed.w, surfacePtr.pointed.h)
@@ -37,11 +40,11 @@ actual class Canvas(private val engine: Engine, internal val surfacePtr: CPointe
             SDL_SetSurfaceBlendMode(surfacePtr, mode).sdlError("SDL_SetSurfaceBlendMode")
         }
 
-    actual fun blit(source: Canvas) {
+    actual fun blit(source: Image) {
         SDL_UpperBlit(source.surfacePtr, null, surfacePtr, null).sdlError("SDL_UpperBlit")
     }
 
-    actual fun blit(source: Canvas, sourceRect: Rect, destination: Point) = memScoped {
+    actual fun blit(source: Image, sourceRect: Rect, destination: Point) = memScoped {
         val destinationRect = Rect(destination, sourceRect.size)
         SDL_UpperBlit(
             source.surfacePtr,
@@ -51,11 +54,11 @@ actual class Canvas(private val engine: Engine, internal val surfacePtr: CPointe
         ).sdlError("SDL_UpperBlit")
     }
 
-    actual fun blitScaled(source: Canvas) {
+    actual fun blitScaled(source: Image) {
         SDL_UpperBlitScaled(source.surfacePtr, null, surfacePtr, null).sdlError("SDL_UpperBlit")
     }
 
-    actual fun blitScaled(source: Canvas, sourceRect: Rect, destinationRect: Rect) = memScoped {
+    actual fun blitScaled(source: Image, sourceRect: Rect, destinationRect: Rect) = memScoped {
         SDL_UpperBlitScaled(
             source.surfacePtr,
             SDL_Rect(sourceRect),
@@ -83,3 +86,19 @@ actual class Canvas(private val engine: Engine, internal val surfacePtr: CPointe
     override fun toString() = "Canvas ${surfacePtr.rawValue}"
 }
 
+actual fun ResourceContext.loadImage(path: String, fileSystem: FileSystem): Image {
+    return fileSystem.open(path, FileOpenMode.Read).use { file ->
+        val surfacePtr = IMG_Load_RW(file.handle, 0).sdlError("IMG_Load_RW")
+        Image(logger, surfacePtr).also {
+            logger.system("Loaded $it from $path at $fileSystem")
+        }
+    }
+}
+
+actual fun ResourceContext.createImage(size: Size, bitsPerPixel: Int): Image {
+    val surface =
+        SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).sdlError("SDL_CreateRGBSurface")
+    return Image(logger, surface).also {
+        logger.system("Created $it")
+    }
+}

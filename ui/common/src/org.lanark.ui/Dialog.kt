@@ -7,8 +7,8 @@ import org.lanark.geometry.*
 import org.lanark.resources.*
 
 class Dialog(val area: Rect, private val resources: ResourceContext, val controls: List<Control>) : UIScene() {
-    private val background = resources.loadTexture("background")
-    private val tiles = resources.loadTiles("elements")
+    private val background = resources.texture("background")
+    private val tiles = resources.tiles("elements")
 
     private val topLeftTile = tiles["border-top-left"]
     private val topRightTile = tiles["border-top-right"]

@@ -2,6 +2,7 @@ package org.lanark.application
 
 import org.lanark.drawing.*
 import org.lanark.geometry.*
+import org.lanark.media.*
 import org.lanark.resources.*
 import org.lanark.system.*
 
@@ -19,7 +20,7 @@ expect class Frame : ResourceOwner, Managed {
     fun setResizable(enable: Boolean)
     fun setWindowMode(mode: FrameMode)
 
-    fun setIcon(icon: Canvas)
+    fun setIcon(icon: Image)
 
     fun messageBox(title: String, message: String, icon: MessageBoxIcon)
 

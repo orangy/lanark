@@ -3,6 +3,7 @@ package org.lanark.application
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
+import org.lanark.media.*
 import org.lanark.resources.*
 import org.lanark.system.*
 import org.lwjgl.glfw.*
@@ -15,7 +16,7 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
     override fun release() {
         engine.unregisterFrame(windowHandle, this)
         glfwDestroyWindow(windowHandle)
-        engine.logger.system("Released frame #$windowHandle")
+        engine.logger.system("Released frame [$windowHandle]")
     }
 
     actual val size: Size
@@ -78,9 +79,9 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
     actual fun setResizable(enable: Boolean) {}
     actual fun setWindowMode(mode: FrameMode) {}
     
-    actual fun setIcon(icon: Canvas) {
+    actual fun setIcon(icon: Image) {
         GLFWImage.calloc(1).use { buffer ->
-            buffer.put(icon.image)
+            buffer.put(icon.imageBuffer)
             glfwSetWindowIcon(windowHandle, buffer)
         }
     }
@@ -129,7 +130,7 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
         glfwSwapBuffers(windowHandle) // swap the color buffers
     }
 
-    override fun toString() = "Frame #$windowHandle ($size / $canvasSize)"
+    override fun toString() = "Frame [$windowHandle] Size:$size, Canvas:$canvasSize"
 }
 
 actual class FrameFlag(val value: Int) {

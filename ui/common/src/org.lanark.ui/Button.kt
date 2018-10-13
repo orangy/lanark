@@ -6,7 +6,7 @@ import org.lanark.geometry.*
 import org.lanark.resources.*
 
 class Button(val position: Point, private val resources: ResourceContext) : Control() {
-    private val tiles = resources.loadTiles("elements")
+    private val tiles = resources.tiles("elements")
     private val button = tiles["button"]
     private val buttonHover = tiles["button-hover"]
     private val buttonPressed = tiles["button-pressed"]

@@ -19,11 +19,11 @@ class HexScene(resources: ResourceContext) : Scene {
         )
     )
 
-    private val grass = resources.loadTexture("terrain/grass")
-    private val tree = resources.loadTexture("terrain/tree")
-    private val water = resources.loadTexture("terrain/water")
-    private val select = resources.loadTexture("terrain/selected")
-    private val hover = resources.loadTexture("terrain/hover")
+    private val grass = resources.texture("terrain/grass")
+    private val tree = resources.texture("terrain/tree")
+    private val water = resources.texture("terrain/water")
+    private val select = resources.texture("terrain/selected")
+    private val hover = resources.texture("terrain/hover")
 
     private var hoverHex: HexCell = HexCell(0, 0)
     private var selectedHex: HexCell = HexCell(0, 0)

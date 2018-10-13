@@ -9,8 +9,9 @@ import org.lanark.ui.*
 
 class WelcomeScene(private val application: SceneApplication,
                    private val nextScene: Scene,
-                   resources: ResourceContext) : Scene {
-    private val logo = resources.loadTexture("logo/logo")
+                   resources: ResourceContext
+) : Scene {
+    private val logo = resources.texture("logo/logo")
     override fun activate(frame: Frame) {
     }
 

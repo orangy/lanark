@@ -6,6 +6,7 @@ import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
+import org.lanark.media.Image
 import org.lanark.resources.*
 import org.lanark.system.*
 import sdl2.*
@@ -82,7 +83,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
             }
         }
 
-    actual fun setIcon(icon: Canvas) {
+    actual fun setIcon(icon: Image) {
         SDL_SetWindowIcon(windowPtr, icon.surfacePtr)
     }
 

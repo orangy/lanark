@@ -1,27 +1,26 @@
 package org.lanark.resources
 
-import org.lanark.drawing.*
+import org.lanark.application.*
 import org.lanark.io.*
+import org.lanark.media.*
 
-class ResourceImage(name: String, val location: FileLocation) : Resource<Canvas>(name, resourceType) {
-    override fun load(
-        context: ResourceContext,
-        progress: (Double) -> Unit
-    ): Canvas {
-        return context.loadIfAbsent(this) {
-            val (file, fileSystem) = location
-            context.engine.loadCanvas(file, fileSystem).also { progress(1.0) }
-        }
+class ResourceImage(name: String, val location: FileLocation) :
+    ResourceDescriptor<Image, Nothing?>(name, resourceType) {
+    
+    override fun load(context: ResourceContext, progress: (Double) -> Unit): Image {
+        val (file, fileSystem) = location
+        return context.loadImage(file, fileSystem).also { progress(1.0) }
     }
+
+    override fun bind(resource: Image, frame: Frame): Nothing? = null
 
     companion object {
         val resourceType = ResourceType("Image")
     }
 }
 
-
 fun ResourceContainer.image(name: String, file: String) =
     ResourceImage(name, FileLocation(file, fileSystem)).also { register(it) }
 
-fun ResourceContext.loadImage(path: String) = loadResource<Canvas>(path, ResourceImage.resourceType)
+fun ResourceContext.loadImage(path: String) = loadResource<Image>(path, ResourceImage.resourceType)
 

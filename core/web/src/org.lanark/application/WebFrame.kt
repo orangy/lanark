@@ -2,6 +2,7 @@ package org.lanark.application
 
 import org.lanark.drawing.*
 import org.lanark.geometry.*
+import org.lanark.media.Image
 import org.lanark.resources.*
 import org.lanark.system.*
 import org.w3c.dom.*
@@ -35,7 +36,7 @@ actual class Frame(actual val engine: Engine, val context: CanvasRenderingContex
     actual fun setBordered(enable: Boolean) {}
     actual fun setResizable(enable: Boolean) {}
     actual fun setWindowMode(mode: FrameMode) {}
-    actual fun setIcon(icon: Canvas) {}
+    actual fun setIcon(icon: Image) {}
     actual fun messageBox(title: String, message: String, icon: MessageBoxIcon) {}
     actual var clip: Rect?
         get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

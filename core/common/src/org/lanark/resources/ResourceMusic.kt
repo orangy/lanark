@@ -4,13 +4,15 @@ import org.lanark.application.*
 import org.lanark.io.*
 import org.lanark.media.*
 
-class ResourceMusic(name: String, val location: FileLocation) : Resource<Music>(name, resourceType) {
+class ResourceMusic(name: String, val location: FileLocation) :
+    ResourceDescriptor<Music, Nothing?>(name, resourceType) {
+    
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Music {
-        return context.loadIfAbsent(this) {
-            val (file, fileSystem) = location
-            context.engine.loadMusic(file, fileSystem).also { progress(1.0) }
-        }
+        val (file, fileSystem) = location
+        return context.loadMusic(file, fileSystem).also { progress(1.0) }
     }
+
+    override fun bind(resource: Music, frame: Frame): Nothing? = null
 
     companion object {
         val resourceType = ResourceType("Music")

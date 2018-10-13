@@ -146,72 +146,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             logger.system("Created $it")
         }
     }
-
-    actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor? {
-        if (!isMouseEnabled) {
-            logger.system("Skipping creating a Cursor because there is no mouse support on this platform")
-            return null
-        }
-        val cursor = SDL_CreateColorCursor(canvas.surfacePtr, hotX, hotY).sdlError("SDL_CreateColorCursor")
-        return Cursor(logger, cursor).also {
-            logger.system("Created $it")
-        }
-    }
-
-    actual fun createCursor(systemCursor: SystemCursor): Cursor? {
-        if (!isMouseEnabled) {
-            logger.system("Skipping creating a Cursor because there is no mouse support on this platform")
-            return null
-        }
-        val cursor = SDL_CreateSystemCursor(systemCursor.handle).sdlError("SDL_CreateSystemCursor")
-        return Cursor(logger, cursor).also {
-            logger.system("Created $it")
-        }
-    }
-
-    actual fun loadCanvas(path: String, fileSystem: FileSystem): Canvas {
-        return fileSystem.open(path, FileOpenMode.Read).use { file ->
-            val surfacePtr = IMG_Load_RW(file.handle, 0).sdlError("IMG_Load_RW")
-            Canvas(this, surfacePtr).also {
-                logger.system("Loaded $it from $path at $fileSystem")
-            }
-        }
-    }
-
-    actual fun createCanvas(size: Size, bitsPerPixel: Int): Canvas {
-        val surface =
-            SDL_CreateRGBSurface(0, size.width, size.height, bitsPerPixel, 0, 0, 0, 0).sdlError("SDL_CreateRGBSurface")
-        return Canvas(this, surface).also {
-            logger.system("Created $it")
-        }
-    }
-
-    actual fun loadMusic(path: String, fileSystem: FileSystem): Music {
-        return fileSystem.open(path, FileOpenMode.Read).use { file ->
-            val audio = Mix_LoadMUS_RW(file.handle, 0).sdlError("Mix_LoadMUS_RW")
-            Music(this, audio).also {
-                logger.system("Loaded $it from $path at $fileSystem")
-            }
-        }
-    }
-
-    actual fun loadSound(path: String, fileSystem: FileSystem): Sound {
-        return fileSystem.open(path, FileOpenMode.Read).use { file ->
-            val audio = Mix_LoadWAV_RW(file.handle, 0).sdlError("Mix_LoadWAV_RW")
-            Sound(this, audio).also {
-                logger.system("Loaded $it from $path at $fileSystem")
-            }
-        }
-    }
-
-    actual fun loadVideo(path: String, fileSystem: FileSystem): Video {
-        return fileSystem.open(path, FileOpenMode.Read).use {
-            Video(this).also {
-                logger.system("Loaded $it from $path at $fileSystem")
-            }
-        }
-    }
-
+    
     actual fun postQuitEvent(): Unit = memScoped {
         val event = alloc<SDL_Event>()
         event.type = SDL_QUIT

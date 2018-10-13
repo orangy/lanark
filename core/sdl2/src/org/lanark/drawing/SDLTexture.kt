@@ -6,6 +6,7 @@ import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.geometry.*
 import org.lanark.io.*
+import org.lanark.media.*
 import org.lanark.system.*
 import sdl2.*
 
@@ -55,18 +56,11 @@ actual fun Frame.draw(texture: Texture, position: Point, size: Size) = memScoped
     SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, size)).sdlError("SDL_RenderCopy")
 }
 
-actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
-    return fileSystem.open(path, FileOpenMode.Read).use { file ->
-        val surfacePtr = IMG_Load_RW(file.handle, 0).sdlError("IMG_Load_RW")
-        try {
-            val texturePtr = SDL_CreateTextureFromSurface(rendererPtr, surfacePtr)
-                .sdlError("SDL_CreateTextureFromSurface")
-            Texture(engine, texturePtr).also {
-                engine.logger.system("Loaded $it from $path at $fileSystem")
-            }
-        } finally {
-            SDL_FreeSurface(surfacePtr)
-        }
+actual fun Frame.bindTexture(image: Image): Texture {
+    val texturePtr = SDL_CreateTextureFromSurface(rendererPtr, image.surfacePtr)
+        .sdlError("SDL_CreateTextureFromSurface")
+    return Texture(engine, texturePtr).also {
+        engine.logger.system("Created $it from $image")
     }
 }
 

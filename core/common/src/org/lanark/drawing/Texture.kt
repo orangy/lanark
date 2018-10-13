@@ -2,7 +2,7 @@ package org.lanark.drawing
 
 import org.lanark.application.*
 import org.lanark.geometry.*
-import org.lanark.io.*
+import org.lanark.media.*
 import org.lanark.system.*
 
 expect class Texture : Managed {
@@ -18,5 +18,4 @@ expect fun Frame.draw(texture: Texture, destinationRect: Rect)
 expect fun Frame.fill(texture: Texture, destinationRect: Rect)
 expect fun Frame.draw(texture: Texture, position: Point)
 expect fun Frame.draw(texture: Texture, position: Point, size: Size)
-expect fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture 
-
+expect fun Frame.bindTexture(image: Image): Texture 

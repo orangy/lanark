@@ -1,11 +1,8 @@
 package org.lanark.application
 
 import org.lanark.diagnostics.*
-import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
-import org.lanark.io.*
-import org.lanark.media.*
 import org.lanark.system.*
 import org.w3c.dom.*
 import kotlin.browser.*
@@ -40,6 +37,8 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         logger.info("Device pixel ratio: $dpr")
     }
+
+    actual fun postQuitEvent() {}
 
     actual fun quit() {
         
@@ -81,35 +80,4 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         return Frame(this, context, Size(width, height))
     }
-
-    actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor? {
-        return null
-    }
-
-    actual fun createCursor(systemCursor: SystemCursor): Cursor? {
-        return null
-    }
-
-    actual fun createCanvas(size: Size, bitsPerPixel: Int): Canvas {
-        return Canvas()
-    }
-
-    actual fun loadCanvas(path: String, fileSystem: FileSystem): Canvas {
-        return Canvas()
-    }
-
-    actual fun loadMusic(path: String, fileSystem: FileSystem): Music {
-        return Music()
-    }
-
-    actual fun loadSound(path: String, fileSystem: FileSystem): Sound {
-        return Sound()
-    }
-
-    actual fun loadVideo(path: String, fileSystem: FileSystem): Video {
-        return Video()
-    }
-
-    actual fun postQuitEvent() {}
-
 }

@@ -4,21 +4,26 @@ import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.io.*
+import org.lanark.media.*
 
-class ResourceTiles(name: String, val location: FileLocation) : Resource<Tiles>(name, resourceType) {
+class ResourceTiles(name: String, val location: FileLocation) :
+    ResourceDescriptor<Image, Tiles>(name, resourceType) {
+
     private val items = mutableMapOf<String, Item>()
 
     private class Item(val x: Int, val y: Int, val width: Int, val height: Int, val hotX: Int, val hotY: Int)
 
-    override fun load(context: ResourceContext, progress: (Double) -> Unit): Tiles {
-        return context.loadIfAbsent(this) {
-            val (file, fileSystem) = location
-            val texture : Texture = (context.owner as Frame).loadTexture(file, fileSystem)
-            val tiles = items.mapValues { (name, item) ->
-                Tile(name, texture, Rect(item.x, item.y, item.width, item.height), Point(item.hotX, item.hotY))
-            }
-            Tiles(texture, tiles).also { progress(1.0) }
+    override fun load(context: ResourceContext, progress: (Double) -> Unit): Image {
+        val (file, fileSystem) = location
+        return context.loadImage(file, fileSystem)
+    }
+
+    override fun bind(resource: Image, frame: Frame): Tiles {
+        val texture: Texture = frame.bindTexture(resource)
+        val tiles = items.mapValues { (name, item) ->
+            Tile(name, texture, Rect(item.x, item.y, item.width, item.height), Point(item.hotX, item.hotY))
         }
+        return Tiles(texture, tiles)//.also { progress(1.0) }
     }
 
     companion object {
@@ -34,8 +39,9 @@ class ResourceTiles(name: String, val location: FileLocation) : Resource<Tiles>(
     }
 }
 
-fun ResourceContainer.tiles(name: String, file: String, configure: ResourceTiles.() -> Unit) = ResourceTiles(name, FileLocation(file, fileSystem)).apply(configure).also { register(it) }
+fun ResourceContainer.tiles(name: String, file: String, configure: ResourceTiles.() -> Unit) =
+    ResourceTiles(name, FileLocation(file, fileSystem)).apply(configure).also { register(it) }
 
-fun ResourceContext.loadTiles(path: String) = loadResource<Tiles>(path, ResourceTiles.resourceType)
+fun ResourceContext.tiles(path: String) = bindResource<Tiles, Image>(path, ResourceTiles.resourceType)
 
 

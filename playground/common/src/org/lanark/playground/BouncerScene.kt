@@ -10,11 +10,11 @@ import org.lanark.ui.*
 import kotlin.random.*
 
 class BouncerScene(private val application: SceneApplication, resources: ResourceContext) : Scene {
-    private val background = resources.loadTexture("welcome/background-image")
+    private val background = resources.texture("welcome/background-image")
     //private val backgroundMusic = resources.loadMusic("welcome/background-music")
-    private val normalCursor = resources.loadCursor("cursors/normal")
-    private val hotCursor = resources.loadCursor("cursors/hot")
-    private val tiles = resources.loadTiles("ui/elements")
+    private val normalCursor = resources.cursor("cursors/normal")
+    private val hotCursor = resources.cursor("cursors/hot")
+    private val tiles = resources.tiles("ui/elements")
     private val item = tiles["button"]
 
     private val minPosition = 10

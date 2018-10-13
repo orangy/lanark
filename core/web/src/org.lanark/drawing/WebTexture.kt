@@ -5,6 +5,7 @@ import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.geometry.*
 import org.lanark.io.*
+import org.lanark.media.*
 import org.lanark.system.*
 import org.w3c.dom.*
 import kotlin.browser.*
@@ -36,46 +37,8 @@ actual class Texture(val image: HTMLImageElement) : Managed {
         get() = Size(image.width, image.height)
 }
 
-actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
-/*
-    val texture = context.createTexture() ?: throw EngineException("Couldn't create texture for $path")
-    context.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
-    val pixel = Uint8Array(4).also {
-        it[0] = 0
-        it[1] = 0
-        it[2] = 255.toByte()
-        it[3] = 255.toByte()
-    }
-    
-    val level = 0
-    val internalFormat = gl.RGBA
-    val srcFormat = gl.RGBA
-    val srcType = gl.UNSIGNED_BYTE
-    context.texImage2D(gl.TEXTURE_2D, level, internalFormat, 1, 1, 0, srcFormat, srcType, pixel)
-*/
-
-    val image = window.document.createElement("img") as HTMLImageElement
-    image.onload = {
-        engine.logger.system("Loaded image from $path")
-/*        context.bindTexture(gl.TEXTURE_2D, texture);
-        context.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
-
-        // WebGL1 has different requirements for power of 2 images
-        // vs non power of 2 images so check if the image is a
-        // power of 2 in both dimensions.
-        if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-            // Yes, it's a power of 2. Generate mips.
-            context.generateMipmap(gl.TEXTURE_2D);
-        } else {
-            // No, it's not a power of 2. Turn of mips and set
-            // wrapping to clamp to edge
-            context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        }*/
-    }
-    image.src = "../resources/" + path
-    return Texture(image)
+actual fun Frame.bindTexture(image: Image): Texture {
+    return Texture(image.image)
 }
 
 fun isPowerOf2(value: Int) = (value and (value - 1)) == 0

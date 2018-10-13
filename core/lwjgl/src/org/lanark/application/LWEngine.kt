@@ -17,8 +17,6 @@ import org.lwjgl.system.*
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.glfw.GLFWImage
 
-
-
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
     actual val logger: Logger
     actual val events: Events
@@ -115,52 +113,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             events.attachEvents(it)
         }
     }
-
-    actual fun createCursor(canvas: Canvas, hotX: Int, hotY: Int): Cursor? {
-        return Cursor(glfwCreateCursor(canvas.image, hotX, hotY)).also {
-            logger.system("Created $it from $canvas @ ($hotX, $hotY)")
-        }
-    }
-
-    actual fun createCursor(systemCursor: SystemCursor): Cursor? {
-        return Cursor(glfwCreateStandardCursor(systemCursor.cursorId))
-    }
-
-    actual fun createCanvas(size: Size, bitsPerPixel: Int): Canvas {
-        TODO()
-    }
-
-    actual fun loadCanvas(path: String, fileSystem: FileSystem): Canvas {
-        val image = GLFWImage.malloc()
-        MemoryStack.stackPush().use { stack ->
-            val w = stack.mallocInt(1)
-            val h = stack.mallocInt(1)
-            val comp = stack.mallocInt(1)
-            STBImage.stbi_set_flip_vertically_on_load(false)
-            val pixels = STBImage.stbi_load(path, w, h, comp, 4)
-                ?: throw EngineException("Failed to load a texture file: ${STBImage.stbi_failure_reason()}")
-
-            image.set(w.get(), h.get(), pixels)
-            STBImage.stbi_image_free(pixels)
-
-            return Canvas(image).also {
-                logger.system("Loaded $it from $path at $fileSystem")
-            }
-        }
-    }
-
-    actual fun loadMusic(path: String, fileSystem: FileSystem): Music {
-        TODO()
-    }
-
-    actual fun loadSound(path: String, fileSystem: FileSystem): Sound {
-        TODO()
-    }
-
-    actual fun loadVideo(path: String, fileSystem: FileSystem): Video {
-        TODO()
-    }
-
+    
     actual fun postQuitEvent() {
         events.all.raise(EventAppQuit(0u))
     }

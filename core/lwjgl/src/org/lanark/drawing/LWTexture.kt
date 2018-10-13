@@ -4,7 +4,9 @@ import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.geometry.*
 import org.lanark.io.*
+import org.lanark.media.*
 import org.lanark.system.*
+import org.lwjgl.glfw.*
 import org.lwjgl.opengl.GL14.*
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.*
@@ -18,29 +20,22 @@ actual class Texture(val engine: Engine, val textureId: Int, actual val size: Si
     override fun toString() = "Texture $textureId"
 }
 
-actual fun Frame.loadTexture(path: String, fileSystem: FileSystem): Texture {
+actual fun Frame.bindTexture(image: Image): Texture {
     val texture = glGenTextures()
     glBindTexture(GL_TEXTURE_2D, texture)
     glEnable(GL_TEXTURE_2D)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
     MemoryStack.stackPush().use { stack ->
-        val w = stack.mallocInt(1)
-        val h = stack.mallocInt(1)
-        val comp = stack.mallocInt(1)
-        stbi_set_flip_vertically_on_load(false)
-        val image = stbi_load(path, w, h, comp, 4)
-            ?: throw EngineException("Failed to load a texture file: ${stbi_failure_reason()}")
-
-        val width = w.get()
-        val height = h.get()
+        val (width, height) = image.size
+        
         /*
             glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
             glTexSubImage2D(GL_TEXTURE_2D, 0​, 0, 0, width​, height​, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
          */
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
-        stbi_image_free(image)
+        val pixels = MemoryUtil.memGetAddress(image.imageBuffer.address() + GLFWImage.PIXELS)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels)
         return Texture(engine, texture, Size(width, height)).also {
-            engine.logger.system("Loaded $it from $path at $fileSystem")
+            engine.logger.system("Created $it from $image")
         } 
         
     }
