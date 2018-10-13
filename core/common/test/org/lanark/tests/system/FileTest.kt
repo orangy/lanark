@@ -8,7 +8,7 @@ class FileTest {
     // workaround for different test directories for JVM & Native
     private val root = FileSystems.Default.currentDirectory()
         .removeSuffix("build/test-results")
-        .removeSuffix(".").removeSuffix("/") + "/testResources"
+        .removeSuffix(".").removeSuffix("/") + "/common/testResources"
 
     @Test
     fun readFile() {

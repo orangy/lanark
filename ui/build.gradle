@@ -24,7 +24,7 @@ kotlin {
         }
 
         fromPreset(presets.jvm, 'lwjgl')
-        fromPreset(presets.js, 'webgl')
+        fromPreset(presets.js, 'web')
 
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
@@ -32,7 +32,7 @@ kotlin {
             }
         }
         
-        configure([webgl]) {
+        configure([web]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 sourceMap = true
             }
@@ -41,14 +41,14 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDirs = ["common"]
+            kotlin.srcDirs = ["common/src"]
             dependencies {
                 implementation project(":core")
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
             }
         }
         commonTest {
-            kotlin.srcDirs = ["test"]
+            kotlin.srcDirs = ["common/test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'

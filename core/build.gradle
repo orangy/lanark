@@ -9,7 +9,7 @@ kotlin {
                     extraOpts '-Xdisable', 'devirtualization'
                     cinterops {
                         sdl {
-                            defFile = file("sdl2/sdl2.def")
+                            defFile = file("sdl2/interop/sdl2.def")
                         }
                     }
                 }
@@ -22,7 +22,7 @@ kotlin {
                         extraOpts '-Xdisable', 'devirtualization'
                         cinterops {
                             sdl {
-                                defFile = file("sdl2/sdl2.def")
+                                defFile = file("sdl2/interop/sdl2.def")
                             }
                         }
                     }
@@ -33,7 +33,7 @@ kotlin {
                         extraOpts '-Xdisable', 'devirtualization'
                         cinterops {
                             sdl {
-                                defFile = file("sdl2/sdl2.def")
+                                defFile = file("sdl2/interop/sdl2.def")
                             }
                         }
                     }
@@ -42,7 +42,7 @@ kotlin {
         }
 
         fromPreset(presets.jvm, 'lwjgl')
-        fromPreset(presets.js, 'webgl')
+        fromPreset(presets.js, 'web')
 
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
@@ -53,7 +53,7 @@ kotlin {
             }
         }
 
-        configure([webgl]) {
+        configure([web]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 sourceMap = true
             }
@@ -62,15 +62,16 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDirs = ["common"]
+            kotlin.srcDirs = ["common/src"]
+            resources.srcDirs = ["common/resources"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: coroutines_version
             }
         }
         commonTest {
-            kotlin.srcDirs = ["commonTest"]
-            resources.srcDirs = ["testResources"]
+            kotlin.srcDirs = ["common/test"]
+            resources.srcDirs = ["common/testResources"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
@@ -86,15 +87,15 @@ kotlin {
 
         if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
-                kotlin.srcDirs = ["sdl2"]
-                resources.srcDirs = ["sdl2Resources"]
+                kotlin.srcDirs = ["sdl2/src"]
+                resources.srcDirs = ["sdl2/resources"]
                 dependsOn nativeMain
             }
             if (project.property("lanark.sdl2.ios") == "true") {
                 sdl2iosMain {
                     if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2"]
-                        resources.srcDirs = ["sdl2Resources"]
+                        kotlin.srcDirs = ["sdl2/src"]
+                        resources.srcDirs = ["sdl2/resources"]
                         dependsOn nativeMain
                     } else {
                         dependsOn.clear()
@@ -102,8 +103,8 @@ kotlin {
                 }
                 sdl2isimMain {
                     if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2"]
-                        resources.srcDirs = ["sdl2Resources"]
+                        kotlin.srcDirs = ["sdl2/src"]
+                        resources.srcDirs = ["sdl2/resources"]
                         dependsOn nativeMain
                     } else {
                         dependsOn.clear()
@@ -113,7 +114,7 @@ kotlin {
         }
 
         lwjglMain {
-            kotlin.srcDirs = ["lwjgl"]
+            kotlin.srcDirs = ["lwjgl/src"]
             dependencies {
                 api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
@@ -133,21 +134,21 @@ kotlin {
         }
 
         lwjglTest {
-            kotlin.srcDirs = ["lwjglTest"]
+            kotlin.srcDirs = ["lwjgl/test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test'
                 implementation 'org.jetbrains.kotlin:kotlin-test-junit'
             }
         }
 
-        webglMain {
-            kotlin.srcDirs = ["webgl"]
+        webMain {
+            kotlin.srcDirs = ["web/src"]
             dependencies {
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-js', version: coroutines_version
             }
         }
-        webglTest {
-            kotlin.srcDirs = ["webglTest"]
+        webTest {
+            kotlin.srcDirs = ["web/test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-js'
             }

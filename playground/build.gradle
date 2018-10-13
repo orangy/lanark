@@ -32,14 +32,14 @@ kotlin {
         }
 
         fromPreset(presets.jvm, 'lwjgl')
-        fromPreset(presets.js, 'webgl')
+        fromPreset(presets.js, 'web')
 
         configure([lwjgl]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = '1.8'
             }
         }
-        configure([webgl]) {
+        configure([web]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 sourceMap = true
             }
@@ -48,8 +48,8 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDirs = ["common"]
-            resources.srcDirs = ["resources"]
+            kotlin.srcDirs = ["common/src"]
+            resources.srcDirs = ["common/resources"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 implementation project(":core")
@@ -57,7 +57,7 @@ kotlin {
             }
         }
         commonTest {
-            kotlin.srcDirs = ["test"]
+            kotlin.srcDirs = ["common/test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
@@ -66,16 +66,16 @@ kotlin {
 
         if (project.property("lanark.sdl2.enable") == "true") {
             sdl2macosMain {
-                kotlin.srcDirs = ["macOS"]
+                kotlin.srcDirs = ["macOS/src"]
             }
             sdl2isimMain {
-                kotlin.srcDirs = ["iOS"]
+                kotlin.srcDirs = ["iOS/src"]
             }
 
             if (project.property("lanark.sdl2.ios") == "true") {
                 sdl2iosMain {
                     if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["iOS"]
+                        kotlin.srcDirs = ["iOS/src"]
                     } else {
                         dependsOn.clear()
                     }
@@ -84,15 +84,15 @@ kotlin {
         }
 
         lwjglMain {
-            kotlin.srcDirs = ["lwjgl"]
+            kotlin.srcDirs = ["lwjgl/src"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-reflect'
             }
         }
 
-        webglMain {
-            kotlin.srcDirs = ["webgl"]
-            resources.srcDirs = ["webglResources"]
+        webMain {
+            kotlin.srcDirs = ["web/src"]
+            resources.srcDirs = ["web/resources"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
             }
@@ -132,8 +132,8 @@ task shutdownSimulator(type: Exec) {
 }
 
 afterEvaluate {
-    task webglAssembleWeb(type: Sync, dependsOn: compileKotlinWebgl) {
-        configurations.webglCompileClasspath.each { File file ->
+    task webAssembleWeb(type: Sync, dependsOn: compileKotlinWeb) {
+        configurations.webCompileClasspath.each { File file ->
             from(zipTree(file.absolutePath), {
                 includeEmptyDirs = false
                 include { fileTreeElement ->
@@ -144,7 +144,7 @@ afterEvaluate {
             })
         }
 
-        from compileKotlinWebgl.destinationDir
+        from compileKotlinWeb.destinationDir
         into "${project.buildDir}/web"
     }
 }
