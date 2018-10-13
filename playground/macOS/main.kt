@@ -1,11 +1,23 @@
 import org.lanark.application.*
+import org.lanark.diagnostics.*
+import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.playground.*
+import org.lanark.ui.*
 
 fun main() {
     val engine = Engine {
+        consoleLogger {
+            color(LoggerCategory.System, "\u001B[0;37m")
+            color(LoggerCategory.Info, "\u001B[0;34m")
+            color(LoggerCategory.Warn, "\u001B[0;33m")
+            color(LoggerCategory.Error, "\u001B[0;31m")
+            color(SceneApplication.LogCategory, "\u001B[0;35m")
+            color(Events.LogCategory, "\u001B[0;36m")
+        }
         enableEverything()
     }
+    
 
     @Suppress("NAMED_ARGUMENTS_NOT_ALLOWED")
     val frame = engine.createFrame(
