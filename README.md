@@ -1,6 +1,6 @@
 # Lanark
 
-![Lanark](playground/resources/lanark-60x2.png)
+![Lanark](playground/common/resources/lanark-60x2.png)
 
 Kotlin multiplatform framework for simple games and media applications. 
 Primitive. Really it is. Not ready. Like at all. Seriously, it's a draft.  
