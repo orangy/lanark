@@ -100,14 +100,6 @@ kotlin {
     }
 }
 
-kotlin.targets.all {
-    compilations.all { compilation ->
-        tasks.getByName(compilation.compileKotlinTaskName) {
-            kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
-        }
-    }
-}
-
 task startSimulator(type: Exec) {
     executable "sh"
     args "-c", 'open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'

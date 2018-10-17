@@ -156,14 +156,6 @@ kotlin {
     }
 }
 
-kotlin.targets.all {
-    compilations.all { compilation ->
-        tasks.getByName(compilation.compileKotlinTaskName) {
-            kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalUnsignedTypes"]
-        }
-    }
-}
-
 if (project.property("lanark.sdl2.enable") == "true") {
     afterEvaluate {
         kotlin.targets.sdl2macos.compilations.test.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
