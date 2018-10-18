@@ -4,27 +4,36 @@ kotlin {
     targets {
         if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos') {
+                compilations.all {
+                    buildTypes = [DEBUG]
+                    extraOpts '-Xdisable=devirtualization'
+                    linkerOpts += ["-macosx_version_min 10.13"]
+                }
                 compilations.main {
                     outputKinds = [EXECUTABLE]
-                    buildTypes = [DEBUG]
-                    linkerOpts += ["-macosx_version_min 10.13"]
                 }
             }
 
             if (project.property("lanark.sdl2.ios") == "true") {
                 fromPreset(presets.iosX64, 'sdl2isim') {
+                    compilations.all {
+                        buildTypes = [DEBUG]
+                        extraOpts '-Xdisable=devirtualization'
+                        linkerOpts += ["-ios_simulator_version_min 11.0"]
+                    }
                     compilations.main {
                         outputKinds = [EXECUTABLE]
-                        buildTypes = [DEBUG]
-                        linkerOpts += ["-ios_simulator_version_min 11.0"]
                         extraOpts "-nomain"
                     }
                 }
                 fromPreset(presets.iosArm64, 'sdl2ios') {
+                    compilations.all {
+                        buildTypes = [DEBUG]
+                        extraOpts '-Xdisable=devirtualization'
+                        linkerOpts += ["-ios_version_min 11.0"]
+                    }
                     compilations.main {
                         outputKinds = [EXECUTABLE]
-                        buildTypes = [DEBUG]
-                        linkerOpts += ["-ios_version_min 11.0"]
                         extraOpts "-nomain"
                     }
                 }

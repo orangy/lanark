@@ -4,20 +4,23 @@ kotlin {
     targets {
         if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos') {
-                compilations.main {
+                compilations.all {
                     buildTypes = [DEBUG]
+                    extraOpts '-Xdisable=devirtualization'
                 }
             }
             if (project.property("lanark.sdl2.ios") == "true") {
                 fromPreset(presets.iosArm64, 'sdl2ios') {
-                    compilations.main {
+                    compilations.all {
                         buildTypes = [DEBUG]
+                        extraOpts '-Xdisable=devirtualization'
                     }
                 }
 
                 fromPreset(presets.iosX64, 'sdl2isim') {
-                    compilations.main {
+                    compilations.all {
                         buildTypes = [DEBUG]
+                        extraOpts '-Xdisable=devirtualization'
                     }
                 }
             }

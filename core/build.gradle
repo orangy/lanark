@@ -4,9 +4,11 @@ kotlin {
     targets {
         if (project.property("lanark.sdl2.enable") == "true") {
             fromPreset(presets.macosX64, 'sdl2macos') {
-                compilations.main {
+                compilations.all {
                     buildTypes = [DEBUG]
-                    extraOpts '-Xdisable', 'devirtualization'
+                    extraOpts '-Xdisable=devirtualization'
+                }
+                compilations.main {
                     cinterops {
                         sdl {
                             defFile = file("sdl2/interop/sdl2.def")
@@ -17,9 +19,11 @@ kotlin {
 
             if (project.property("lanark.sdl2.ios") == "true") {
                 fromPreset(presets.iosX64, 'sdl2isim') {
-                    compilations.main {
+                    compilations.all {
                         buildTypes = [DEBUG]
-                        extraOpts '-Xdisable', 'devirtualization'
+                        extraOpts '-Xdisable=devirtualization'
+                    }
+                    compilations.main {
                         cinterops {
                             sdl {
                                 defFile = file("sdl2/interop/sdl2.def")
@@ -28,9 +32,11 @@ kotlin {
                     }
                 }
                 fromPreset(presets.iosArm64, 'sdl2ios') {
-                    compilations.main {
+                    compilations.all {
                         buildTypes = [DEBUG]
-                        extraOpts '-Xdisable', 'devirtualization'
+                        extraOpts '-Xdisable=devirtualization'
+                    }
+                    compilations.main {
                         cinterops {
                             sdl {
                                 defFile = file("sdl2/interop/sdl2.def")
