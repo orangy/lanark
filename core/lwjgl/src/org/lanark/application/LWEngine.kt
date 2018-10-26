@@ -2,25 +2,19 @@ package org.lanark.application
 
 import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
-import org.lanark.drawing.*
 import org.lanark.events.*
-import org.lanark.geometry.*
-import org.lanark.io.*
-import org.lanark.media.*
 import org.lanark.system.*
 import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL14.*
-import org.lwjgl.stb.*
-import org.lwjgl.system.*
 import org.lwjgl.system.MemoryUtil.*
-import org.lwjgl.glfw.GLFWImage
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
+    actual val events = Signal<Event>("Events")
+    actual val executor : Executor = ExecutorCoroutines(this)
+
     actual val logger: Logger
-    actual val events: Events
-    actual val executor: Executor
 
     private val version: Version = Version(
         org.lwjgl.Version.VERSION_MAJOR,
@@ -36,12 +30,11 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val displayHeight: Int
     private val refreshRate: Int
     private val windows = mutableMapOf<Long, Frame>()
+    private val clock = Clock()
 
     init {
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
         logger = configuration.logger ?: LoggerConsole()
-        events = configuration.events ?: Events(this)
-        executor = configuration.executor ?: ExecutorCoroutines(this)
 
         logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing LWJGL3 v$version")
@@ -69,32 +62,12 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         logger.info("Quit LWJGL3")
     }
 
-    actual fun sleep(millis: UInt) {
-        TODO()
-    }
+    actual fun createFrame(title: String, width: Int, height: Int, x: Int, y: Int, flags: FrameFlag): Frame {
+        val resizable = if (FrameFlag.CreateResizable in flags) GLFW_TRUE else GLFW_FALSE
+        val monitor = if (FrameFlag.CreateFullscreen in flags) glfwGetPrimaryMonitor() else 0L
 
-    actual fun setScreenSaver(enabled: Boolean) {
-        TODO()
-    }
-    
-    actual fun createFrame(
-        title: String,
-        width: Int,
-        height: Int,
-        x: Int,
-        y: Int,
-        flags: FrameFlag
-    ): Frame {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
-        glfwWindowHint(
-            GLFW_RESIZABLE,
-            if (FrameFlag.CreateResizable in flags) GLFW_TRUE else GLFW_FALSE
-        ) // the window will stay hidden after creation
-
-        val monitor = if (FrameFlag.CreateFullscreen in flags)
-            glfwGetPrimaryMonitor()
-        else
-            0L
+        glfwWindowHint(GLFW_RESIZABLE, resizable) 
 
         val window = glfwCreateWindow(width, height, title, monitor, NULL)
         if (window == NULL)
@@ -107,25 +80,92 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         if (FrameFlag.CreateVisible in flags)
             glfwShowWindow(window)
+        
         return Frame(this, window).also {
             windows[it.windowHandle] = it
             logger.system("Created $it")
-            events.attachEvents(it)
+            attachEvents(it)
         }
     }
-    
-    actual fun postQuitEvent() {
-        events.all.raise(EventAppQuit(0u))
-    }
-    
+
     internal fun unregisterFrame(windowId: Long, frame: Frame) {
         val registered = windows[windowId]
         require(registered == frame) { "Window #$windowId must be unregistered with the same instance" }
         windows.remove(windowId)
     }
+
+
+    actual fun postQuitEvent() {
+        events.raise(EventAppQuit(0u))
+    }
+
+    private fun attachEvents(frame: Frame) {
+        glfwSetKeyCallback(frame.windowHandle) { windowId, key, scancode, action, mods ->
+            val timestamp = clock.elapsedTicks()
+            val event = when (action) {
+                GLFW_PRESS -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), false)
+                GLFW_REPEAT -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), false)
+                GLFW_RELEASE -> EventKeyUp(timestamp, frame, key, scancode.toUInt())
+                else -> throw EngineException("Unknown action $action")
+            }
+            events.raise(event)
+        }
+
+        glfwSetScrollCallback(frame.windowHandle) { window, dx, dy ->
+            val timestamp = clock.elapsedTicks()
+            events.raise(EventMouseScroll(timestamp, frame, dx.toInt(), dy.toInt()))
+        }
+
+        glfwSetMouseButtonCallback(frame.windowHandle) { window, button, action, mods ->
+            val timestamp = clock.elapsedTicks()
+            val x = DoubleArray(1)
+            val y = DoubleArray(1)
+            glfwGetCursorPos(frame.windowHandle, x, y)
+            val mouseButton = when (button) {
+                GLFW_MOUSE_BUTTON_LEFT -> MouseButton.Left
+                GLFW_MOUSE_BUTTON_MIDDLE -> MouseButton.Middle
+                GLFW_MOUSE_BUTTON_RIGHT -> MouseButton.Right
+                GLFW_MOUSE_BUTTON_4 -> MouseButton.X1
+                GLFW_MOUSE_BUTTON_5 -> MouseButton.X2
+                else -> return@glfwSetMouseButtonCallback // unknown button, skip the click
+            }
+            val clicks = 1u
+            val posX = x[0].toInt()
+            val posY = y[0].toInt()
+            val event = when (action) {
+                GLFW_PRESS -> EventMouseButtonDown(timestamp, frame, mouseButton, posX, posY, clicks)
+                GLFW_RELEASE -> EventMouseButtonUp(timestamp, frame, mouseButton, posX, posY, clicks)
+                else -> throw EngineException("Unrecognized mouse action")
+            }
+            events.raise(event)
+        }
+
+        glfwSetCursorPosCallback(frame.windowHandle) { window, xpos, ypos ->
+            val timestamp = clock.elapsedTicks()
+            events.raise(EventMouseMotion(timestamp, frame, xpos.toInt(), ypos.toInt(), 0, 0))
+        }
+
+        glfwSetWindowCloseCallback(frame.windowHandle) {
+            val timestamp = clock.elapsedTicks()
+            events.raise(EventWindowClose(timestamp, frame))
+        }
+
+        glfwSetWindowSizeCallback(frame.windowHandle) { windowId, width, height ->
+            val timestamp = clock.elapsedTicks()
+            events.raise(EventWindowSizeChanged(timestamp, frame, width, height))
+        }
+    }
+    
+    actual fun pollEvents() {
+        glfwPollEvents()
+    }
+
+    actual companion object {
+        actual val EventsLogCategory = LoggerCategory("Events")
+    }
 }
 
-actual suspend fun nextTick() : Double {
+actual suspend fun nextTick(): Double {
     yield()
     return 0.0
 } 

@@ -6,13 +6,15 @@ import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
-import org.lanark.media.Image
+import org.lanark.media.*
 import org.lanark.resources.*
 import org.lanark.system.*
 import sdl2.*
 
 actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<SDL_Window>) : ResourceOwner, Managed {
     val id: UInt get() = SDL_GetWindowID(windowPtr)
+
+    private val sizeChangedEvent = engine.events.filter<EventWindowSizeChanged>()
 
     internal val rendererPtr = SDL_CreateRenderer(
         windowPtr,
@@ -23,19 +25,19 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
     }
 
     // need this for HIDPI
-    private val resizeHandler: (EventWindow) -> Unit = {
-        if (it is EventWindowSizeChanged && it.frame == this) {
+    private val resizeHandler: (EventWindowSizeChanged) -> Unit = {
+        if (it.frame == this) {
             SDL_RenderSetLogicalSize(rendererPtr, it.width, it.height)
             engine.logger.system("Resized $this")
         }
     }
 
     init {
-        engine.events.window.subscribe(resizeHandler)
+        sizeChangedEvent.subscribe(resizeHandler)
     }
 
     override fun release() {
-        engine.events.window.unsubscribe(resizeHandler)
+        sizeChangedEvent.unsubscribe(resizeHandler)
         engine.unregisterFrame(id, this)
         val captureId = id
         SDL_DestroyRenderer(rendererPtr)
@@ -44,7 +46,7 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
         engine.logger.system("Released frame #$captureId ${windowPtr.rawValue}")
     }
 
-    
+
     actual fun setBordered(enable: Boolean) {
         SDL_SetWindowBordered(windowPtr, enable.toSDLBoolean())
     }

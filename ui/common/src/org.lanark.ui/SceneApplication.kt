@@ -44,7 +44,7 @@ class SceneApplication(val frame: Frame)  {
             activeScene = scene
             activate(activeScene)
         }
-        frame.engine.events.poll()
+        frame.engine.pollEvents()
     }
 
     private val afterHandler: (Unit) -> Unit = {
@@ -74,9 +74,8 @@ class SceneApplication(val frame: Frame)  {
         executor.before.subscribe(beforeHandler)
         executor.after.subscribe(afterHandler)
 
-        events.keyboard.subscribe { activeScene?.event(frame, it) }
-        events.mouse.subscribe { activeScene?.event(frame, it) }
-        events.application.subscribe { if (it is EventAppQuit) executor.stop() }
+        events.subscribe { activeScene?.event(frame, it) }
+        events.filter<EventAppQuit>().subscribe { executor.stop() }
 
         executor.run()
         deactivate(activeScene)

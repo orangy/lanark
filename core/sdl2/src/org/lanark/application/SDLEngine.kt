@@ -3,18 +3,16 @@ package org.lanark.application
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
-import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
-import org.lanark.io.*
-import org.lanark.media.*
 import org.lanark.system.*
 import sdl2.*
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
+    actual val executor : Executor = ExecutorCoroutines(this)
+    actual val events: Signal<Event> = Signal("Event")
+
     actual val logger: Logger
-    actual val events: Events
-    actual val executor: Executor
 
     val displayWidth: Int
     val displayHeight: Int
@@ -49,8 +47,6 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
         logger = configuration.logger ?: NSLogger()
-        events = configuration.events ?: Events(this)
-        executor = configuration.executor ?: ExecutorCoroutines(this)
 
         logger.info("$platform with $cpus CPUs, $memorySize MB")
         logger.info("Initializing SDL v$version")
@@ -118,11 +114,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     val isControllerEnabled get() = SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 0u
     val isJoystickEnabled get() = SDL_WasInit(SDL_INIT_JOYSTICK) != 0u
     val isHapticEnabled get() = SDL_WasInit(SDL_INIT_HAPTIC) != 0u
-
-    actual fun sleep(millis: UInt) {
-        SDL_Delay(millis)
-    }
-
+    
     fun messageBox(title: String, message: String, icon: MessageBoxIcon, parentWindow: Frame? = null) {
         SDL_ShowSimpleMessageBox(
             icon.flags,
@@ -131,14 +123,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             parentWindow?.windowPtr
         ).sdlError("SDL_ShowSimpleMessageBox")
     }
-
-    actual fun setScreenSaver(enabled: Boolean) {
-        if (enabled)
-            SDL_EnableScreenSaver()
-        else
-            SDL_DisableScreenSaver()
-    }
-
+    
     actual fun createFrame(title: String, width: Int, height: Int, x: Int, y: Int, flags: FrameFlag): Frame {
         val sdlWindow = SDL_CreateWindow(title, x, y, width, height, flags.value).sdlError("SDL_CreateWindow")
         return Frame(this, sdlWindow).also {
@@ -146,7 +131,43 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             logger.system("Created $it")
         }
     }
-    
+
+    actual fun pollEvents() = memScoped {
+        val sdlEvent = alloc<SDL_Event>()
+        while (SDL_PollEvent(sdlEvent.ptr) == 1) {
+            val event = when (sdlEvent.type) {
+                SDL_QUIT,
+                SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
+                SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> 
+                    createAppEvent(sdlEvent, this@Engine)
+                SDL_WINDOWEVENT -> 
+                    createWindowEvent(sdlEvent, this@Engine)
+                SDL_KEYUP, SDL_KEYDOWN -> 
+                    createKeyEvent(sdlEvent, this@Engine)
+                SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> 
+                    createMouseEvent(sdlEvent, this@Engine)
+                SDL_FINGERMOTION, SDL_FINGERDOWN, SDL_FINGERUP -> {
+                    // ignore event and don't log it
+                    null
+                }
+                else -> {
+                    val eventName = sdlEventNames[sdlEvent.type]
+                    if (eventName == null)
+                        logger.event { "Unknown event: ${sdlEvent.type}" }
+                    else
+                        logger.event { eventName.toString() }
+                    null
+                }
+            }
+            
+            if (event != null) {
+                logger.event { event.toString() }
+                events.raise(event)
+            }
+        }
+    }
+
+
     actual fun postQuitEvent(): Unit = memScoped {
         val event = alloc<SDL_Event>()
         event.type = SDL_QUIT
@@ -162,6 +183,10 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     fun tryGetFrame(windowId: UInt) = windows[windowId]
 
     fun getFrame(windowId: UInt) = windows[windowId] ?: throw EngineException("Cannot find Frame for ID $windowId")
+    
+    actual companion object {
+        actual val EventsLogCategory = LoggerCategory("Events")
+    }
 }
 
 actual suspend fun nextTick(): Double {

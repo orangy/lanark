@@ -6,16 +6,11 @@ import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.io.*
 import org.lanark.media.*
+import org.lanark.system.*
 
 expect class Engine(configure: EngineConfiguration.() -> Unit) {
-    fun quit()
-    
     val logger: Logger
-    val events: Events
     val executor: Executor
-    
-    fun sleep(millis: UInt)
-    fun setScreenSaver(enabled: Boolean)
     
     fun createFrame(title: String,
                     width: Int,
@@ -25,7 +20,17 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
                     flags: FrameFlag = FrameFlag.CreateVisible
     ): Frame
 
+    fun quit()
+
+    val events: Signal<Event>
+    fun pollEvents()
     fun postQuitEvent()
+
+    companion object {
+        val EventsLogCategory: LoggerCategory
+    }
 }
 
 class EngineException(message: String) : Exception(message)
+
+fun Logger.event(message: () -> String) = log(Engine.EventsLogCategory, message)

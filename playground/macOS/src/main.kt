@@ -1,3 +1,4 @@
+
 import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.events.*
@@ -13,7 +14,7 @@ fun main() {
             color(LoggerCategory.Warn, "\u001B[0;33m")
             color(LoggerCategory.Error, "\u001B[0;31m")
             color(SceneApplication.LogCategory, "\u001B[0;35m")
-            color(Events.LogCategory, "\u001B[0;36m")
+            color(Engine.EventsLogCategory, "\u001B[0;36m")
         }
         enableEverything()
     }

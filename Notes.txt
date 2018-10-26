@@ -1,13 +1,3 @@
-
-SDL_GL_SetSwapInterval
-SDL_GL_SetAttribute
-SDL_GL_CreateContext
-SDL_GL_SwapWindow
-
-SDL_PollEvent
-SDL_WaitEvent
-SDL_GetKeyboardState
-
 Small todos:
 
 

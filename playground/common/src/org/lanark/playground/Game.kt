@@ -32,9 +32,9 @@ fun game(frame: Frame) {
         }
 
     }
-    engine.logger.switch(Events.LogCategory, false)
+    engine.logger.switch(Engine.EventsLogCategory, false)
 
-    engine.events.window.filter<EventWindowClose>().subscribe {
+    engine.events.filter<EventWindowClose>().subscribe {
         engine.postQuitEvent()
     }
 

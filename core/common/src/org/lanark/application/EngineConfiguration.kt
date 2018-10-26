@@ -11,9 +11,6 @@ expect class EngineConfiguration {
     
     var logger: Logger?
     
-    var events: Events?
-    var executor: Executor?
-    
     fun enableEverything()
     fun enableTimer()
     fun enableAudio()
