@@ -35,7 +35,7 @@ class BouncerScene(private val application: SceneApplication, resources: Resourc
     override fun activate(frame: Frame) {
         frame.cursor = normalCursor
 
-        application.frame.engine.executor.submit {
+        application.frame.engine.submit {
             items.forEach {
                 launch { it.run() }
             }

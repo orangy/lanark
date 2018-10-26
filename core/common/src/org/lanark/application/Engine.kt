@@ -1,5 +1,6 @@
 package org.lanark.application
 
+import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
@@ -10,7 +11,6 @@ import org.lanark.system.*
 
 expect class Engine(configure: EngineConfiguration.() -> Unit) {
     val logger: Logger
-    val executor: Executor
     
     fun createFrame(title: String,
                     width: Int,
@@ -26,6 +26,13 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
     fun pollEvents()
     fun postQuitEvent()
 
+    fun submit(task: suspend CoroutineScope.() -> Unit)
+
+    suspend fun run()
+    val before: Signal<Unit>
+    val after: Signal<Unit>
+    fun stop()
+
     companion object {
         val EventsLogCategory: LoggerCategory
     }
@@ -34,3 +41,5 @@ expect class Engine(configure: EngineConfiguration.() -> Unit) {
 class EngineException(message: String) : Exception(message)
 
 fun Logger.event(message: () -> String) = log(Engine.EventsLogCategory, message)
+
+expect suspend fun nextTick(): Double 

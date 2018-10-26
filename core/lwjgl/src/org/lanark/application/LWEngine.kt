@@ -9,10 +9,12 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL14.*
 import org.lwjgl.system.MemoryUtil.*
+import kotlin.coroutines.*
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
     actual val events = Signal<Event>("Events")
-    actual val executor : Executor = ExecutorCoroutines(this)
+    actual val before = Signal<Unit>("BeforeIteration")
+    actual val after = Signal<Unit>("AfterIteration")
 
     actual val logger: Logger
 
@@ -31,6 +33,10 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val refreshRate: Int
     private val windows = mutableMapOf<Long, Frame>()
     private val clock = Clock()
+
+    private var scheduled = mutableListOf<suspend CoroutineScope.() -> Unit>()
+    var running = false
+        private set
 
     init {
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
@@ -57,6 +63,43 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         logger.info("Display mode: ${displayWidth}x${displayHeight}, $refreshRate Hz")
     }
 
+    actual fun submit(task: suspend CoroutineScope.() -> Unit) {
+        scheduled.add(task)
+    }
+    
+    actual suspend fun run() {
+        val scope = CoroutineScope(kotlin.coroutines.coroutineContext)
+        logger.system("Running $this in $scope")
+        running = true
+        while (running) {
+            before.raise(Unit)
+            if (!running) {
+                coroutineContext.cancel()
+                break
+            }
+
+            val launching = scheduled
+            scheduled = mutableListOf()
+
+            launching.forEach {
+                scope.launch {  it() }
+            }
+
+            yield()
+
+            if (!running) {
+                coroutineContext.cancel()
+                break
+            }
+            after.raise(Unit) // vsync
+        }
+        logger.system("Stopped $this")
+    }
+
+    actual fun stop() {
+        running = false
+    }
+    
     actual fun quit() {
         glfwTerminate()
         logger.info("Quit LWJGL3")
@@ -93,7 +136,6 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         require(registered == frame) { "Window #$windowId must be unregistered with the same instance" }
         windows.remove(windowId)
     }
-
 
     actual fun postQuitEvent() {
         events.raise(EventAppQuit(0u))

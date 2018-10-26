@@ -6,11 +6,12 @@ import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.system.*
 
+
 class SceneApplication(val frame: Frame)  {
     private val metrics = Metrics()
-    private val events = frame.engine.events
-    private val logger = frame.engine.logger
-    private val executor = frame.engine.executor
+    private val engine = frame.engine
+    private val events = engine.events
+    private val logger = engine.logger
 
     private val dumpStatsClock = Clock()
     private val statsClock = Clock()
@@ -44,7 +45,7 @@ class SceneApplication(val frame: Frame)  {
             activeScene = scene
             activate(activeScene)
         }
-        frame.engine.pollEvents()
+        engine.pollEvents()
     }
 
     private val afterHandler: (Unit) -> Unit = {
@@ -71,18 +72,18 @@ class SceneApplication(val frame: Frame)  {
     }
 
     suspend fun run() {
-        executor.before.subscribe(beforeHandler)
-        executor.after.subscribe(afterHandler)
+        engine.before.subscribe(beforeHandler)
+        engine.after.subscribe(afterHandler)
 
         events.subscribe { activeScene?.event(frame, it) }
-        events.filter<EventAppQuit>().subscribe { executor.stop() }
+        events.filter<EventAppQuit>().subscribe { engine.stop() }
 
-        executor.run()
+        engine.run()
         deactivate(activeScene)
         activeScene = null
 
-        executor.before.unsubscribe(beforeHandler)
-        executor.after.unsubscribe(afterHandler)
+        engine.before.unsubscribe(beforeHandler)
+        engine.after.unsubscribe(afterHandler)
     }
 
     companion object {

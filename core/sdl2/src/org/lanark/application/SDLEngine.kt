@@ -7,12 +7,14 @@ import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 import sdl2.*
+import kotlin.coroutines.*
 
 actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
-    actual val executor : Executor = ExecutorCoroutines(this)
-    actual val events: Signal<Event> = Signal("Event")
-
     actual val logger: Logger
+
+    actual val events = Signal<Event>("Event")
+    actual val before = Signal<Unit>("BeforeIteration")
+    actual val after = Signal<Unit>("AfterIteration")
 
     val displayWidth: Int
     val displayHeight: Int
@@ -25,6 +27,10 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val memorySize: Int
     private val windows = mutableMapOf<UInt, Frame>()
 
+    private var scheduled = mutableListOf<suspend CoroutineScope.() -> Unit>()
+    var running = false
+        private set
+    
     init {
         version = memScoped {
             val version = alloc<SDL_version>()
@@ -97,6 +103,43 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         if (isHapticEnabled) add("Haptic")
         if (isJoystickEnabled) add("Joystick")
         if (isTimerEnabled) add("Timer")
+    }
+
+    actual fun submit(task: suspend CoroutineScope.() -> Unit) {
+        scheduled.add(task)
+    }
+
+    actual suspend fun run() {
+        val scope = CoroutineScope(kotlin.coroutines.coroutineContext)
+        logger.system("Running $this in $scope")
+        running = true
+        while (running) {
+            before.raise(Unit)
+            if (!running) {
+                coroutineContext.cancel()
+                break
+            }
+
+            val launching = scheduled
+            scheduled = mutableListOf()
+
+            launching.forEach {
+                scope.launch {  it() }
+            }
+
+            yield()
+
+            if (!running) {
+                coroutineContext.cancel()
+                break
+            }
+            after.raise(Unit) // vsync
+        }
+        logger.system("Stopped $this")
+    }
+
+    actual fun stop() {
+        running = false
     }
 
     actual fun quit() {

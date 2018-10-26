@@ -143,7 +143,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
     def RUN_GROUP = 'Run'
 
     afterEvaluate {
-        task runDebugExecutableSdl2macos(type: Exec, group: RUN_GROUP, dependsOn: [linkDebugExecutableSdl2macos]) {
+        task runDebugExecutableSdl2macos(type: Exec, group: RUN_GROUP, dependsOn: [linkDebugExecutableSdl2macos, sdl2macosProcessResources]) {
             workingDir = file('build/processedResources/sdl2macos/main') // TODO: get it from build task
             executable linkDebugExecutableSdl2macos.outputFile.get()
         }

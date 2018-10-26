@@ -22,7 +22,7 @@ fun game(frame: Frame) {
 
     var frames = 0
     val clock = Clock()
-    engine.executor.after.subscribe {
+    engine.after.subscribe {
         frames++
         val seconds = clock.elapsedMillis()
         if (seconds > 1000u) {
