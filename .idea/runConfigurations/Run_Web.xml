@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run WebGL" type="JavascriptDebugType" uri="http://localhost:63342/lanark/playground_webglMain/index.html">
+  <configuration default="false" name="Run Web" type="JavascriptDebugType" uri="http://localhost:63342/lanark/playground/build/web/index.html">
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="Build WebGL" run_configuration_type="GradleRunConfiguration" />
     </method>

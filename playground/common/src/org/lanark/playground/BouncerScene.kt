@@ -5,28 +5,35 @@ import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
+import org.lanark.math.*
 import org.lanark.resources.*
 import org.lanark.ui.*
 import kotlin.random.*
 
-class BouncerScene(private val application: SceneApplication, resources: ResourceContext) : Scene {
+class BouncerScene(
+    private val application: SceneApplication,
+    private val nextScene: Scene,
+    resources: ResourceContext
+) : Scene {
+
+    private val coroutineScope = application.frame.engine.createCoroutineScope()
+
     private val background = resources.texture("welcome/background-image")
-    //private val backgroundMusic = resources.loadMusic("welcome/background-music")
     private val normalCursor = resources.cursor("cursors/normal")
     private val hotCursor = resources.cursor("cursors/hot")
     private val tiles = resources.tiles("ui/elements")
     private val item = tiles["button"]
 
-    private val minPosition = 10
-    private val maxPosition = application.frame.size.width - item.width - 10
+    private val minPosition = 10f
+    private val maxPosition = (application.frame.size.width - item.width - 10).toFloat()
 
-    private val items = List(3) {
+    private val bouncers = List(6) {
         Bouncer(
             item,
-            Point(Random.nextInt(minPosition, maxPosition), 5 + item.height * 2 * it),
+            vectorOf(Random.nextFloat(minPosition, maxPosition), (5 + item.height * 1.5 * it).toFloat()),
             minPosition,
             maxPosition,
-            Random.nextInt(1, 5),
+            Random.nextFloat(1f, 100f),
             normalCursor,
             hotCursor
         )
@@ -35,16 +42,16 @@ class BouncerScene(private val application: SceneApplication, resources: Resourc
     override fun activate(frame: Frame) {
         frame.cursor = normalCursor
 
-        application.frame.engine.submit {
-            items.forEach {
-                launch { it.run() }
+        application.frame.engine.logger.engine("Launching bouncers")
+        bouncers.forEach { bouncer ->
+            coroutineScope.launch {
+                bouncer.run(frame.engine)
             }
         }
-        //backgroundMusic.play()
     }
 
     override fun deactivate(frame: Frame) {
-        //backgroundMusic.stop()
+        coroutineScope.coroutineContext.cancel()
     }
 
     private fun renderBackground(frame: Frame) {
@@ -55,13 +62,19 @@ class BouncerScene(private val application: SceneApplication, resources: Resourc
 
     override fun render(frame: Frame) {
         renderBackground(frame)
-        items.forEach { it.render(frame) }
+        bouncers.forEach { it.render(frame) }
     }
 
     override fun event(frame: Frame, event: Event): Boolean {
-        val handled = items.any { it.handle(frame, event) }
+        if (event is EventMouseButtonDown) {
+            application.scene = nextScene
+        }
+
+        val handled = bouncers.any { it.handle(frame, event) }
         if (!handled)
             frame.cursor = normalCursor
         return handled
     }
+
+    override fun toString() = "BouncerScene"
 }

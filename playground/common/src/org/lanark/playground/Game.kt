@@ -1,8 +1,6 @@
 package org.lanark.playground
 
-import kotlinx.coroutines.*
 import org.lanark.application.*
-import org.lanark.diagnostics.*
 import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.playground.hex.*
@@ -12,30 +10,22 @@ import org.lanark.ui.*
 
 private val title = "Lanark Demo"
 
-fun game(frame: Frame) {
-    val engine = frame.engine
-
+suspend fun Engine.game(frame: Frame) {
     val context = gameAssets.load(frame) { /*progress*/ }
     val uiResources = context.loadScope("ui")
     
     frame.setIcon(uiResources.loadImage("logo/icon"))
 
-    var frames = 0
-    val clock = Clock()
-    engine.after.subscribe {
-        frames++
-        val seconds = clock.elapsedMillis()
+    var fpsCounter = 0
+    val fpsClock = Clock()
+    after.subscribe {
+        fpsCounter++
+        val seconds = fpsClock.elapsedMillis()
         if (seconds > 1000u) {
-            clock.reset()
-            frame.title = "$title / FPS: $frames"
-            frames = 0
+            fpsClock.reset()
+            frame.title = "$title / FPS: $fpsCounter"
+            fpsCounter = 0
         }
-
-    }
-    engine.logger.switch(Engine.EventsLogCategory, false)
-
-    engine.events.filter<EventWindowClose>().subscribe {
-        engine.postQuitEvent()
     }
 
     val application = SceneApplication(frame)
@@ -45,26 +35,23 @@ fun game(frame: Frame) {
             Button(Point(20, 80), uiResources)
         )
     )
-    val shieldScene = BouncerScene(application, context)
+    val bouncerScene = BouncerScene(application, dialog, context)
     val hexScene = HexScene(context)
-    val welcome = WelcomeScene(application, shieldScene, context)
+    val welcome = WelcomeScene(application, bouncerScene, context)
 
-    application.scene = shieldScene
+    application.start(bouncerScene)
 
-    try {
-        coroutineLoop {
-            try {
-                application.run()
-            } catch (e: Throwable) {
-                println("Main: $e")
-                throw e
-            }
-            uiResources.release()
-            frame.release()
-            engine.quit()
-        }
-    } catch (e: CancellationException) {
-        engine.logger.error(e.toString())
+    events.filter<EventAppQuit>().subscribe { 
+        exitLoop() 
     }
+    events.filter<EventWindowClose>().subscribe {
+        exitLoop()
+    }
+    
+    loop()
+    
+    application.stop()
+    uiResources.release()
+    frame.release()
 }
 

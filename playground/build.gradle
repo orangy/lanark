@@ -133,8 +133,16 @@ afterEvaluate {
                 }
             })
         }
+        
+        from file('web/resources')
+        from file('common/resources')
 
-        from compileKotlinWeb.destinationDir
+        from(compileKotlinWeb.destinationDir, {
+            include { fileTreeElement ->
+                def path = fileTreeElement.path
+                path.endsWith(".js") || path.endsWith(".js.map")
+            }
+        })
         into "${project.buildDir}/web"
     }
 }
@@ -152,14 +160,14 @@ if (project.property("lanark.sdl2.enable") == "true") {
             task resourcesDebugExecutableSdl2ios(type: Copy, dependsOn: [linkDebugExecutableSdl2ios]) {
                 def target = linkDebugExecutableSdl2ios.target
                 from linkDebugExecutableSdl2ios.outputFile.get()
-                from file('resources')
+                from file('common/resources') // TODO: use processedResources
                 into file("build/bundle/$target/${project.name}.app/")
             }
 
             task resourcesDebugExecutableSdl2isim(type: Copy, dependsOn: [linkDebugExecutableSdl2isim]) {
                 def target = linkDebugExecutableSdl2isim.target
                 from linkDebugExecutableSdl2isim.outputFile.get()
-                from file('resources')
+                from file('common/resources')
                 into file("build/bundle/$target/${project.name}.app/")
             }
 

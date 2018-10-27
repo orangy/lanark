@@ -2,44 +2,86 @@ package org.lanark.application
 
 import kotlinx.coroutines.*
 import org.lanark.diagnostics.*
-import org.lanark.drawing.*
 import org.lanark.events.*
-import org.lanark.geometry.*
-import org.lanark.io.*
-import org.lanark.media.*
 import org.lanark.system.*
 
 expect class Engine(configure: EngineConfiguration.() -> Unit) {
+    /**
+     * Instance of a [Logger] for reporting diagnostic information. 
+     */
     val logger: Logger
-    
-    fun createFrame(title: String,
-                    width: Int,
-                    height: Int,
-                    x: Int = Frame.UndefinedPosition,
-                    y: Int = Frame.UndefinedPosition,
-                    flags: FrameFlag = FrameFlag.CreateVisible
+
+    /**
+     * Fires when an [Event] is registered for the application.
+     */
+    val events: Signal<Event>
+
+    fun createFrame(
+        title: String,
+        width: Int,
+        height: Int,
+        x: Int = Frame.UndefinedPosition,
+        y: Int = Frame.UndefinedPosition,
+        flags: FrameFlag = FrameFlag.CreateVisible
     ): Frame
 
-    fun quit()
+    /**
+     * Destroys the engine.
+     */
+    fun destroy()
 
-    val events: Signal<Event>
-    fun pollEvents()
-    fun postQuitEvent()
-
-    fun submit(task: suspend CoroutineScope.() -> Unit)
-
-    suspend fun run()
+    /**
+     * Fires before the coroutines are run inside a game loop.
+     */
     val before: Signal<Unit>
+    
+    /**
+     * Fires after coroutines have been run inside a game loop.
+     */
     val after: Signal<Unit>
-    fun stop()
+
+    /**
+     * Starts the [main] game function in the appropriate execution context.
+     * Main function should load initial resources, set up an application and eventually call [loop] 
+     * function to start a game loop. 
+     */
+    fun run(main: suspend Engine.() -> Unit)
+    
+    /**
+     * Runs the game loop. Should be called from within the main function
+     */
+    suspend fun loop()
+
+    /**
+     * Suspends until the next game tick.
+     * @return time in seconds passed from suspension to resume.
+     */
+    suspend fun nextTick(): Float
+
+    /**
+     * Cancels all the running coroutines and stops the loop.
+     * At this point [loop] function returns to the caller.
+     */
+    fun exitLoop()
+
+    /**
+     * Creates a scope for running coroutines.
+     */
+    fun createCoroutineScope(): CoroutineScope
 
     companion object {
-        val EventsLogCategory: LoggerCategory
+        val LogCategory: LoggerCategory
     }
 }
 
+/**
+ * Exception thrown when an [Engine] error occurs.
+ */
 class EngineException(message: String) : Exception(message)
 
-fun Logger.event(message: () -> String) = log(Engine.EventsLogCategory, message)
+/**
+ * Logs a [message] in the [Engine.LogCategory] category.
+ */
+fun Logger.engine(message: () -> String) = log(Engine.LogCategory, message)
+fun Logger.engine(message: String) = log(Engine.LogCategory, message)
 
-expect suspend fun nextTick(): Double 

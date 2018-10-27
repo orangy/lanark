@@ -11,5 +11,10 @@ fun main() {
         "Frame", engine.displayWidth, engine.displayHeight,
         flags = FrameFlag.CreateResizable + FrameFlag.CreateHiDPI + FrameFlag.CreateVisible + FrameFlag.CreateFullscreenDesktop
     )
-    game(frame)
+    engine.logger.switch(Engine.LogCategory, true)
+
+    engine.run {
+        game(frame)
+    }
+    engine.destroy()
 }

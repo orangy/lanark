@@ -6,6 +6,7 @@ import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 import org.w3c.dom.*
+import org.w3c.performance.*
 import kotlin.browser.*
 import kotlin.coroutines.*
 
@@ -18,61 +19,59 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
     private val dpr = window.devicePixelRatio;
 
-    private var scheduled = mutableListOf<suspend CoroutineScope.() -> Unit>()
-    var running = false
-        private set
-
-
     init {
         val configuration = EngineConfiguration("Web2D", 1, Version(1, 0, 0)).apply(configure)
         logger = configuration.logger ?: LoggerConsole()
         logger.info("Device pixel ratio: $dpr")
     }
 
-    actual fun submit(task: suspend CoroutineScope.() -> Unit) {
-        scheduled.add(task)
+    private lateinit var engineContext: CoroutineContext
+    actual fun run(main: suspend Engine.() -> Unit) = coroutineLoop {
+        engineContext = kotlin.coroutines.coroutineContext + SupervisorJob()
+        logger.info("Running application function")
+        this@Engine.main()
+        logger.info("Finished application function")
     }
 
-    actual fun stop() {
-        running = false
+    actual fun exitLoop() {
+        engineContext.cancel()
     }
 
-    actual suspend fun run() {
-        val scope = CoroutineScope(coroutineContext)
-        //engine.logger.system("Running $this in $scope")
-        running = true
-        while (running) {
-            //  engine.logger.system("Begin loop…")
-            before.raise(Unit)
-            //engine.logger.system("Done before.")
-            if (!running) {
-                coroutineContext.cancel()
-                break
-            }
+    actual fun createCoroutineScope(): CoroutineScope {
+        return CoroutineScope(engineContext + SupervisorJob(engineContext[Job.Key]))
+    }
 
-            val launching = scheduled
-            scheduled = mutableListOf()
+    actual suspend fun loop() {
+        logger.system("Running loop by $this")
+        try {
+            while (true) {
+                before.raise(Unit)
+                window.awaitAnimationFrame()
+                if (!engineContext.isActive) // did anyone cancelled context?
+                    return
 
-            launching.forEach {
-                //engine.logger.system("Launching $it")
-                scope.launch {  it() }
-            }
+                after.raise(Unit)
 
-            if (!running) {
-                coroutineContext.cancel()
-                break
+/*
+                // swap all frames (may be check if they are dirty?)
+                frames.forEach { e ->
+                    e.value.present()
+                }
+*/
+
             }
-            //engine.logger.system("Awaiting frame…")
-            window.awaitAnimationFrame()
-            //engine.logger.system("Got frame!")
-            after.raise(Unit)
-            //engine.logger.system("End loop.")
+        } finally {
+            logger.system("Stopped loop by $this")
         }
     }
 
-    actual fun pollEvents() {}
-    actual fun postQuitEvent() {}
-    actual fun quit() {}
+    actual suspend fun nextTick(): Float {
+        val timeStarted = window.performance.now()
+        val timeFinished = window.awaitAnimationFrame() 
+        return ((timeFinished - timeStarted) / 1000.0).toFloat()
+    }
+
+    actual fun destroy() {}
 
     fun attachFrame(canvasId: String): Frame {
         val canvas = window.document.getElementById(canvasId) as HTMLCanvasElement
@@ -97,10 +96,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     }
 
     actual companion object {
-        actual val EventsLogCategory = LoggerCategory("Events")
+        actual val LogCategory = LoggerCategory("Engine")
     }
 }
 
-actual suspend fun nextTick() : Double {
-    return window.awaitAnimationFrame()
-} 

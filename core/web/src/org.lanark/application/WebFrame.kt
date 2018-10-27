@@ -39,7 +39,7 @@ actual class Frame(actual val engine: Engine, val context: CanvasRenderingContex
     actual fun setIcon(icon: Image) {}
     actual fun messageBox(title: String, message: String, icon: MessageBoxIcon) {}
     actual var clip: Rect?
-        get() = TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        get() = null
         set(value) {}
 
     actual fun clear(color: Color?) {

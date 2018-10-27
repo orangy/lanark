@@ -1,5 +1,4 @@
 import org.lanark.application.*
-import org.lanark.geometry.*
 import org.lanark.playground.*
 
 fun main() {
@@ -7,5 +6,9 @@ fun main() {
         enableEverything()
     }
     val frame = engine.attachFrame("gl")
-    game(frame)
+
+    engine.run {
+        game(frame)
+    }
+    engine.destroy()
 }

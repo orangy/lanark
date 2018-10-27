@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run LWJGL3" type="JetRunConfigurationType" factoryName="Kotlin">
-    <module name="playground_lwjglMain" />
+    <module name="lanark.playground.lwjglMain" />
     <option name="VM_PARAMETERS" value="-XstartOnFirstThread" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />

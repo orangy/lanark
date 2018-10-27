@@ -13,7 +13,7 @@ fun main() {
             color(LoggerCategory.Warn, "\u001B[0;33m")
             color(LoggerCategory.Error, "\u001B[0;31m")
             color(SceneApplication.LogCategory, "\u001B[0;35m")
-            color(Engine.EventsLogCategory, "\u001B[0;36m")
+            color(Engine.LogCategory, "\u001B[0;36m")
         }
         enableEverything()
     }
@@ -26,5 +26,10 @@ fun main() {
         minimumSize = Size(800, 600)
     }
 
-    game(frame)
+    engine.logger.switch(Engine.LogCategory, false)
+
+    engine.run {
+        game(frame)
+    }
+    engine.destroy()
 }

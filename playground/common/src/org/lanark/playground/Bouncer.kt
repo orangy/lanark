@@ -1,47 +1,44 @@
 package org.lanark.playground
 
 import org.lanark.application.*
+import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
+import org.lanark.math.*
 
 class Bouncer(
     private val tile: Tile,
-    initialPosition: Point,
-    private val minPosition: Int,
-    private val maxPosition: Int,
-    private val speed: Int,
+    initialPosition: Vector2,
+    private val minPosition: Float,
+    private val maxPosition: Float,
+    private val speed: Float,
     private val normalCursor: Cursor,
     private val hotCursor: Cursor
 ) {
-    private var itemPosition = initialPosition
+    private val itemPosition = mutableVectorOf(initialPosition.x, initialPosition.y)
 
-    suspend fun run() {
-        try {
-            while (true) {
-                while (itemPosition.x < maxPosition) {
-                    itemPosition += Vector(speed /* * dt */, 0)
-                    nextTick()
-                }
-                while (itemPosition.x > minPosition) {
-                    itemPosition -= Vector(speed, 0)
-                    nextTick()
-                }
+    suspend fun run(engine: Engine) {
+        while (true) {
+            while (itemPosition.x < maxPosition) {
+                val dt = engine.nextTick()
+                itemPosition += vectorOf(speed * dt, 0f)
             }
-        } catch (e: Throwable) {
-            println("org.lanark.playground.Bouncer: $e")
-            throw e
+            while (itemPosition.x > minPosition) {
+                val dt = engine.nextTick()
+                itemPosition -= vectorOf(speed * dt, 0f)
+            }
         }
     }
 
     fun render(frame: Frame) {
-        frame.draw(tile, itemPosition)
+        frame.draw(tile, itemPosition.toPoint())
     }
 
     fun handle(frame: Frame, event: Event): Boolean {
         when (event) {
             is EventMouseMotion -> {
-                if (event.position in Rect(itemPosition, tile.size)) {
+                if (event.position in Rect(itemPosition.toPoint(), tile.size)) {
                     frame.cursor = hotCursor
                     return true
                 }
@@ -50,3 +47,5 @@ class Bouncer(
         return false
     }
 }
+
+private fun Vector2.toPoint() = Point(x.toInt(), y.toInt())

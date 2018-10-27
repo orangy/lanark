@@ -40,7 +40,7 @@ actual fun ResourceContext.loadImage(path: String, fileSystem: FileSystem): Imag
     image.onload = {
         logger.system("Loaded image from $path")
     }
-    image.src = "../resources/$path"
+    image.src = path
     return Image(image)
 }
 

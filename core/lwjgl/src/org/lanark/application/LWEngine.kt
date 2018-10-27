@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL14.*
 import org.lwjgl.system.MemoryUtil.*
 import kotlin.coroutines.*
 
-actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit) {
+actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit)  {
     actual val events = Signal<Event>("Events")
     actual val before = Signal<Unit>("BeforeIteration")
     actual val after = Signal<Unit>("AfterIteration")
@@ -31,12 +31,14 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val displayWidth: Int
     private val displayHeight: Int
     private val refreshRate: Int
-    private val windows = mutableMapOf<Long, Frame>()
+    private val frames = mutableMapOf<Long, Frame>()
     private val clock = Clock()
 
-    private var scheduled = mutableListOf<suspend CoroutineScope.() -> Unit>()
-    var running = false
-        private set
+    private val metrics = Metrics()
+    private val eventStats = metrics.reservoir("ApplicationTiming.event")
+    private val updateStats = metrics.reservoir("ApplicationTiming.update")
+    private val presentStats = metrics.reservoir("ApplicationTiming.present")
+    private val statsClock = Clock()
 
     init {
         val configuration = EngineConfiguration(platform, cpus, version).apply(configure)
@@ -63,44 +65,79 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         logger.info("Display mode: ${displayWidth}x${displayHeight}, $refreshRate Hz")
     }
 
-    actual fun submit(task: suspend CoroutineScope.() -> Unit) {
-        scheduled.add(task)
+    private lateinit var engineContext: CoroutineContext
+
+    actual fun run(main: suspend Engine.() -> Unit) = coroutineLoop {
+        engineContext = kotlin.coroutines.coroutineContext + SupervisorJob()
+        logger.info("Running application function")
+        this@Engine.main()
+        logger.info("Finished application function")
     }
-    
-    actual suspend fun run() {
-        val scope = CoroutineScope(kotlin.coroutines.coroutineContext)
-        logger.system("Running $this in $scope")
-        running = true
-        while (running) {
-            before.raise(Unit)
-            if (!running) {
-                coroutineContext.cancel()
-                break
+
+    actual suspend fun nextTick(): Float {
+        val start = clock.elapsedMillis()
+        yield()
+        val end = clock.elapsedMillis()
+        return (end - start).toInt().toFloat() / 1000f
+    }
+
+    actual fun createCoroutineScope(): CoroutineScope {
+        return CoroutineScope(engineContext + SupervisorJob(engineContext[Job.Key]))
+    }
+
+    actual suspend fun loop() {
+        logger.system("Running loop by $this")
+        try {
+            while (true) {
+                val startLoopTime = clock.elapsedMillis()
+
+                glfwPollEvents()
+
+                val afterEventsTime = clock.elapsedMillis()
+
+                before.raise(Unit)
+                yield() // let other coroutines work
+                if (!engineContext.isActive) // did anyone cancelled context?
+                    return
+
+                after.raise(Unit)
+
+                val afterUpdateTime = clock.elapsedMillis()
+
+                // swap all frames (may be check if they are dirty?)
+                frames.forEach { _, frame ->
+                    frame.present()
+                }
+
+                val afterPresentTime = clock.elapsedMillis()
+                eventStats.update((afterEventsTime - startLoopTime).toLong())
+                updateStats.update((afterUpdateTime - afterEventsTime).toLong())
+                presentStats.update((afterPresentTime - afterUpdateTime).toLong())
+                dumpStatistics()
             }
-
-            val launching = scheduled
-            scheduled = mutableListOf()
-
-            launching.forEach {
-                scope.launch {  it() }
-            }
-
-            yield()
-
-            if (!running) {
-                coroutineContext.cancel()
-                break
-            }
-            after.raise(Unit) // vsync
+        } finally {
+            logger.system("Stopped loop by $this")
         }
-        logger.system("Stopped $this")
     }
 
-    actual fun stop() {
-        running = false
+    private fun dumpStatistics() {
+        if (statsClock.elapsedSeconds() <= 10u)
+            return
+
+        val meanEvents = eventStats.snapshot().mean()
+        val meanUpdate = updateStats.snapshot().mean()
+        val meanPresent = presentStats.snapshot().mean()
+        logger.system(
+            "Mean times: E[${round(meanEvents, 2)} ms] U[${round(meanUpdate, 2)} ms] P[${round(meanPresent, 2)} ms]"
+        )
+        statsClock.reset()
     }
-    
-    actual fun quit() {
+
+    actual fun exitLoop() {
+        engineContext.cancel()
+    }
+
+    actual fun destroy() {
         glfwTerminate()
         logger.info("Quit LWJGL3")
     }
@@ -110,7 +147,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         val monitor = if (FrameFlag.CreateFullscreen in flags) glfwGetPrimaryMonitor() else 0L
 
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, resizable) 
+        glfwWindowHint(GLFW_RESIZABLE, resizable)
 
         val window = glfwCreateWindow(width, height, title, monitor, NULL)
         if (window == NULL)
@@ -123,22 +160,18 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
 
         if (FrameFlag.CreateVisible in flags)
             glfwShowWindow(window)
-        
+
         return Frame(this, window).also {
-            windows[it.windowHandle] = it
+            frames[it.windowHandle] = it
             logger.system("Created $it")
             attachEvents(it)
         }
     }
 
     internal fun unregisterFrame(windowId: Long, frame: Frame) {
-        val registered = windows[windowId]
+        val registered = frames[windowId]
         require(registered == frame) { "Window #$windowId must be unregistered with the same instance" }
-        windows.remove(windowId)
-    }
-
-    actual fun postQuitEvent() {
-        events.raise(EventAppQuit(0u))
+        frames.remove(windowId)
     }
 
     private fun attachEvents(frame: Frame) {
@@ -197,17 +230,11 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             events.raise(EventWindowSizeChanged(timestamp, frame, width, height))
         }
     }
-    
-    actual fun pollEvents() {
-        glfwPollEvents()
-    }
+
+    override fun toString() = "Engine(LWJGL3)"
 
     actual companion object {
-        actual val EventsLogCategory = LoggerCategory("Events")
+        actual val LogCategory = LoggerCategory("Engine")
     }
 }
 
-actual suspend fun nextTick(): Double {
-    yield()
-    return 0.0
-} 

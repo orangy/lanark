@@ -25,12 +25,15 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     private val refreshRate: Int
     private val cpus: Int
     private val memorySize: Int
-    private val windows = mutableMapOf<UInt, Frame>()
+    private val frames = mutableMapOf<UInt, Frame>()
+    private val clock = Clock()
 
-    private var scheduled = mutableListOf<suspend CoroutineScope.() -> Unit>()
-    var running = false
-        private set
-    
+    private val metrics = Metrics()
+    private val eventStats = metrics.reservoir("ApplicationTiming.event")
+    private val updateStats = metrics.reservoir("ApplicationTiming.update")
+    private val presentStats = metrics.reservoir("ApplicationTiming.present")
+    private val statsClock = Clock()
+
     init {
         version = memScoped {
             val version = alloc<SDL_version>()
@@ -105,44 +108,82 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
         if (isTimerEnabled) add("Timer")
     }
 
-    actual fun submit(task: suspend CoroutineScope.() -> Unit) {
-        scheduled.add(task)
-    }
-
-    actual suspend fun run() {
-        val scope = CoroutineScope(kotlin.coroutines.coroutineContext)
-        logger.system("Running $this in $scope")
-        running = true
-        while (running) {
-            before.raise(Unit)
-            if (!running) {
-                coroutineContext.cancel()
-                break
-            }
-
-            val launching = scheduled
-            scheduled = mutableListOf()
-
-            launching.forEach {
-                scope.launch {  it() }
-            }
-
-            yield()
-
-            if (!running) {
-                coroutineContext.cancel()
-                break
-            }
-            after.raise(Unit) // vsync
+    private lateinit var engineContext: CoroutineContext
+    actual fun run(main: suspend Engine.() -> Unit) = coroutineLoop {
+        try {
+            logger.engine("Capturing execution context…")
+            engineContext = kotlin.coroutines.coroutineContext + SupervisorJob()
+            logger.info("Running application function")
+            this@Engine.main()
+            logger.info("Finished application function")
+        } catch (e: Throwable) {
+            logger.error(e.message ?: "<no error>")
         }
-        logger.system("Stopped $this")
     }
 
-    actual fun stop() {
-        running = false
+    actual fun createCoroutineScope(): CoroutineScope {
+        return CoroutineScope(engineContext + SupervisorJob(engineContext[Job.Key]))
     }
 
-    actual fun quit() {
+    actual suspend fun nextTick(): Float {
+        val start = clock.elapsedMillis()
+        yield()
+        val end = clock.elapsedMillis()
+        return (end - start).toInt().toFloat() / 1000f
+    }
+
+    actual suspend fun loop() {
+        logger.system("Running loop by $this")
+        try {
+            while (true) {
+                val startLoopTime = clock.elapsedMillis()
+
+                pollEvents()
+                val afterEventsTime = clock.elapsedMillis()
+
+                before.raise(Unit)
+                yield() // let other coroutines work
+                if (!engineContext.isActive) // did anyone cancelled context?
+                    return
+
+                after.raise(Unit)
+
+                val afterUpdateTime = clock.elapsedMillis()
+
+                // swap all frames (may be check if they are dirty?)
+                frames.forEach { e ->
+                    e.value.present()
+                }
+
+                val afterPresentTime = clock.elapsedMillis()
+                eventStats.update((afterEventsTime - startLoopTime).toLong())
+                updateStats.update((afterUpdateTime - afterEventsTime).toLong())
+                presentStats.update((afterPresentTime - afterUpdateTime).toLong())
+                dumpStatistics()
+            }
+        } finally {
+            logger.system("Stopped loop by $this")
+        }
+    }
+
+    private fun dumpStatistics() {
+        if (statsClock.elapsedSeconds() <= 10u)
+            return
+
+        val meanEvents = eventStats.snapshot().mean()
+        val meanUpdate = updateStats.snapshot().mean()
+        val meanPresent = presentStats.snapshot().mean()
+        logger.system(
+            "Mean times: E[${round(meanEvents, 2)} ms] U[${round(meanUpdate, 2)} ms] P[${round(meanPresent, 2)} ms]"
+        )
+        statsClock.reset()
+    }
+
+    actual fun exitLoop() {
+        engineContext.cancel()
+    }
+
+    actual fun destroy() {
         Mix_Quit()
         logger.info("Quit MIX")
         SDL_Quit()
@@ -157,7 +198,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
     val isControllerEnabled get() = SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 0u
     val isJoystickEnabled get() = SDL_WasInit(SDL_INIT_JOYSTICK) != 0u
     val isHapticEnabled get() = SDL_WasInit(SDL_INIT_HAPTIC) != 0u
-    
+
     fun messageBox(title: String, message: String, icon: MessageBoxIcon, parentWindow: Frame? = null) {
         SDL_ShowSimpleMessageBox(
             icon.flags,
@@ -166,28 +207,28 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             parentWindow?.windowPtr
         ).sdlError("SDL_ShowSimpleMessageBox")
     }
-    
+
     actual fun createFrame(title: String, width: Int, height: Int, x: Int, y: Int, flags: FrameFlag): Frame {
         val sdlWindow = SDL_CreateWindow(title, x, y, width, height, flags.value).sdlError("SDL_CreateWindow")
         return Frame(this, sdlWindow).also {
-            windows[it.id] = it
+            frames[it.id] = it
             logger.system("Created $it")
         }
     }
 
-    actual fun pollEvents() = memScoped {
+    private fun pollEvents() = memScoped {
         val sdlEvent = alloc<SDL_Event>()
         while (SDL_PollEvent(sdlEvent.ptr) == 1) {
             val event = when (sdlEvent.type) {
                 SDL_QUIT,
                 SDL_APP_TERMINATING, SDL_APP_LOWMEMORY, SDL_APP_DIDENTERBACKGROUND,
-                SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND -> 
+                SDL_APP_DIDENTERFOREGROUND, SDL_APP_WILLENTERBACKGROUND, SDL_APP_WILLENTERFOREGROUND ->
                     createAppEvent(sdlEvent, this@Engine)
-                SDL_WINDOWEVENT -> 
+                SDL_WINDOWEVENT ->
                     createWindowEvent(sdlEvent, this@Engine)
-                SDL_KEYUP, SDL_KEYDOWN -> 
+                SDL_KEYUP, SDL_KEYDOWN ->
                     createKeyEvent(sdlEvent, this@Engine)
-                SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL -> 
+                SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP, SDL_MOUSEMOTION, SDL_MOUSEWHEEL ->
                     createMouseEvent(sdlEvent, this@Engine)
                 SDL_FINGERMOTION, SDL_FINGERDOWN, SDL_FINGERUP -> {
                     // ignore event and don't log it
@@ -196,43 +237,32 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
                 else -> {
                     val eventName = sdlEventNames[sdlEvent.type]
                     if (eventName == null)
-                        logger.event { "Unknown event: ${sdlEvent.type}" }
+                        logger.engine { "Unknown event: ${sdlEvent.type}" }
                     else
-                        logger.event { eventName.toString() }
+                        logger.engine { eventName.toString() }
                     null
                 }
             }
-            
+
             if (event != null) {
-                logger.event { event.toString() }
+                logger.engine { event.toString() }
                 events.raise(event)
             }
         }
     }
 
 
-    actual fun postQuitEvent(): Unit = memScoped {
-        val event = alloc<SDL_Event>()
-        event.type = SDL_QUIT
-        SDL_PushEvent(event.ptr)
-    }
-
     internal fun unregisterFrame(windowId: UInt, frame: Frame) {
-        val registered = windows[windowId]
+        val registered = frames[windowId]
         require(registered == frame) { "Window #$windowId must be unregistered with the same instance" }
-        windows.remove(windowId)
+        frames.remove(windowId)
     }
 
-    fun tryGetFrame(windowId: UInt) = windows[windowId]
+    fun tryGetFrame(windowId: UInt) = frames[windowId]
 
-    fun getFrame(windowId: UInt) = windows[windowId] ?: throw EngineException("Cannot find Frame for ID $windowId")
-    
+    fun getFrame(windowId: UInt) = frames[windowId] ?: throw EngineException("Cannot find Frame for ID $windowId")
+
     actual companion object {
-        actual val EventsLogCategory = LoggerCategory("Events")
+        actual val LogCategory = LoggerCategory("Engine")
     }
 }
-
-actual suspend fun nextTick(): Double {
-    yield()
-    return 0.0
-} 
