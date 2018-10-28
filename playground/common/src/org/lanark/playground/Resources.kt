@@ -13,19 +13,19 @@ val uiAssets = scope("ui") {
 
     texture("background", "ui-background.png")
     tiles("elements", "ui-tileset.png") {
-        tile("border-top-left", 855, 188, 24, 24, 14, 14)
-        tile("border-top", 893, 188, 72, 24, 0, 14)
-        tile("border-top-right", 978, 188, 24, 24, 11, 14)
-        tile("border-right", 978, 228, 24, 54, 11, 0)
-        tile("border-bottom-right", 978, 294, 24, 24, 11, 11)
-        tile("border-bottom", 893, 294, 72, 24, 0, 11)
-        tile("border-bottom-left", 855, 294, 24, 24, 14, 11)
-        tile("border-left", 855, 228, 24, 54, 14, 0)
+        tile("border-top-left", 849, 182, 31, 31, 15, 15)
+        tile("border-top", 893, 182, 73, 31, 0, 15)
+        tile("border-top-right", 978, 182, 41, 31, 15, 15)
+        tile("border-right", 978, 227, 31, 55, 15, 0)
+        tile("border-bottom-right", 978, 294, 31, 31, 15, 15)
+        tile("border-bottom", 893, 294, 73, 31, 0, 15)
+        tile("border-bottom-left", 849, 294, 31, 31, 15, 15)
+        tile("border-left", 849, 227, 31, 55, 15, 0)
 
-        tile("button", 12, 126, 285, 54)
-        tile("button-pressed", 12, 126 + 78, 285, 54)
-        tile("button-hover", 12, 126 + 78 * 2, 285, 54)
-        tile("button-disabled", 12, 126 + 78 * 3, 285, 54)
+        tile("button", 11, 124, 290, 60)
+        tile("button-pressed", 11, 124 + 78, 290, 60)
+        tile("button-hover", 11, 124 + 78 * 2, 290, 60)
+        tile("button-disabled", 11, 124 + 78 * 3, 290, 60)
     }
 }
 

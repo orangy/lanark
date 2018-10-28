@@ -39,7 +39,7 @@ suspend fun Engine.game(frame: Frame) {
     val hexScene = HexScene(context)
     val welcome = WelcomeScene(application, bouncerScene, context)
 
-    application.start(bouncerScene)
+    application.start(dialog)
 
     events.filter<EventAppQuit>().subscribe { 
         exitLoop() 
