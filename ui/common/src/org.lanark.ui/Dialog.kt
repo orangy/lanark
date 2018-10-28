@@ -39,33 +39,58 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
         draw(bottomLeftTile, Point(area.left, area.bottom))
         draw(bottomRightTile, Point(area.right, area.bottom))
 
-        val topLeftX = topLeftTile.width - topLeftTile.origin.x
-        fill(topTile, Rect(
-                area.left + topLeftX,
-                area.top - topTile.origin.y,
-                area.width - topLeftX - topRightTile.origin.x,
-                topTile.height))
+        drawTopBorder()
+        drawBottomBorder()
+        drawLeftBorder()
+        drawRightBorder()
+    }
 
-        val bottomLeftX = bottomLeftTile.width - bottomLeftTile.origin.x
-        fill(bottomTile, Rect(
-                area.left + bottomLeftX,
-                area.bottom - bottomTile.origin.y,
-                area.width - bottomLeftX - bottomRightTile.origin.x,
-                bottomTile.height))
-
-        val topLeftY = topLeftTile.height - topLeftTile.origin.y
-        fill(leftTile, Rect(
-                area.left - leftTile.origin.x,
-                area.top + topLeftY,
-                leftTile.width,
-                area.height - topLeftY - bottomLeftTile.origin.y))
-
+    private fun Frame.drawRightBorder() {
         val topRightY = topRightTile.height - topRightTile.origin.y
-        fill(rightTile, Rect(
+        fill(
+            rightTile, Rect(
                 area.right - rightTile.origin.x,
                 area.top + topRightY,
                 rightTile.width,
-                area.height - topRightY - bottomRightTile.origin.y))
+                area.height - topRightY - bottomRightTile.origin.y
+            )
+        )
+    }
+
+    private fun Frame.drawLeftBorder() {
+        val topLeftY = topLeftTile.height - topLeftTile.origin.y
+        fill(
+            leftTile, Rect(
+                area.left - leftTile.origin.x,
+                area.top + topLeftY,
+                leftTile.width,
+                area.height - topLeftY - bottomLeftTile.origin.y
+            )
+        )
+    }
+
+    private fun Frame.drawBottomBorder() {
+        val bottomLeftX = bottomLeftTile.width - bottomLeftTile.origin.x
+        fill(
+            bottomTile, Rect(
+                area.left + bottomLeftX,
+                area.bottom - bottomTile.origin.y,
+                area.width - bottomLeftX - bottomRightTile.origin.x,
+                bottomTile.height
+            )
+        )
+    }
+
+    private fun Frame.drawTopBorder() {
+        val topLeftX = topLeftTile.width - topLeftTile.origin.x
+        fill(
+            topTile, Rect(
+                area.left + topLeftX,
+                area.top - topTile.origin.y,
+                area.width - topLeftX - topRightTile.origin.x,
+                topTile.height
+            )
+        )
     }
 
     override fun event(frame: Frame, event: Event): Boolean {
