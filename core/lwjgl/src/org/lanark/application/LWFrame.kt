@@ -98,8 +98,12 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Resource
             if (value == null) {
                 glDisable(GL_SCISSOR_TEST)
             } else {
+                // Scissor is in canvas coordinates
+                val scale = canvasSize / size
+                val left = (value.left * scale.horizontal).toInt()
+                val bottom = ((size.height - value.y - value.height) * scale.vertical).toInt()
+                glScissor(left, bottom, (value.width * scale.horizontal).toInt(), (value.height * scale.vertical).toInt())
                 glEnable(GL_SCISSOR_TEST)
-                glScissor(value.x, value.y, value.width, value.height)
             }
         }
 
