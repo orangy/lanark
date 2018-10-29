@@ -10,7 +10,7 @@ buildscript {
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.0-rc-190'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.0'
     }
 }
 
@@ -34,6 +34,16 @@ allprojects {
     afterEvaluate {
         kotlin.sourceSets.all {
             it.languageSettings.useExperimentalAnnotation('kotlin.ExperimentalUnsignedTypes')
+        }
+        kotlin.targets.matching { it.platformType.name == 'native' }.all {
+            compilations.all {
+                cinterops.all {
+                    configurations[dependencyConfigurationName].attributes.attribute(
+                            Usage.USAGE_ATTRIBUTE,
+                            objects.named(Usage, 'kotlin-api')
+                    )
+                }
+            }
         }
     }
 }

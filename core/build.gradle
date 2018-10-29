@@ -87,7 +87,6 @@ kotlin {
         nativeMain {
             dependencies {
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-native', version: coroutines_version
-                api group: 'org.jetbrains.kotlinx', name: 'atomicfu-native', version: atomicfu_version
             }
         }
 
