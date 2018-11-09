@@ -7,6 +7,14 @@ actual object FileSystems {
 }
 
 class LWFileSystem : FileSystem {
+    override fun combine(path: String, relativePath: String): String {
+        return Paths.get(path, relativePath).toString()
+    }
+    
+    override fun sibling(path: String, relativePath: String): String {
+        return Paths.get(path).resolveSibling(relativePath).toString()
+    }
+
     override fun delete(path: String) {
         Files.delete(Paths.get(path))
     }

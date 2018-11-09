@@ -1,6 +1,8 @@
 package org.lanark.io
 
 import kotlinx.cinterop.*
+import kotlinx.io.core.*
+import kotlinx.io.pool.*
 import org.lanark.diagnostics.*
 import org.lanark.system.*
 import sdl2.*
@@ -38,6 +40,38 @@ actual class File(val handle: CPointer<SDL_RWops>) : Managed {
     actual fun close() {
         val fn = handle.pointed.close.sdlError("File.close")
         fn(handle)
+    }
+
+    @ExperimentalIoApi
+    actual fun input(): Input {
+        return FileInput(this)
+    }
+
+    actual fun output(): Output {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
+@ExperimentalIoApi
+class FileInput(private val file: File, pool: ObjectPool<IoBuffer> = IoBuffer.Pool) : AbstractInput(pool = pool) {
+    override fun fill(): IoBuffer? {
+        val buffer: IoBuffer = pool.borrow()
+        try {
+            val bytes = file.read(1024)
+            if (bytes.isEmpty()) {
+                buffer.release(pool)
+                return null
+            }
+            buffer.writeFully(bytes)
+            return buffer
+        } catch (t: Throwable) {
+            buffer.release(pool)
+            throw t
+        }
+    }
+
+    override fun closeSource() {
+        file.close()
     }
 }
 

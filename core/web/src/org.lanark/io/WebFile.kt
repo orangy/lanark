@@ -1,5 +1,6 @@
 package org.lanark.io
 
+import kotlinx.io.core.*
 import org.lanark.system.*
 
 actual class File(val path: String) : Managed {
@@ -25,6 +26,14 @@ actual class File(val path: String) : Managed {
     }
 
     actual fun close() {}
+    
+    actual fun input(): Input {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    actual fun output(): Output {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
 actual enum class FileOpenMode {

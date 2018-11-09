@@ -6,6 +6,14 @@ actual object FileSystems {
 }
 
 class WebFileSystem : FileSystem {
+    override fun combine(path: String, relativePath: String): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun sibling(path: String, relativePath: String): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun open(path: String, mode: FileOpenMode): File {
         return File(path)
     }

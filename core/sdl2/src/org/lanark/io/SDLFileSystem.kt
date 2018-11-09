@@ -6,6 +6,17 @@ import platform.posix.*
 import sdl2.*
 
 class SDLFileSystem : FileSystem {
+    override fun combine(path: String, relativePath: String) =
+        if (path.endsWith("/")) path + relativePath else "$path/$relativePath"
+
+    override fun sibling(path: String, relativePath: String): String {
+        return combine(parent(path), relativePath)
+    }
+
+    private fun parent(path: String): String {
+        return path.substringBeforeLast('/')
+    }
+
     override fun delete(path: String) {
         remove(path)
     }

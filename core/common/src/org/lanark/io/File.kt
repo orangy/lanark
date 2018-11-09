@@ -1,5 +1,6 @@
 package org.lanark.io
 
+import kotlinx.io.core.*
 import org.lanark.system.*
 
 expect class File : Managed {
@@ -9,6 +10,9 @@ expect class File : Managed {
     fun write(source: ByteArray): ULong
     fun seek(position: Long, seekFrom: SeekFrom = SeekFrom.Start): ULong
     fun close()
+    
+    fun input() : Input
+    fun output() : Output
 }
 
 expect enum class FileOpenMode {

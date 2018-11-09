@@ -1,6 +1,8 @@
 package org.lanark.io
 
 import org.lanark.system.*
+import kotlinx.io.core.*
+import kotlinx.io.nio.*
 import java.nio.*
 import java.nio.channels.*
 import java.nio.file.*
@@ -33,6 +35,14 @@ actual class File(val file: SeekableByteChannel) : Managed {
 
     actual fun close() {
         file.close()
+    }
+
+    actual fun input(): Input {
+        return file.asInput()
+    }
+    
+    actual fun output(): Output {
+        return file.asOutput()
     }
 }
 
