@@ -9,10 +9,10 @@ class ResourceData(name: String, val location: FileLocation)
     : ResourceDescriptor<Data, Nothing?>(name, resourceType) {
     
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Data {
-        val (file, fileSystem) = location
-        return fileSystem.open(file, FileOpenMode.Read).use {
+        val (path, fileSystem) = location
+        return fileSystem.open(path, FileOpenMode.Read).use {
             Data().also {
-                context.logger.system("Loaded $it from $file at $fileSystem")
+                context.logger.system("Loaded $it from $path at $fileSystem")
                 progress(1.0)
             }
         }

@@ -11,8 +11,8 @@ class ResourceCursor(name: String, val location: FileLocation, val hotX: Int, va
     override fun bind(resource: Cursor?, frame: Frame): Nothing? = null
 
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Cursor? {
-        val (file, fileSystem) = location
-        return context.loadImage(file, fileSystem).use { image ->
+        val (path, fileSystem) = location
+        return context.loadImage(path, fileSystem).use { image ->
             context.createCursor(image, hotX, hotY).also { progress(1.0) }
         }
     }

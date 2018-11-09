@@ -7,8 +7,8 @@ import org.lanark.media.*
 class ResourceSound(name: String, val location: FileLocation) :
     ResourceDescriptor<Sound, Nothing?>(name, resourceType) {
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Sound {
-        val (file, fileSystem) = location
-        return context.loadSound(file, fileSystem).also { progress(1.0) }
+        val (path, fileSystem) = location
+        return context.loadSound(path, fileSystem).also { progress(1.0) }
     }
 
     override fun bind(resource: Sound, frame: Frame): Nothing? = null

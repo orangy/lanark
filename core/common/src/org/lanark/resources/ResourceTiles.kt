@@ -14,8 +14,8 @@ class ResourceTiles(name: String, val location: FileLocation) :
     private class Item(val x: Int, val y: Int, val width: Int, val height: Int, val hotX: Int, val hotY: Int)
 
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Image {
-        val (file, fileSystem) = location
-        return context.loadImage(file, fileSystem)
+        val (path, fileSystem) = location
+        return context.loadImage(path, fileSystem)
     }
 
     override fun bind(resource: Image, frame: Frame): Tiles {

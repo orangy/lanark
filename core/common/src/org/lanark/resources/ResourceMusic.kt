@@ -8,8 +8,8 @@ class ResourceMusic(name: String, val location: FileLocation) :
     ResourceDescriptor<Music, Nothing?>(name, resourceType) {
     
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Music {
-        val (file, fileSystem) = location
-        return context.loadMusic(file, fileSystem).also { progress(1.0) }
+        val (path, fileSystem) = location
+        return context.loadMusic(path, fileSystem).also { progress(1.0) }
     }
 
     override fun bind(resource: Music, frame: Frame): Nothing? = null
