@@ -15,7 +15,7 @@ class Tiles(val texture: Texture, val tiles: Map<String, Tile>) : Managed {
     }
 }
 
-class Tile(val name: String, val texture: Texture, val rectangle: Rect, val origin: Point) {
+class Tile(val name: String, val texture: Texture, val rectangle: Rect, val origin: Point = Point.Zero) {
     val size get() = rectangle.size
     val width get() = rectangle.width
     val height get() = rectangle.height
