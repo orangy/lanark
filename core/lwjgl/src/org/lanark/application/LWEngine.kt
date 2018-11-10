@@ -179,7 +179,7 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             val timestamp = clock.elapsedTicks()
             val event = when (action) {
                 GLFW_PRESS -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), false)
-e                GLFW_REPEAT -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), true)
+                GLFW_REPEAT -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), true)
                 GLFW_RELEASE -> EventKeyUp(timestamp, frame, key, scancode.toUInt())
                 else -> throw EngineException("Unknown action $action")
             }
