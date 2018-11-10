@@ -18,7 +18,7 @@ class ScrollerScene(
     val logger = application.frame.engine.logger
     private val coroutineScope = application.frame.engine.createCoroutineScope()
 
-    private val background = resources.texture("background2")
+    private val background = resources.texture("background")
     private val tiles = resources.tiles("tiles")
     private val playerTile = tiles["playerShip1_blue.png"]
     private val bulletTile = tiles["laserRed03.png"]
@@ -69,9 +69,9 @@ class ScrollerScene(
 
     override fun render(frame: Frame) {
         frame.renderBackground()
-        frame.renderPlayer()
-        frame.renderBullets()
         frame.renderEnemies()
+        frame.renderBullets()
+        frame.renderPlayer()
     }
 
     override fun event(frame: Frame, event: Event): Boolean {
