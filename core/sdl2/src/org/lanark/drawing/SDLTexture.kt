@@ -44,10 +44,6 @@ actual fun Frame.draw(texture: Texture, destinationRect: Rect) = memScoped {
     SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect)).sdlError("SDL_RenderCopy")
 }
 
-actual fun Frame.fill(texture: Texture, destinationRect: Rect) = memScoped {
-    SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect)).sdlError("SDL_RenderCopy")
-}
-
 actual fun Frame.draw(texture: Texture, position: Point) = memScoped {
     SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, texture.size)).sdlError("SDL_RenderCopy")
 }

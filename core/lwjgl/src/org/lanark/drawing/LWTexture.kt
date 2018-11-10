@@ -49,19 +49,13 @@ actual fun Frame.draw(texture: Texture) {
 actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect) {
     val minU = sourceRect.left.toFloat() / texture.width
     val maxU = sourceRect.right.toFloat() / texture.width
-    val minV = sourceRect.top.toFloat() / texture.height // 1.0f - is because texture is upside down
+    val minV = sourceRect.top.toFloat() / texture.height 
     val maxV = sourceRect.bottom.toFloat() / texture.height
     prepareContextFor2D(texture)
     drawStrip(minU, minV, maxU, maxV, destinationRect)
 }
 
-
 actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
-    prepareContextFor2D(texture)
-    drawStrip(0f, 0f, 1f, 1f, destinationRect)
-}
-
-actual fun Frame.fill(texture: Texture, destinationRect: Rect) {
     prepareContextFor2D(texture)
     drawStrip(0f, 0f, 1f, 1f, destinationRect)
 }
@@ -102,6 +96,7 @@ private inline fun Frame.prepareContextFor2D(texture: Texture) {
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
     glBlendEquation(GL_FUNC_ADD)
     glBindTexture(GL_TEXTURE_2D, texture.textureId)
+    glEnable(GL_TEXTURE_2D)
 }
 
 private inline fun Frame.draw(mode: Int, body: () -> Unit) {

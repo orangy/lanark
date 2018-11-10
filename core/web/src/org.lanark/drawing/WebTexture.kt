@@ -59,14 +59,6 @@ actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect)
         destinationRect.width.toDouble(),
         destinationRect.height.toDouble()
     )
-/*
-    val minU = sourceRect.left.toFloat() / texture.width
-    val maxU = sourceRect.right.toFloat() / texture.width
-    val minV = sourceRect.top.toFloat() / texture.height // 1.0f - is because texture is upside down
-    val maxV = sourceRect.bottom.toFloat() / texture.height
-    prepareContextFor2D(texture)
-    drawStrip(minU, minV, maxU, maxV, destinationRect)
-*/
 }
 
 actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
@@ -77,25 +69,6 @@ actual fun Frame.draw(texture: Texture, destinationRect: Rect) {
         destinationRect.width.toDouble(),
         destinationRect.height.toDouble()
     )
-/*
-    prepareContextFor2D(texture)
-    drawStrip(0f, 0f, 1f, 1f, destinationRect)
-*/
-}
-
-actual fun Frame.fill(texture: Texture, destinationRect: Rect) {
-    context.drawImage(
-        texture.image,
-        destinationRect.x.toDouble(),
-        destinationRect.y.toDouble(),
-        destinationRect.width.toDouble(),
-        destinationRect.height.toDouble()
-    )
-
-/*
-    prepareContextFor2D(texture)
-    drawStrip(0f, 0f, 1f, 1f, destinationRect)
-*/
 }
 
 actual fun Frame.draw(texture: Texture, position: Point) {
@@ -106,70 +79,3 @@ actual fun Frame.draw(texture: Texture, position: Point, size: Size) {
     draw(texture, Rect(position, size))
 }
 
-/*
-private fun Frame.drawStrip(minU: Float, minV: Float, maxU: Float, maxV: Float, destinationRect: Rect) {
-    val logicalSize = size
-    draw(GL_TRIANGLE_STRIP) {
-        glTexCoord2f(minU, minV)
-        glVertex2f(destinationRect.left.toFloat(), logicalSize.height - destinationRect.top.toFloat()) // Upper left
-
-        glTexCoord2f(minU, maxV)
-        glVertex2f(destinationRect.left.toFloat(), logicalSize.height - destinationRect.bottom.toFloat()) // Lower left
-
-        glTexCoord2f(maxU, minV)
-        glVertex2f(destinationRect.right.toFloat(), logicalSize.height - destinationRect.top.toFloat()) // Upper right
-
-        glTexCoord2f(maxU, maxV)
-        glVertex2f(destinationRect.right.toFloat(), logicalSize.height - destinationRect.bottom.toFloat()) // Lower right
-    }
-}
-*/
-
-/*
-private inline fun Frame.prepareContextFor2D(texture: Texture) {
-    val logicalSize = size
-    context.matrixMode(GL_PROJECTION)
-    context.loadIdentity()
-    glOrtho(0.0, logicalSize.width.toDouble(), 0.0, logicalSize.height.toDouble(), 0.0, 1.0)
-    glMatrixMode(GL_MODELVIEW)
-    glColor4f(1f, 1f, 1f, 1f)
-    context.enable(gl.GL_BLEND)
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
-    glBlendEquation(GL_FUNC_ADD)
-    context.bindTexture(GL_TEXTURE_2D, texture.textureId)
-}
-
-private inline fun Frame.draw(mode: Int, body: () -> Unit) {
-    try {
-        context.begin(mode)
-        body()
-    } finally {
-        glEnd()
-    }
-}
-
-fun createShaderProgram(gl: WebGLRenderingContext, vertexSource: String, fragmentSource: String): WebGLProgram {
-    val vertexShader = getShader(gl, WebGLRenderingContext.VERTEX_SHADER, vertexSource)
-    val fragmentShader = getShader(gl, WebGLRenderingContext.FRAGMENT_SHADER, fragmentSource)
-
-    val shaderProgram = gl.createProgram()
-    gl.attachShader(shaderProgram, fragmentShader)
-    gl.attachShader(shaderProgram, vertexShader)
-    gl.linkProgram(shaderProgram)
-
-    if (!gl.getProgramParameter(shaderProgram, WebGLRenderingContext.LINK_STATUS)) {
-        throw RuntimeException("Could not initialize shaders")
-    }
-
-    return shaderProgram
-}
-
-private fun getShader(gl: WebGLRenderingContext, shaderType: Int, source: String): WebGLShader {
-    val shader = gl.createShader(shaderType)
-    gl.shaderSource(shader, source)
-    gl.compileShader(shader)
-    if (!gl.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS)) {
-        throw RuntimeException(gl.getShaderInfoLog(shader))
-    }
-    return shader
-}*/

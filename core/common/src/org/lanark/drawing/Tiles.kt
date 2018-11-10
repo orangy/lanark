@@ -23,5 +23,10 @@ class Tile(val name: String, val texture: Texture, val rectangle: Rect, val orig
     override fun toString() = "Tile $name $rectangle"
 }
 
-expect fun Frame.draw(tile: Tile, position: Point)
-expect fun Frame.fill(tile: Tile, destinationRect: Rect)
+fun Frame.draw(tile: Tile, position: Point) {
+    val srcRect = tile.rectangle
+    val dstRect = Rect(position.x - tile.origin.x, position.y - tile.origin.y, tile.width, tile.height)
+    draw(tile.texture, srcRect, dstRect)
+}
+
+fun Frame.fill(tile: Tile, destinationRect: Rect) = fill(tile.texture, tile.rectangle, destinationRect)
