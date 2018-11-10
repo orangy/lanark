@@ -29,6 +29,11 @@ val uiAssets = scope("ui") {
     }
 }
 
+val scrollerAssets = scope("scroller") {
+    atlas("tiles", "scroller/sheet.json")
+    texture("background2", "scroller/starfield.png")
+}
+
 val gameAssets = scope("org.lanark.playground.main") {
     scope("cursors") {
         cursor("normal", "cursor.png", 0, 0)
@@ -53,4 +58,5 @@ val gameAssets = scope("org.lanark.playground.main") {
 
     register(uiAssets)
     register(logoAssets)
+    register(scrollerAssets)
 }

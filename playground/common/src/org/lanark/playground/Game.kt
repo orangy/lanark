@@ -11,8 +11,8 @@ import org.lanark.ui.*
 private val title = "Lanark Demo"
 
 suspend fun Engine.game(frame: Frame) {
-    val context = gameAssets.load(frame) { /*progress*/ }
-    val uiResources = context.loadScope("ui")
+    val assets = gameAssets.load(frame) { /*progress*/ }
+    val uiResources = assets.loadScope("ui")
     
     frame.setIcon(uiResources.loadImage("logo/icon"))
 
@@ -35,11 +35,17 @@ suspend fun Engine.game(frame: Frame) {
             Button(Point(20, 80), uiResources)
         )
     )
-    val bouncerScene = BouncerScene(application, dialog, context)
-    val hexScene = HexScene(context)
-    val welcome = WelcomeScene(application, bouncerScene, context)
+    
+/*
+    val bouncerScene = BouncerScene(application, dialog, assets)
+    val hexScene = HexScene(assets)
+*/
 
-    application.start(dialog)
+    val scroller = ScrollerScene(application, assets.loadScope("scroller"))
+    val welcome = WelcomeScene(application, scroller, assets)
+
+    
+    application.start(welcome)
 
     events.filter<EventAppQuit>().subscribe { 
         exitLoop() 

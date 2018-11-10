@@ -1,5 +1,6 @@
 package org.lanark.playground
 
+import kotlinx.coroutines.*
 import org.lanark.application.*
 import org.lanark.drawing.*
 import org.lanark.events.*
@@ -12,10 +13,22 @@ class WelcomeScene(private val application: SceneApplication,
                    resources: ResourceContext
 ) : Scene {
     private val logo = resources.texture("logo/logo")
+    private val coroutineScope = application.frame.engine.createCoroutineScope()
+    private var timePassed = 0f
+    private val waitTime = 5f
+
     override fun activate(frame: Frame) {
+        coroutineScope.launch {
+            while (true) {
+                timePassed += frame.engine.nextTick()
+                if (timePassed >= waitTime)
+                    advance()
+            }
+        }
     }
 
     override fun deactivate(frame: Frame) {
+        coroutineScope.coroutineContext.cancel()
     }
 
     override fun render(frame: Frame) {
@@ -26,9 +39,13 @@ class WelcomeScene(private val application: SceneApplication,
 
     override fun event(frame: Frame, event: Event): Boolean {
         if (event is EventMouseButtonDown) {
-            application.scene = nextScene
+            advance()
             return true
         }
         return false
+    }
+
+    private fun advance() {
+        application.scene = nextScene
     }
 }
