@@ -1,4 +1,5 @@
 apply plugin: 'kotlin-multiplatform'
+apply plugin: 'kotlinx-serialization'
 
 kotlin {
     targets {
@@ -73,6 +74,8 @@ kotlin {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: coroutines_version
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-io', version: io_version
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-runtime', version: serialization_version
             }
         }
         commonTest {
@@ -87,6 +90,8 @@ kotlin {
         nativeMain {
             dependencies {
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-native', version: coroutines_version
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-io-native', version: io_version
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-runtime-native', version: serialization_version
             }
         }
 
@@ -122,6 +127,7 @@ kotlin {
             kotlin.srcDirs = ["lwjgl/src"]
             dependencies {
                 api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-io-jvm', version: io_version
 
                 api "org.lwjgl:lwjgl:$lwjglVersion"
                 api "org.lwjgl:lwjgl-assimp:$lwjglVersion"
@@ -150,6 +156,8 @@ kotlin {
             kotlin.srcDirs = ["web/src"]
             dependencies {
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-js', version: coroutines_version
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-io-js', version: io_version
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-runtime-js', version: serialization_version
             }
         }
         webTest {
