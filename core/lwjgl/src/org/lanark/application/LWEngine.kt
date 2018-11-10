@@ -179,16 +179,19 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
             val timestamp = clock.elapsedTicks()
             val event = when (action) {
                 GLFW_PRESS -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), false)
-                GLFW_REPEAT -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), false)
+e                GLFW_REPEAT -> EventKeyDown(timestamp, frame, key, scancode.toUInt(), true)
                 GLFW_RELEASE -> EventKeyUp(timestamp, frame, key, scancode.toUInt())
                 else -> throw EngineException("Unknown action $action")
             }
+            logger.engine { event.toString() }
             events.raise(event)
         }
 
         glfwSetScrollCallback(frame.windowHandle) { window, dx, dy ->
             val timestamp = clock.elapsedTicks()
-            events.raise(EventMouseScroll(timestamp, frame, dx.toInt(), dy.toInt()))
+            val event = EventMouseScroll(timestamp, frame, dx.toInt(), dy.toInt())
+            logger.engine { event.toString() }
+            events.raise(event)
         }
 
         glfwSetMouseButtonCallback(frame.windowHandle) { window, button, action, mods ->
@@ -212,22 +215,29 @@ actual class Engine actual constructor(configure: EngineConfiguration.() -> Unit
                 GLFW_RELEASE -> EventMouseButtonUp(timestamp, frame, mouseButton, posX, posY, clicks)
                 else -> throw EngineException("Unrecognized mouse action")
             }
+            logger.engine { event.toString() }
             events.raise(event)
         }
 
         glfwSetCursorPosCallback(frame.windowHandle) { window, xpos, ypos ->
             val timestamp = clock.elapsedTicks()
-            events.raise(EventMouseMotion(timestamp, frame, xpos.toInt(), ypos.toInt(), 0, 0))
+            val event = EventMouseMotion(timestamp, frame, xpos.toInt(), ypos.toInt(), 0, 0)
+            logger.engine { event.toString() }
+            events.raise(event)
         }
 
         glfwSetWindowCloseCallback(frame.windowHandle) {
             val timestamp = clock.elapsedTicks()
-            events.raise(EventWindowClose(timestamp, frame))
+            val event = EventWindowClose(timestamp, frame)
+            logger.engine { event.toString() }
+            events.raise(event)
         }
 
         glfwSetWindowSizeCallback(frame.windowHandle) { windowId, width, height ->
             val timestamp = clock.elapsedTicks()
-            events.raise(EventWindowSizeChanged(timestamp, frame, width, height))
+            val event = EventWindowSizeChanged(timestamp, frame, width, height)
+            logger.engine { event.toString() }
+            events.raise(event)
         }
     }
 
