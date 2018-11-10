@@ -22,8 +22,8 @@ actual fun Frame.bindTexture(image: Image): Texture {
     val texture = glGenTextures()
     glBindTexture(GL_TEXTURE_2D, texture)
     glEnable(GL_TEXTURE_2D)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
     MemoryStack.stackPush().use { stack ->
@@ -84,7 +84,7 @@ private inline fun Frame.prepareContextFor2D(texture: Texture) {
     val logicalSize = size
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(0.0, logicalSize.width.toDouble(), 0.0, logicalSize.height.toDouble(), 0.0, 1.0)
+    glOrtho(0.0, logicalSize.width.toDouble(), 0.0, logicalSize.height.toDouble(), -1.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
     glColor4f(1f, 1f, 1f, 1f)
     glEnable(GL_BLEND)
