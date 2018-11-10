@@ -5,7 +5,7 @@ import org.lanark.application.*
 abstract class EventKey(timestamp: ULong, val frame: Frame, val keyCode: Int, val scanCode: UInt) :
     Event(timestamp) {
 
-    override fun toString() = "$frame '${getScanCodeName(scanCode)}'"
+    override fun toString() = "${frame.identity} scanCode = $scanCode ${getScanCodeName(scanCode)?:""}, keyCode = $keyCode"
 }
 
 class EventKeyDown(timestamp: ULong, frame: Frame, keyCode: Int, scanCode: UInt, val repeat: Boolean) :
