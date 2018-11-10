@@ -52,7 +52,8 @@ actual fun ResourceContext.loadImage(path: String, fileSystem: FileSystem): Imag
             ?: throw EngineException("Failed to load a texture file: ${STBImage.stbi_failure_reason()}")
 
         image.set(w.get(), h.get(), pixels)
-        STBImage.stbi_image_free(pixels)
+        // TODO: how to free the buffer correctly?
+        // STBImage.stbi_image_free(pixels)
 
         return Image(image).also {
             logger.system("Loaded $it from $path at $fileSystem")
