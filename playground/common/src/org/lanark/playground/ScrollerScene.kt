@@ -40,8 +40,8 @@ class ScrollerScene(
 
     private var enemies = listOf<Enemy>()
     private var enemySpeed = 50f
-    private var timeTillNextEnemy = 0f
-    private var enemyRate = 3f
+    private var timeTillNextEnemy = 10f
+    private var enemyRate = 5f
 
     private enum class PlayerControls {
         Left, Right, Fire
@@ -103,6 +103,13 @@ class ScrollerScene(
         }
 
         enemies = enemies.filter { Point(it.x.toInt(), it.y.toInt()) in rectangle.expand(it.tile.width, it.tile.height) }
+        enemies = enemies.filter { enemy->
+            val enemyRect = Rect(Point(enemy.x.toInt(), enemy.y.toInt()), enemy.tile.size)
+            bullets.none { bullet->
+                val pos = Point(bullet.x.toInt(), bullet.y.toInt())
+                pos in enemyRect
+            }
+        }
 
         if (timeTillNextEnemy <= 0f) {
             val tile = enemyTiles[Random.nextInt(enemyTiles.size)]
