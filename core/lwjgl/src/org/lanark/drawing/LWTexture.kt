@@ -3,12 +3,10 @@ package org.lanark.drawing
 import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.geometry.*
-import org.lanark.io.*
 import org.lanark.media.*
 import org.lanark.system.*
 import org.lwjgl.glfw.*
 import org.lwjgl.opengl.GL14.*
-import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.*
 
 actual class Texture(val engine: Engine, val textureId: Int, actual val size: Size) : Managed {
@@ -25,19 +23,16 @@ actual fun Frame.bindTexture(image: Image): Texture {
     glBindTexture(GL_TEXTURE_2D, texture)
     glEnable(GL_TEXTURE_2D)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
     MemoryStack.stackPush().use { stack ->
         val (width, height) = image.size
-        
-        /*
-            glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
-            glTexSubImage2D(GL_TEXTURE_2D, 0​, 0, 0, width​, height​, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-         */
         val pixels = MemoryUtil.memGetAddress(image.imageBuffer.address() + GLFWImage.PIXELS)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels)
         return Texture(engine, texture, Size(width, height)).also {
             engine.logger.system("Created $it from $image")
         } 
-        
     }
 }
 
