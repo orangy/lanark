@@ -13,6 +13,8 @@ actual class Frame(actual val engine: Engine, val context: CanvasRenderingContex
 
     }
 
+    actual val identity = context.toString()
+
     actual val canvasSize: Size
         get() = size
 

@@ -13,6 +13,8 @@ import org.lwjgl.system.MemoryUtil.*
 
 actual class Frame(actual val engine: Engine, val windowHandle: Long) : ResourceOwner, Managed {
 
+    actual val identity = windowHandle.toString()
+    
     override fun release() {
         engine.unregisterFrame(windowHandle, this)
         glfwDestroyWindow(windowHandle)

@@ -7,6 +7,7 @@ import org.lanark.resources.*
 import org.lanark.system.*
 
 expect class Frame : ResourceOwner, Managed {
+    val identity : String
     val engine: Engine
     val size: Size
     val canvasSize: Size
@@ -67,3 +68,7 @@ inline fun Frame.clip(rectangle: Rect, body: () -> Unit) {
         clip = old
     }
 }
+
+inline val Frame.rectangle get() = Rect(Point.Zero, canvasSize)
+inline val Frame.width get() = size.width
+inline val Frame.height get() = size.height

@@ -12,6 +12,8 @@ import org.lanark.system.*
 import sdl2.*
 
 actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<SDL_Window>) : ResourceOwner, Managed {
+    actual val identity = id.toString()
+
     val id: UInt get() = SDL_GetWindowID(windowPtr)
 
     private val sizeChangedEvent = engine.events.filter<EventWindowSizeChanged>()
