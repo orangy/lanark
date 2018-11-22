@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL14.*
 import org.lwjgl.system.MemoryUtil.*
 
-actual class Frame(actual val engine: Engine, val windowHandle: Long) : ResourceOwner, Managed {
+actual class Frame(actual val engine: Engine, val windowHandle: Long) : Managed {
 
     actual val identity = windowHandle.toString()
     

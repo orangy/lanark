@@ -7,8 +7,7 @@ import org.lanark.resources.*
 import org.lanark.system.*
 import org.w3c.dom.*
 
-actual class Frame(actual val engine: Engine, val context: CanvasRenderingContext2D, actual val size: Size) :
-    ResourceOwner, Managed {
+actual class Frame(actual val engine: Engine, val context: CanvasRenderingContext2D, actual val size: Size) : Managed {
     override fun release() {
 
     }

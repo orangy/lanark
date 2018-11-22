@@ -11,7 +11,7 @@ import org.lanark.resources.*
 import org.lanark.system.*
 import sdl2.*
 
-actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<SDL_Window>) : ResourceOwner, Managed {
+actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<SDL_Window>) : Managed {
     actual val identity = id.toString()
 
     val id: UInt get() = SDL_GetWindowID(windowPtr)

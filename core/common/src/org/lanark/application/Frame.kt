@@ -6,7 +6,7 @@ import org.lanark.media.*
 import org.lanark.resources.*
 import org.lanark.system.*
 
-expect class Frame : ResourceOwner, Managed {
+expect class Frame : Managed {
     val identity : String
     val engine: Engine
     val size: Size
