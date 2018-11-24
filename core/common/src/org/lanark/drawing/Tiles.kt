@@ -4,7 +4,7 @@ import org.lanark.application.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 
-class Tiles(val texture: Texture, val tiles: Map<String, Tile>) : Managed {
+class Tiles(val texture: Texture, private val tiles: Map<String, Tile>) : Managed {
     override fun release() {
         texture.release()
     }

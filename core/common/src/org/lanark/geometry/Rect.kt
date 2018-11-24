@@ -27,6 +27,14 @@ data class Rect(val x: Int, val y: Int, val width: Int, val height: Int) {
         return width == 0 || height == 0
     }
 
+    fun relativeTo(other: Point) = Rect(x + other.x, y + other.y, width, height)
+    
+    fun relativeTo(other: Rect): Rect {
+        val w = minOf(width, other.width - x) 
+        val h = minOf(height, other.height - y) 
+        return Rect(x + other.x, y + other.y, w, h)
+    }
+
     companion object {
         val Empty = Rect(0, 0, 0, 0)
     }

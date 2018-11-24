@@ -1,0 +1,2338 @@
+{
+  "imagePath": "font.png",
+  "lineHeight": "16",
+  "scaleW": "167",
+  "scaleH": "168",
+  "chars": [
+    {
+      "id": "33",
+      "x": "153",
+      "y": "26",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "34",
+      "x": "82",
+      "y": "32",
+      "width": "7",
+      "height": "7",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "6"
+    },
+    {
+      "id": "35",
+      "x": "24",
+      "y": "77",
+      "width": "10",
+      "height": "10",
+      "xoffset": "0",
+      "yoffset": "5",
+      "xadvance": "9"
+    },
+    {
+      "id": "36",
+      "x": "24",
+      "y": "88",
+      "width": "10",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "9"
+    },
+    {
+      "id": "37",
+      "x": "12",
+      "y": "124",
+      "width": "11",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "10"
+    },
+    {
+      "id": "38",
+      "x": "0",
+      "y": "146",
+      "width": "11",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "10"
+    },
+    {
+      "id": "39",
+      "x": "45",
+      "y": "136",
+      "width": "4",
+      "height": "7",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "3"
+    },
+    {
+      "id": "40",
+      "x": "160",
+      "y": "26",
+      "width": "6",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "5"
+    },
+    {
+      "id": "41",
+      "x": "160",
+      "y": "41",
+      "width": "6",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "5"
+    },
+    {
+      "id": "42",
+      "x": "24",
+      "y": "126",
+      "width": "10",
+      "height": "11",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "9"
+    },
+    {
+      "id": "43",
+      "x": "126",
+      "y": "156",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "6",
+      "xadvance": "7"
+    },
+    {
+      "id": "44",
+      "x": "135",
+      "y": "160",
+      "width": "4",
+      "height": "7",
+      "xoffset": "0",
+      "yoffset": "11",
+      "xadvance": "3"
+    },
+    {
+      "id": "45",
+      "x": "0",
+      "y": "160",
+      "width": "9",
+      "height": "5",
+      "xoffset": "0",
+      "yoffset": "8",
+      "xadvance": "8"
+    },
+    {
+      "id": "46",
+      "x": "43",
+      "y": "161",
+      "width": "4",
+      "height": "5",
+      "xoffset": "0",
+      "yoffset": "11",
+      "xadvance": "3"
+    },
+    {
+      "id": "47",
+      "x": "144",
+      "y": "13",
+      "width": "8",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "7"
+    },
+    {
+      "id": "48",
+      "x": "136",
+      "y": "0",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "49",
+      "x": "160",
+      "y": "13",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "50",
+      "x": "144",
+      "y": "54",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "51",
+      "x": "144",
+      "y": "80",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "52",
+      "x": "45",
+      "y": "26",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "53",
+      "x": "135",
+      "y": "78",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "54",
+      "x": "144",
+      "y": "28",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "55",
+      "x": "144",
+      "y": "41",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "56",
+      "x": "144",
+      "y": "93",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "57",
+      "x": "144",
+      "y": "132",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "58",
+      "x": "160",
+      "y": "158",
+      "width": "4",
+      "height": "8",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "3"
+    },
+    {
+      "id": "59",
+      "x": "161",
+      "y": "0",
+      "width": "4",
+      "height": "10",
+      "xoffset": "0",
+      "yoffset": "8",
+      "xadvance": "3"
+    },
+    {
+      "id": "60",
+      "x": "44",
+      "y": "145",
+      "width": "9",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "8"
+    },
+    {
+      "id": "61",
+      "x": "117",
+      "y": "159",
+      "width": "7",
+      "height": "8",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "6"
+    },
+    {
+      "id": "62",
+      "x": "35",
+      "y": "81",
+      "width": "9",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "8"
+    },
+    {
+      "id": "63",
+      "x": "126",
+      "y": "89",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "64",
+      "x": "13",
+      "y": "86",
+      "width": "10",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "9"
+    },
+    {
+      "id": "65",
+      "x": "144",
+      "y": "119",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "66",
+      "x": "144",
+      "y": "106",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "67",
+      "x": "144",
+      "y": "67",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "68",
+      "x": "36",
+      "y": "0",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "69",
+      "x": "135",
+      "y": "13",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "70",
+      "x": "127",
+      "y": "0",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "71",
+      "x": "126",
+      "y": "117",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "72",
+      "x": "135",
+      "y": "130",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "73",
+      "x": "153",
+      "y": "67",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "74",
+      "x": "35",
+      "y": "13",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "75",
+      "x": "135",
+      "y": "91",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "76",
+      "x": "135",
+      "y": "143",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "77",
+      "x": "13",
+      "y": "46",
+      "width": "10",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "9"
+    },
+    {
+      "id": "78",
+      "x": "35",
+      "y": "119",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "79",
+      "x": "135",
+      "y": "117",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "80",
+      "x": "135",
+      "y": "104",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "81",
+      "x": "45",
+      "y": "52",
+      "width": "9",
+      "height": "13",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "82",
+      "x": "34",
+      "y": "148",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "83",
+      "x": "135",
+      "y": "65",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "84",
+      "x": "135",
+      "y": "52",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "85",
+      "x": "135",
+      "y": "39",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "86",
+      "x": "135",
+      "y": "26",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "87",
+      "x": "24",
+      "y": "113",
+      "width": "10",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "9"
+    },
+    {
+      "id": "88",
+      "x": "26",
+      "y": "0",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "89",
+      "x": "126",
+      "y": "143",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "90",
+      "x": "126",
+      "y": "130",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "91",
+      "x": "153",
+      "y": "109",
+      "width": "6",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "5"
+    },
+    {
+      "id": "92",
+      "x": "126",
+      "y": "102",
+      "width": "8",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "7"
+    },
+    {
+      "id": "93",
+      "x": "153",
+      "y": "39",
+      "width": "6",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "5"
+    },
+    {
+      "id": "94",
+      "x": "0",
+      "y": "124",
+      "width": "11",
+      "height": "8",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "10"
+    },
+    {
+      "id": "95",
+      "x": "34",
+      "y": "161",
+      "width": "8",
+      "height": "5",
+      "xoffset": "0",
+      "yoffset": "12",
+      "xadvance": "7"
+    },
+    {
+      "id": "96",
+      "x": "127",
+      "y": "13",
+      "width": "6",
+      "height": "6",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "97",
+      "x": "126",
+      "y": "56",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "98",
+      "x": "126",
+      "y": "43",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "99",
+      "x": "126",
+      "y": "33",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "100",
+      "x": "126",
+      "y": "20",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "101",
+      "x": "118",
+      "y": "10",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "102",
+      "x": "145",
+      "y": "0",
+      "width": "7",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "6"
+    },
+    {
+      "id": "103",
+      "x": "117",
+      "y": "146",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "104",
+      "x": "117",
+      "y": "133",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "105",
+      "x": "153",
+      "y": "96",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "106",
+      "x": "153",
+      "y": "80",
+      "width": "6",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "107",
+      "x": "117",
+      "y": "94",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "108",
+      "x": "160",
+      "y": "130",
+      "width": "5",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "4"
+    },
+    {
+      "id": "109",
+      "x": "24",
+      "y": "67",
+      "width": "10",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "110",
+      "x": "117",
+      "y": "61",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "111",
+      "x": "117",
+      "y": "51",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "112",
+      "x": "117",
+      "y": "38",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "113",
+      "x": "35",
+      "y": "26",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "8"
+    },
+    {
+      "id": "114",
+      "x": "109",
+      "y": "12",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "115",
+      "x": "108",
+      "y": "157",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "116",
+      "x": "109",
+      "y": "0",
+      "width": "8",
+      "height": "11",
+      "xoffset": "0",
+      "yoffset": "5",
+      "xadvance": "7"
+    },
+    {
+      "id": "117",
+      "x": "108",
+      "y": "147",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "118",
+      "x": "108",
+      "y": "137",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "119",
+      "x": "24",
+      "y": "103",
+      "width": "10",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "120",
+      "x": "108",
+      "y": "117",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "121",
+      "x": "108",
+      "y": "104",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "122",
+      "x": "108",
+      "y": "94",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "123",
+      "x": "144",
+      "y": "145",
+      "width": "7",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "6"
+    },
+    {
+      "id": "124",
+      "x": "160",
+      "y": "143",
+      "width": "4",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "3"
+    },
+    {
+      "id": "125",
+      "x": "152",
+      "y": "145",
+      "width": "7",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "6"
+    },
+    {
+      "id": "126",
+      "x": "10",
+      "y": "160",
+      "width": "9",
+      "height": "6",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "1040",
+      "x": "108",
+      "y": "39",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1041",
+      "x": "108",
+      "y": "26",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1042",
+      "x": "100",
+      "y": "13",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1043",
+      "x": "100",
+      "y": "0",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1044",
+      "x": "13",
+      "y": "59",
+      "width": "10",
+      "height": "13",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "9"
+    },
+    {
+      "id": "1045",
+      "x": "99",
+      "y": "136",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1025",
+      "x": "99",
+      "y": "120",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "1046",
+      "x": "0",
+      "y": "27",
+      "width": "12",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "11"
+    },
+    {
+      "id": "1047",
+      "x": "99",
+      "y": "94",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1048",
+      "x": "35",
+      "y": "39",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "1049",
+      "x": "35",
+      "y": "52",
+      "width": "9",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "8"
+    },
+    {
+      "id": "1050",
+      "x": "99",
+      "y": "65",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1051",
+      "x": "35",
+      "y": "68",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "1052",
+      "x": "13",
+      "y": "73",
+      "width": "10",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "9"
+    },
+    {
+      "id": "1053",
+      "x": "99",
+      "y": "26",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1054",
+      "x": "91",
+      "y": "13",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1055",
+      "x": "91",
+      "y": "0",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1056",
+      "x": "90",
+      "y": "145",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1057",
+      "x": "90",
+      "y": "132",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1058",
+      "x": "90",
+      "y": "119",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1059",
+      "x": "126",
+      "y": "76",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1060",
+      "x": "0",
+      "y": "14",
+      "width": "12",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "11"
+    },
+    {
+      "id": "1061",
+      "x": "35",
+      "y": "132",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "1062",
+      "x": "13",
+      "y": "99",
+      "width": "10",
+      "height": "13",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "9"
+    },
+    {
+      "id": "1063",
+      "x": "90",
+      "y": "48",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1064",
+      "x": "0",
+      "y": "40",
+      "width": "12",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "11"
+    },
+    {
+      "id": "1065",
+      "x": "0",
+      "y": "0",
+      "width": "14",
+      "height": "13",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "13"
+    },
+    {
+      "id": "1066",
+      "x": "15",
+      "y": "0",
+      "width": "10",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "9"
+    },
+    {
+      "id": "1067",
+      "x": "0",
+      "y": "133",
+      "width": "11",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "10"
+    },
+    {
+      "id": "1068",
+      "x": "81",
+      "y": "128",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1069",
+      "x": "81",
+      "y": "115",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1070",
+      "x": "12",
+      "y": "137",
+      "width": "11",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "10"
+    },
+    {
+      "id": "1071",
+      "x": "45",
+      "y": "13",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "1072",
+      "x": "81",
+      "y": "76",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1073",
+      "x": "81",
+      "y": "62",
+      "width": "8",
+      "height": "13",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "7"
+    },
+    {
+      "id": "1074",
+      "x": "81",
+      "y": "52",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1075",
+      "x": "81",
+      "y": "42",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1076",
+      "x": "13",
+      "y": "113",
+      "width": "10",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "1077",
+      "x": "72",
+      "y": "157",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1105",
+      "x": "73",
+      "y": "16",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1078",
+      "x": "24",
+      "y": "24",
+      "width": "10",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "1079",
+      "x": "72",
+      "y": "147",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1080",
+      "x": "25",
+      "y": "13",
+      "width": "9",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "8"
+    },
+    {
+      "id": "1081",
+      "x": "35",
+      "y": "96",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "1082",
+      "x": "108",
+      "y": "127",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1083",
+      "x": "35",
+      "y": "109",
+      "width": "9",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "8"
+    },
+    {
+      "id": "1084",
+      "x": "24",
+      "y": "34",
+      "width": "10",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "1085",
+      "x": "90",
+      "y": "158",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1086",
+      "x": "117",
+      "y": "123",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1087",
+      "x": "117",
+      "y": "84",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1088",
+      "x": "117",
+      "y": "71",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1089",
+      "x": "81",
+      "y": "157",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1090",
+      "x": "126",
+      "y": "66",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1091",
+      "x": "63",
+      "y": "142",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1092",
+      "x": "24",
+      "y": "54",
+      "width": "10",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "1093",
+      "x": "118",
+      "y": "0",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1094",
+      "x": "13",
+      "y": "35",
+      "width": "10",
+      "height": "10",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "1095",
+      "x": "63",
+      "y": "88",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1096",
+      "x": "24",
+      "y": "138",
+      "width": "10",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "1097",
+      "x": "0",
+      "y": "90",
+      "width": "12",
+      "height": "10",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "11"
+    },
+    {
+      "id": "1098",
+      "x": "24",
+      "y": "44",
+      "width": "10",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "9"
+    },
+    {
+      "id": "1099",
+      "x": "12",
+      "y": "150",
+      "width": "11",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "10"
+    },
+    {
+      "id": "1100",
+      "x": "55",
+      "y": "23",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1101",
+      "x": "55",
+      "y": "13",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1102",
+      "x": "13",
+      "y": "14",
+      "width": "11",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "10"
+    },
+    {
+      "id": "1103",
+      "x": "54",
+      "y": "156",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1028",
+      "x": "72",
+      "y": "134",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1030",
+      "x": "153",
+      "y": "13",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "1031",
+      "x": "54",
+      "y": "111",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "1038",
+      "x": "63",
+      "y": "98",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "1168",
+      "x": "63",
+      "y": "114",
+      "width": "8",
+      "height": "14",
+      "xoffset": "0",
+      "yoffset": "2",
+      "xadvance": "7"
+    },
+    {
+      "id": "1108",
+      "x": "55",
+      "y": "33",
+      "width": "8",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "1110",
+      "x": "153",
+      "y": "54",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "1111",
+      "x": "153",
+      "y": "0",
+      "width": "7",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "6"
+    },
+    {
+      "id": "1118",
+      "x": "54",
+      "y": "127",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "1169",
+      "x": "45",
+      "y": "95",
+      "width": "8",
+      "height": "11",
+      "xoffset": "0",
+      "yoffset": "5",
+      "xadvance": "7"
+    },
+    {
+      "id": "196",
+      "x": "54",
+      "y": "82",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "228",
+      "x": "46",
+      "y": "0",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "192",
+      "x": "45",
+      "y": "66",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "224",
+      "x": "45",
+      "y": "107",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "194",
+      "x": "45",
+      "y": "120",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "226",
+      "x": "45",
+      "y": "82",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "193",
+      "x": "54",
+      "y": "66",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "225",
+      "x": "54",
+      "y": "98",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "195",
+      "x": "63",
+      "y": "72",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "227",
+      "x": "54",
+      "y": "143",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "197",
+      "x": "64",
+      "y": "32",
+      "width": "8",
+      "height": "16",
+      "xoffset": "0",
+      "yoffset": "0",
+      "xadvance": "7"
+    },
+    {
+      "id": "229",
+      "x": "72",
+      "y": "49",
+      "width": "8",
+      "height": "13",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "7"
+    },
+    {
+      "id": "198",
+      "x": "0",
+      "y": "77",
+      "width": "12",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "11"
+    },
+    {
+      "id": "230",
+      "x": "0",
+      "y": "114",
+      "width": "12",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "11"
+    },
+    {
+      "id": "200",
+      "x": "72",
+      "y": "118",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "232",
+      "x": "63",
+      "y": "155",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "202",
+      "x": "64",
+      "y": "0",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "234",
+      "x": "99",
+      "y": "52",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "201",
+      "x": "99",
+      "y": "78",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "233",
+      "x": "72",
+      "y": "63",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "199",
+      "x": "108",
+      "y": "52",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "231",
+      "x": "72",
+      "y": "105",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "286",
+      "x": "55",
+      "y": "43",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "287",
+      "x": "82",
+      "y": "16",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "206",
+      "x": "160",
+      "y": "56",
+      "width": "6",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "5"
+    },
+    {
+      "id": "238",
+      "x": "160",
+      "y": "104",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "205",
+      "x": "160",
+      "y": "88",
+      "width": "6",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "5"
+    },
+    {
+      "id": "237",
+      "x": "160",
+      "y": "117",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "304",
+      "x": "160",
+      "y": "72",
+      "width": "6",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "5"
+    },
+    {
+      "id": "305",
+      "x": "64",
+      "y": "49",
+      "width": "6",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "5"
+    },
+    {
+      "id": "209",
+      "x": "24",
+      "y": "148",
+      "width": "9",
+      "height": "16",
+      "xoffset": "0",
+      "yoffset": "0",
+      "xadvance": "8"
+    },
+    {
+      "id": "241",
+      "x": "63",
+      "y": "129",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "214",
+      "x": "64",
+      "y": "16",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "246",
+      "x": "108",
+      "y": "81",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "210",
+      "x": "73",
+      "y": "0",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "242",
+      "x": "73",
+      "y": "29",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "212",
+      "x": "82",
+      "y": "0",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "244",
+      "x": "90",
+      "y": "61",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "211",
+      "x": "90",
+      "y": "90",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "243",
+      "x": "99",
+      "y": "39",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "213",
+      "x": "99",
+      "y": "149",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "245",
+      "x": "108",
+      "y": "68",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "338",
+      "x": "0",
+      "y": "101",
+      "width": "12",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "11"
+    },
+    {
+      "id": "339",
+      "x": "0",
+      "y": "67",
+      "width": "12",
+      "height": "9",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "11"
+    },
+    {
+      "id": "216",
+      "x": "0",
+      "y": "53",
+      "width": "12",
+      "height": "13",
+      "xoffset": "0",
+      "yoffset": "3",
+      "xadvance": "11"
+    },
+    {
+      "id": "248",
+      "x": "13",
+      "y": "24",
+      "width": "10",
+      "height": "10",
+      "xoffset": "0",
+      "yoffset": "6",
+      "xadvance": "9"
+    },
+    {
+      "id": "350",
+      "x": "117",
+      "y": "107",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "351",
+      "x": "90",
+      "y": "106",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "7",
+      "xadvance": "7"
+    },
+    {
+      "id": "220",
+      "x": "90",
+      "y": "74",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "252",
+      "x": "72",
+      "y": "92",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "217",
+      "x": "72",
+      "y": "76",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "249",
+      "x": "55",
+      "y": "0",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "219",
+      "x": "81",
+      "y": "86",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "251",
+      "x": "63",
+      "y": "59",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "218",
+      "x": "117",
+      "y": "22",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "250",
+      "x": "81",
+      "y": "102",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "376",
+      "x": "81",
+      "y": "141",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "1",
+      "xadvance": "7"
+    },
+    {
+      "id": "255",
+      "x": "90",
+      "y": "32",
+      "width": "8",
+      "height": "15",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "191",
+      "x": "99",
+      "y": "107",
+      "width": "8",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "7"
+    },
+    {
+      "id": "161",
+      "x": "153",
+      "y": "124",
+      "width": "6",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "5"
+    },
+    {
+      "id": "223",
+      "x": "45",
+      "y": "39",
+      "width": "9",
+      "height": "12",
+      "xoffset": "0",
+      "yoffset": "4",
+      "xadvance": "8"
+    },
+    {
+      "id": "32",
+      "x": "0",
+      "y": "0",
+      "width": "0",
+      "height": "0",
+      "xoffset": "0",
+      "yoffset": "0",
+      "xadvance": "4"
+    },
+    {
+      "id": "9",
+      "x": "0",
+      "y": "0",
+      "width": "0",
+      "height": "0",
+      "xoffset": "0",
+      "yoffset": "0",
+      "xadvance": "32"
+    }
+  ]
+}

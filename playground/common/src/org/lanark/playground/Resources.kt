@@ -11,6 +11,7 @@ val logoAssets = scope("logo") {
 val uiAssets = scope("ui") {
     register(logoAssets)
 
+    font("font", "font.json")
     texture("background", "ui-background.png")
     tiles("elements", "ui-tileset.png") {
         tile("border-top-left", 849, 182, 31, 31, 15, 15)
@@ -35,6 +36,7 @@ val scrollerAssets = scope("scroller") {
 }
 
 val gameAssets = scope("main") {
+    
     scope("cursors") {
         cursor("normal", "cursor.png", 0, 0)
         cursor("hot", "cursor-outline-red.png", 0, 0)
