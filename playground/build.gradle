@@ -179,7 +179,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
             // run "security find-identity -pcodesigning -v" to find your apple.identity and put it into local.properties
             def identity = project.property("macos.identity")
             executable "sh"
-            args "-c", "codesign -s $identity --entitlements macOS/bundle//Entitlements.plist $appBundle"
+            args "-c", "codesign -s $identity --entitlements macOS/bundle/Entitlements.plist $appBundle"
         }
 
         task runDebugExecutableSdl2macos(type: Exec, group: RUN_GROUP, dependsOn: [bundleInfoDebugExecutableSdl2macos, bundleResourcesDebugExecutableSdl2macos, bundleExecutableDebugExecutableSdl2macos]) {
@@ -209,7 +209,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
                 // apple_application_id=lanark.playground
                 // apple_team_id=<your apple TeamID>
                 expand(project.properties)
-                from file('ios/bundle/Info.plist')
+                from file('ios/bundle')
                 into file("build/bundle/$target/${project.name}.app/")
             }
 
@@ -231,11 +231,12 @@ if (project.property("lanark.sdl2.enable") == "true") {
             }
 
             task signDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios, compilePlistDebugExecutableSdl2ios]) {
+                def target = linkDebugExecutableSdl2ios.target
                 def appBundle = bundleDebugExecutableSdl2ios.destinationDir
                 // run "security find-identity -pcodesigning -v" to find your apple.identity and put it into local.properties
                 def identity = project.property("ios.identity")
                 executable "sh"
-                args "-c", "codesign -s $identity --entitlements ios/bundle/Entitlements.plist $appBundle"
+                args "-c", "codesign -s $identity --entitlements build/bundle/$target/${project.name}.app/Entitlements.plist $appBundle"
             }
 
             task installDebugExecutableSdl2isim(type: Exec, dependsOn: [bundleDebugExecutableSdl2isim]) {
