@@ -32,7 +32,7 @@ class WelcomeScene(private val application: SceneApplication,
     }
 
     override fun render(frame: Frame) {
-        frame.clear(Color.ALMOST_BLACK)
+        frame.clear(Color.AlmostBlack)
         val offset = frame.size / 2.0 - logo.size / 4.0
         frame.draw(logo, Point(offset.width, offset.height), logo.size / 2.0)
     }

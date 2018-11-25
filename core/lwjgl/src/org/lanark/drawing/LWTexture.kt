@@ -86,7 +86,6 @@ private inline fun Frame.prepareContextFor2D(texture: Texture) {
     glLoadIdentity()
     glOrtho(0.0, logicalSize.width.toDouble(), 0.0, logicalSize.height.toDouble(), -1.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
-    glColor4f(1f, 1f, 1f, 1f)
     glEnable(GL_BLEND)
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
     glBlendEquation(GL_FUNC_ADD)

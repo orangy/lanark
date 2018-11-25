@@ -1,14 +1,38 @@
 package org.lanark.drawing
 
-import kotlinx.serialization.*
 import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 
-class Font(val texture: Texture, descriptor: FontDescriptor) : Managed {
-    val lineHeight = descriptor.lineHeight
-    val encoding = descriptor.chars.associateBy { it.id }
+class Font(
+    val texture: Texture,
+    val name: String,
+    val baseLine: Int,
+    val lineHeight: Int,
+    val characters: List<FontCharacter>
+) : Managed {
+    val charMap = characters.associateBy { it.code }
+
+    fun kerning(character: FontCharacter, previous: FontCharacter): Int {
+        val pair = character.kerning.firstOrNull { it.previous == previous.code } ?: return 0
+        return pair.amount
+    }
+
+    fun measureText(text: String): Size {
+        val charMap = charMap
+        var x = 0
+        var h = 0
+        var previousChar: FontCharacter? = null
+        text.forEach { c ->
+            val char = charMap[c.toInt()] ?: return@forEach // continue
+            val kerning = previousChar?.let { kerning(char, it) } ?: 0
+            x += char.xadvance + kerning
+            h = maxOf(h, char.textureRect.height)
+            previousChar = char
+        }
+        return Size(x, h)
+    }
 
     override fun release() {
         texture.release()
@@ -17,67 +41,62 @@ class Font(val texture: Texture, descriptor: FontDescriptor) : Managed {
     override fun toString() = "Font $texture"
 }
 
-fun Font.measureText(text: String): Int {
-    val encoding = encoding
-    var x = 0
-    text.forEach {
-        val char = encoding[it.toInt()] ?: return@forEach // continue
-        x += char.xadvance
-    }
-    return x
-}
 
 fun Frame.drawTextBox(text: String, font: Font, rect: Rect) {
-    clip(rect) {
-        var x = rect.left
-        var y = rect.top
-        val words = text.split(' ')
-        val spaceWidth = font.encoding[32]?.xadvance ?: 16
-        words.forEach { word ->
-            val width = font.measureText(word)
-            if (x + width > rect.right) {
-                x = rect.left
-                y += font.lineHeight
-                if (y > rect.bottom)
-                    return
-            }
-            drawText(word, font, x, y)
-            x += width + spaceWidth
+    var x = rect.left
+    var y = rect.top + font.baseLine
+    val width = rect.width
+    val words = text.split(' ')
+    val spaceWidth = font.charMap[32]?.xadvance ?: 16
+    words.forEach { word ->
+        val textSize = font.measureText(word)
+        if (textSize.width > width) {
+            // word is wider than rectangle width, wrap at characters
+            //TODO()
         }
+
+        if (x + textSize.width > rect.right) {
+            x = rect.left
+            y += font.lineHeight
+            if (y >= rect.bottom)
+                return
+        }
+        drawText(word, font, x, y)
+        x += textSize.width + spaceWidth
     }
 }
 
 fun Frame.drawText(text: String, font: Font, point: Point) = drawText(text, font, point.x, point.y)
 
-fun Frame.drawText(text: String, font: Font, x: Int, y: Int) {
+fun Frame.drawText(text: String, font: Font, x: Int, baseLine: Int) {
     val texture = font.texture
-    val encoding = font.encoding
-    var x = x
-    val y = y
-    text.forEach {
-        val char = encoding[it.toInt()] ?: run {
-            engine.logger.trace("Character '$it' is not present in font")
+    val charMap = font.charMap
+    val y = baseLine - font.baseLine
+    var current = x
+    var previousChar: FontCharacter? = null
+    text.forEach { c ->
+        val char = charMap[c.toInt()] ?: run {
+            engine.logger.trace("Character '$c' is not present in font ${font.name}")
             return@forEach // continue
         }
-        val srcRect = Rect(char.x, char.y, char.width, char.height)
-        val dstRect = Rect(x + char.xoffest, y + char.yoffset, char.width, char.height)
+        val kerning = previousChar?.let { font.kerning(char, it) } ?: 0
+        val srcRect = char.textureRect
+        val dstRect = Rect(current + char.xoffest + kerning, y + char.yoffset, srcRect.width, srcRect.height)
+
         draw(texture, srcRect, dstRect)
-        x += char.xadvance
+        current += char.xadvance + kerning
+        previousChar = char
+        //engine.logger.trace("Char $c: $char")
     }
 }
 
-
-@Serializable
-data class FontDescriptor(val imagePath: String, val lineHeight: Int, val chars: List<FontChar>)
-
-@Serializable
-data class FontChar(
-    val id: Int,
-    val x: Int,
-    val y: Int,
-    val width: Int,
-    val height: Int,
+data class FontCharacter(
+    val code: Int,
+    val textureRect: Rect,
+    val xoffest: Int,
+    val yoffset: Int,
     val xadvance: Int,
-    @Optional val xoffest: Int = 0,
-    @Optional val yoffset: Int = 0
+    val kerning: List<FontCharacterKerning>
 )
+
+data class FontCharacterKerning(val previous: Int, val amount: Int)

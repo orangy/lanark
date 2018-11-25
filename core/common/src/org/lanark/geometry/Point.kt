@@ -6,6 +6,7 @@ data class Point(val x: Int, val y: Int) {
     override fun toString() = "[$x, $y]"
 
     fun relativeTo(other: Point) = Point(x + other.x, y + other.y)
+    fun relativeTo(other: Rect) = Point(x + other.x, y + other.y)
 
     companion object {
         val Zero = Point(0, 0)

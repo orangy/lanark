@@ -5,7 +5,6 @@ import kotlinx.cinterop.*
 import org.lanark.application.*
 import org.lanark.diagnostics.*
 import org.lanark.geometry.*
-import org.lanark.io.*
 import org.lanark.media.*
 import org.lanark.system.*
 import sdl2.*
@@ -27,29 +26,57 @@ actual class Texture(val engine: Engine, val texturePtr: CPointer<SDL_Texture>) 
     override fun toString() = "Texture ${texturePtr.rawValue}"
 }
 
+internal inline fun Frame.withCurrentColor(texture: Texture, op: () -> Unit) = memScoped {
+    val r = alloc<UByteVar>()
+    val g = alloc<UByteVar>()
+    val b = alloc<UByteVar>()
+    SDL_GetRenderDrawColor(rendererPtr, r.ptr, g.ptr, b.ptr, null)
+    SDL_SetTextureColorMod(texture.texturePtr, r.value, g.value, b.value)
+    try {
+        op()
+    } finally {
+        SDL_SetTextureColorMod(texture.texturePtr, 255, 255, 255)
+    }
+}
+
 actual fun Frame.draw(texture: Texture) {
-    SDL_RenderCopy(rendererPtr, texture.texturePtr, null, null).sdlError("SDL_RenderCopy")
+    withCurrentColor(texture) {
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, null).sdlError("SDL_RenderCopy")
+    }
 }
 
 actual fun Frame.draw(texture: Texture, sourceRect: Rect, destinationRect: Rect) = memScoped {
-    SDL_RenderCopy(
-        rendererPtr,
-        texture.texturePtr,
-        SDL_Rect(sourceRect),
-        SDL_Rect(destinationRect)
-    ).sdlError("SDL_RenderCopy")
+    withCurrentColor(texture) {
+        SDL_RenderCopy(
+            rendererPtr,
+            texture.texturePtr,
+            SDL_Rect(sourceRect),
+            SDL_Rect(destinationRect)
+        ).sdlError("SDL_RenderCopy")
+    }
 }
 
 actual fun Frame.draw(texture: Texture, destinationRect: Rect) = memScoped {
-    SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect)).sdlError("SDL_RenderCopy")
+    withCurrentColor(texture) {
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(destinationRect)).sdlError("SDL_RenderCopy")
+    }
 }
 
 actual fun Frame.draw(texture: Texture, position: Point) = memScoped {
-    SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, texture.size)).sdlError("SDL_RenderCopy")
+    withCurrentColor(texture) {
+        SDL_RenderCopy(
+            rendererPtr,
+            texture.texturePtr,
+            null,
+            SDL_Rect(position, texture.size)
+        ).sdlError("SDL_RenderCopy")
+    }
 }
 
 actual fun Frame.draw(texture: Texture, position: Point, size: Size) = memScoped {
-    SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, size)).sdlError("SDL_RenderCopy")
+    withCurrentColor(texture) {
+        SDL_RenderCopy(rendererPtr, texture.texturePtr, null, SDL_Rect(position, size)).sdlError("SDL_RenderCopy")
+    }
 }
 
 actual fun Frame.bindTexture(image: Image): Texture {

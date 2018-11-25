@@ -106,3 +106,19 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
     }
 }
 
+fun dialog(area: Rect, resources: ResourceContext, body: DialogBuilder.() -> Unit): Dialog {
+    return DialogBuilder(area, resources).apply(body).build()
+}
+
+class DialogBuilder(val area: Rect, val resources: ResourceContext) {
+    var fontName = "font"
+    private val controls = mutableListOf<Control>()
+    
+    fun build(): Dialog {
+        return Dialog(area, resources, controls)
+    }
+
+    fun add(control: Control) {
+        controls.add(control)
+    }
+}

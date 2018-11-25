@@ -14,7 +14,7 @@ class SDLFileSystem : FileSystem {
     }
 
     private fun parent(path: String): String {
-        return path.substringBeforeLast('/')
+        return path.substringBeforeLast('/', "")
     }
 
     override fun delete(path: String) {

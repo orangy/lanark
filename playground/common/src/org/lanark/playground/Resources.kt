@@ -11,7 +11,7 @@ val logoAssets = scope("logo") {
 val uiAssets = scope("ui") {
     register(logoAssets)
 
-    font("font", "font.json")
+    font("font", "fonts/good_neighbors.json")
     texture("background", "ui-background.png")
     tiles("elements", "ui-tileset.png") {
         tile("border-top-left", 849, 182, 31, 31, 15, 15)

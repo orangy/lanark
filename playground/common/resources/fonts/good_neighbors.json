@@ -1,9 +1,13 @@
 {
-  "imagePath": "font.png",
-  "lineHeight": "16",
-  "scaleW": "167",
-  "scaleH": "168",
-  "chars": [
+  "config" : {
+    "textureFile": "good_neighbors.png",
+    "charHeight": "16",
+    "base" : "26",
+    "textureWidth": "167",
+    "textureHeight": "168"
+  },
+  "kerning": [],
+  "symbols": [
     {
       "id": "33",
       "x": "153",

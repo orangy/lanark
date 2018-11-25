@@ -9,6 +9,8 @@ data class Size(val width: Int, val height: Int) {
     override fun toString() = "{$width x $height}"
     operator fun times(scale: Double) = Size((width * scale).toInt(), (height * scale).toInt())
 
+    fun toVector() = Vector(width, height)
+    
     companion object {
         val Empty = Size(0, 0)
     }

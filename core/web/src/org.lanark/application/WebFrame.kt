@@ -2,8 +2,7 @@ package org.lanark.application
 
 import org.lanark.drawing.*
 import org.lanark.geometry.*
-import org.lanark.media.Image
-import org.lanark.resources.*
+import org.lanark.media.*
 import org.lanark.system.*
 import org.w3c.dom.*
 
@@ -44,13 +43,19 @@ actual class Frame(actual val engine: Engine, val context: CanvasRenderingContex
         set(value) {}
 
     actual fun clear(color: Color?) {
-        if (color != null)
-            color(color)
-        context.fillRect(0.0, 0.0, size.width.toDouble(), size.height.toDouble())
+        color(color ?: Color.Black) {
+            context.fillRect(0.0, 0.0, size.width.toDouble(), size.height.toDouble())
+        }
     }
 
-    actual fun color(color: Color) {
+    actual fun color(color: Color, body: () -> Unit) {
+        val style = context.fillStyle
         context.fillStyle = color.toCSS()
+        try {
+            body()
+        } finally {
+            context.fillStyle = style
+        }
     }
 
     actual fun scale(scale: Float) {}
@@ -68,7 +73,7 @@ private fun Color.toCSS(): String {
 
 private val hexDigits = "0123456789ABCDEF"
 private fun UByte.hex2(): String {
-    return "${hexDigits[(this/16u).toInt()]}${hexDigits[(this and 15u).toInt()]}"
+    return "${hexDigits[(this / 16u).toInt()]}${hexDigits[(this and 15u).toInt()]}"
 }
 
 actual class FrameFlag(val value: Int) {

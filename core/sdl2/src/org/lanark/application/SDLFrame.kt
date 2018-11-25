@@ -7,7 +7,6 @@ import org.lanark.drawing.*
 import org.lanark.events.*
 import org.lanark.geometry.*
 import org.lanark.media.*
-import org.lanark.resources.*
 import org.lanark.system.*
 import sdl2.*
 
@@ -156,19 +155,18 @@ actual class Frame(actual val engine: Engine, internal val windowPtr: CPointer<S
     }
 
     actual fun clear(color: Color?) {
-        if (color != null)
-            color(color)
-        SDL_RenderClear(rendererPtr).sdlError("SDL_RenderClear")
+        color(color ?: Color.Black) {
+            SDL_RenderClear(rendererPtr).sdlError("SDL_RenderClear")
+        }
     }
 
-    actual fun color(color: Color) {
-        SDL_SetRenderDrawColor(
-            rendererPtr,
-            color.red,
-            color.green,
-            color.blue,
-            color.alpha
-        ).sdlError("SDL_SetRenderDrawColor")
+    actual fun color(color: Color, body: () -> Unit) {
+        SDL_SetRenderDrawColor(rendererPtr, color.red, color.green, color.blue, color.alpha).sdlError("SDL_SetRenderDrawColor")
+        try {
+            body()
+        } finally {
+            SDL_SetRenderDrawColor(rendererPtr, 255, 255, 255, 255).sdlError("SDL_SetRenderDrawColor")
+        }
     }
 
     actual fun scale(scale: Float) {

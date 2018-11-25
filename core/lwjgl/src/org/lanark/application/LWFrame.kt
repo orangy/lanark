@@ -4,7 +4,6 @@ import org.lanark.diagnostics.*
 import org.lanark.drawing.*
 import org.lanark.geometry.*
 import org.lanark.media.*
-import org.lanark.resources.*
 import org.lanark.system.*
 import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
@@ -110,18 +109,23 @@ actual class Frame(actual val engine: Engine, val windowHandle: Long) : Managed 
         }
 
     actual fun clear(color: Color?) {
-        if (color != null)
-            color(color)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
+        color(color ?: Color.Black) {
+            glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
+        }
     }
 
-    actual fun color(color: Color) {
-        glClearColor(
+    actual fun color(color: Color, body: () -> Unit) {
+        glColor4f(
             color.red.toInt().toFloat() / 255.0f,
             color.green.toInt().toFloat() / 255.0f,
             color.blue.toInt().toFloat() / 255.0f,
             color.alpha.toInt().toFloat() / 255.0f
         )
+        try {
+            body()
+        } finally {
+            glColor4f(1f, 1f, 1f, 1f)
+        }
     }
 
     actual fun scale(scale: Float) {

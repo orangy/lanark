@@ -27,7 +27,7 @@ expect class Frame : Managed {
 
     var clip: Rect?
     fun clear(color: Color? = null)
-    fun color(color: Color)
+    fun color(color: Color, body: () -> Unit)
     fun scale(scale: Float)
 
     fun drawLine(from: Point, to: Point)
