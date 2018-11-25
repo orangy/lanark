@@ -1,7 +1,6 @@
 package org.lanark.drawing
 
 import org.lanark.application.*
-import org.lanark.diagnostics.*
 import org.lanark.geometry.*
 import org.lanark.system.*
 
@@ -75,10 +74,7 @@ fun Frame.drawText(text: String, font: Font, x: Int, baseLine: Int) {
     var current = x
     var previousChar: FontCharacter? = null
     text.forEach { c ->
-        val char = charMap[c.toInt()] ?: run {
-            engine.logger.trace("Character '$c' is not present in font ${font.name}")
-            return@forEach // continue
-        }
+        val char = charMap[c.toInt()] ?: return@forEach // no such char in font, TODO: draw square
         val kerning = previousChar?.let { font.kerning(char, it) } ?: 0
         val srcRect = char.textureRect
         val dstRect = Rect(current + char.xoffest + kerning, y + char.yoffset, srcRect.width, srcRect.height)
@@ -86,7 +82,6 @@ fun Frame.drawText(text: String, font: Font, x: Int, baseLine: Int) {
         draw(texture, srcRect, dstRect)
         current += char.xadvance + kerning
         previousChar = char
-        //engine.logger.trace("Char $c: $char")
     }
 }
 
