@@ -27,7 +27,7 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
     private fun Frame.renderControls() {
         clip(area) {
             controls.forEach {
-                it.render(this, area)
+                it.render(this@Dialog, this@renderControls)
             }
         }
     }
@@ -95,11 +95,14 @@ class Dialog(val area: Rect, private val resources: ResourceContext, val control
 
     override fun event(frame: Frame, event: Event): Boolean {
         when (event) {
-            is EventMouseMotion -> {
-                return event.position in area
-            }
-            is EventMouseButton -> {
-                return event.position in area
+            is EventMousePosition -> {
+                val hitTest = event.position in area
+                if (hitTest) {
+                    controls.firstOrNull {
+                        it.event(this, frame, event)
+                    }
+                }
+                return hitTest
             }
         }
         return false

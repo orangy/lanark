@@ -12,16 +12,19 @@ class TextBox(
     val wrap: WordWrap,
     val font: Font
 ) : Control() {
+    
+    private val textOrigin = rect.origin + Vector(0, font.baseLine)
+    
     override fun contains(point: Point, area: Rect): Boolean {
         return false
     }
 
-    override fun render(frame: Frame, area: Rect) = with(frame) {
-        clip(rect.relativeTo(area)) {
+    override fun render(dialog: Dialog, frame: Frame) = with(frame) {
+        clip(rect.relativeTo(dialog.area)) {
             color(color) {
                 when (wrap) {
-                    WordWrap.None -> drawText(text, font, rect.origin.relativeTo(area))
-                    WordWrap.Words -> drawTextBox(text, font, rect.relativeTo(area))
+                    WordWrap.None -> drawText(text, font, textOrigin.relativeTo(dialog.area))
+                    WordWrap.Words -> drawTextBox(text, font, rect.relativeTo(dialog.area))
                 }
             }
         }

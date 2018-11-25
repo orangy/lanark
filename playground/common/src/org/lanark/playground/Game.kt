@@ -29,19 +29,23 @@ suspend fun Engine.game(frame: Frame) {
     }
 
     val application = SceneApplication(frame)
-    val dialog = dialog(Rect(140, 140, 600, 234), uiResources) {
+    val padding = Size(40, 40)
+    val dialogSize = frame.size - padding
+    val dialog = dialog(Rect(Point(padding.width / 2, padding.height / 2), dialogSize), uiResources) {
         fontName = "font"
         text(10, 10, 300, 70) {
             wrap = WordWrap.Words
             color = Color.LightGreen
-            text = "Lord Of The Rings"
+            text = "Lanark"
         }
-        text(10, 80, 600, 70) {
+        text(10, 40, 600, 70) {
             color = Color.LightBlue
             text = "Oh really?! That's so fascinating! Awesome, LOL! :)"
         }
-        
-        button(10, 120) {
+        button(10, 90) {
+            text = "Start"
+        }
+        button(10, 150) {
             text = "Close"
         }
     }
