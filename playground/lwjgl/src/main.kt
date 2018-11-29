@@ -1,9 +1,11 @@
 import org.lanark.application.*
 import org.lanark.diagnostics.*
-import org.lanark.events.*
 import org.lanark.geometry.*
+import org.lanark.io.*
 import org.lanark.playground.*
+import org.lanark.system.*
 import org.lanark.ui.*
+import org.lanark.xml.*
 
 fun main() {
     val engine = Engine {
@@ -25,7 +27,7 @@ fun main() {
     ).apply {
         minimumSize = Size(800, 600)
     }
-
+    
     engine.logger.switch(Engine.LogCategory, false)
 
     engine.run {

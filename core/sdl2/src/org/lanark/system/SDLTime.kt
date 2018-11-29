@@ -25,9 +25,4 @@ actual class Time(private val value: time_t) {
         val seconds = tm.tm_sec.toZeroPadding(2)
         "$year-$month-${day}T$hour:$minute:$seconds"
     }
-
-    private fun Int.toZeroPadding(size: Int): String {
-        val value = toString()
-        return "0".repeat(size - value.length) + value
-    }
 }
