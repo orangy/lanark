@@ -1,5 +1,6 @@
 package org.lanark.tests.system
 
+import kotlinx.serialization.*
 import org.lanark.io.*
 import org.lanark.system.*
 import org.lanark.xml.*
@@ -58,17 +59,50 @@ class XmlTest {
         }
     }
     
-    @Test
+    @Test @Ignore
     fun debug() {
         val file = fs.combine(root, "valid/007.xml")
         validate(file)
     }
 
+    
+    @Test
+    fun decode() {
+        val folder = fs.combine(root, "decode")
+        val files = (1..3).map { it.toZeroPadding(3) + ".xml" }.map {
+            fs.combine(folder, it)
+        }
+        val failed = mutableListOf<String>()
+        var firstException = null as Throwable?
+        files.forEach { name ->
+            try {
+                deserialize(name)
+            } catch (e: Throwable) {
+                if (firstException == null)
+                    firstException = e
+                failed.add(name)
+            }
+        }
+
+        println(failed.joinToString("\n"))
+        firstException?.let { throw it }
+    }
+    
+    @Serializable
+    data class TestData(val name: String, val value: Int)
+
+    private fun deserialize(name: String) {
+        fs.open(name, FileOpenMode.Read).use { file ->
+            val value = XmlDecoder.parse(TestData.serializer(), file.input())
+            assertEquals(TestData("Hello", 18), value)
+        }
+    }
     private fun validate(name: String) {
         fs.open(name, FileOpenMode.Read).use { file ->
             XmlReader(file.input()).scanXml()
         }
     }
+
 }
 
 class TestFailedException(fileName: String, exception: Throwable) :
