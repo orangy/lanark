@@ -18,7 +18,7 @@ class ResourceAtlas(name: String, val location: FileLocation) :
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Image {
         val (path, fileSystem) = location
         val text = fileSystem.open(path, FileOpenMode.Read).use { it.input().readText() }
-        atlas = JSON.nonstrict.parse(Atlas.serializer(), text)
+        atlas = Json.nonstrict.parse(Atlas.serializer(), text)
         val texturePath = fileSystem.sibling(path, atlas.imagePath)
         return context.loadImage(texturePath, fileSystem)
     }

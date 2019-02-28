@@ -1,81 +1,54 @@
 apply plugin: 'kotlin-multiplatform'
 
 kotlin {
-    targets {
-        if (project.property("lanark.sdl2.enable") == "true") {
-            fromPreset(presets.macosX64, 'sdl2macos') {
-                compilations.all {
-                    buildTypes = [DEBUG]
-                    extraOpts '-Xdisable=devirtualization'
-                }
-            }
-            if (project.property("lanark.sdl2.ios") == "true") {
-                fromPreset(presets.iosArm64, 'sdl2ios') {
-                    compilations.all {
-                        buildTypes = [DEBUG]
-                        extraOpts '-Xdisable=devirtualization'
-                    }
-                }
+    infra {
+        target('macosX64')
+        target('iosX64')
+        target('iosArm64')
+        target('linuxX64')
+        target('mingwX64')
+    }
 
-                fromPreset(presets.iosX64, 'sdl2isim') {
-                    compilations.all {
-                        buildTypes = [DEBUG]
-                        extraOpts '-Xdisable=devirtualization'
-                    }
-                }
-            }
-        }
-
-        fromPreset(presets.jvm, 'lwjgl')
-        fromPreset(presets.js, 'web')
-
-        configure([lwjgl]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+    jvm {
+        compilations.all {
+            kotlinOptions {
                 jvmTarget = '1.8'
             }
         }
-        
-        configure([web]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+    }
+
+    js {
+        compilations.all {
+            kotlinOptions {
                 sourceMap = true
+                moduleKind = "umd"
+                metaInfo = true
             }
+        }
+    }
+
+    sourceSets.all {
+        kotlin.srcDirs = ["$it.name/src"]
+        resources.srcDirs = ["$it.name/resources"]
+        languageSettings {
+            progressiveMode = true
+            useExperimentalAnnotation("kotlin.Experimental")
+            useExperimentalAnnotation('kotlin.ExperimentalUnsignedTypes')
+            useExperimentalAnnotation('kotlinx.io.core.ExperimentalIoApi')
         }
     }
 
     sourceSets {
         commonMain {
-            kotlin.srcDirs = ["common/src"]
             dependencies {
                 implementation project(":core")
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
             }
         }
         commonTest {
-            kotlin.srcDirs = ["common/test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
-            }
-        }
-
-        if (project.property("lanark.sdl2.enable") == "true") {
-            sdl2macosMain {
-            }
-            if (project.property("lanark.sdl2.ios") == "true") {
-                sdl2iosMain {
-                    if (System.getProperty("idea.active") != "true") {
-                        // kotlin.srcDirs = ["sdl2"]
-                    } else {
-                        dependsOn.clear()
-                    }
-                }
-                sdl2isimMain {
-                    if (System.getProperty("idea.active") != "true") {
-                        // kotlin.srcDirs = ["sdl2"]
-                    } else {
-                        dependsOn.clear()
-                    }
-                }
             }
         }
     }

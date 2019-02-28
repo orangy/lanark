@@ -2,68 +2,50 @@ apply plugin: 'kotlin-multiplatform'
 apply plugin: 'kotlinx-serialization'
 
 kotlin {
-    targets {
-        if (project.property("lanark.sdl2.enable") == "true") {
-            fromPreset(presets.macosX64, 'sdl2macos') {
-                compilations.all {
-                    buildTypes = [DEBUG]
-                    extraOpts '-Xdisable=devirtualization'
-                }
-                compilations.main {
-                    cinterops {
-                        sdl {
-                            defFile = file("sdl2/interop/sdl2.def")
-                        }
-                    }
-                }
-            }
-
-            if (project.property("lanark.sdl2.ios") == "true") {
-                fromPreset(presets.iosX64, 'sdl2isim') {
-                    compilations.all {
-                        buildTypes = [DEBUG]
-                        extraOpts '-Xdisable=devirtualization'
-                    }
-                    compilations.main {
-                        cinterops {
-                            sdl {
-                                defFile = file("sdl2/interop/sdl2.def")
-                            }
-                        }
-                    }
-                }
-                fromPreset(presets.iosArm64, 'sdl2ios') {
-                    compilations.all {
-                        buildTypes = [DEBUG]
-                        extraOpts '-Xdisable=devirtualization'
-                    }
-                    compilations.main {
-                        cinterops {
-                            sdl {
-                                defFile = file("sdl2/interop/sdl2.def")
-                            }
-                        }
+    infra {
+        shared {
+            compilations.main {
+                cinterops {
+                    sdl {
+                        defFile = file("nativeMain/interop/sdl2.def")
                     }
                 }
             }
         }
+        
+        target('macosX64')
+        target('iosX64')
+        target('iosArm64')
+        target('linuxX64')
+        target('mingwX64')
+    }
 
-        fromPreset(presets.jvm, 'lwjgl')
-        fromPreset(presets.js, 'web')
-
-        configure([lwjgl]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
-                jvmTarget = '1.8'
-            }
-            tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
+    jvm {
+        compilations.all {
+            kotlinOptions {
                 jvmTarget = '1.8'
             }
         }
+    }
 
-        configure([web]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+    js {
+        compilations.all {
+            kotlinOptions {
                 sourceMap = true
+                moduleKind = "umd"
+                metaInfo = true
             }
+        }
+    }
+
+    sourceSets.all {
+        kotlin.srcDirs = ["$it.name/src"]
+        resources.srcDirs = ["$it.name/resources"]
+        languageSettings {
+            progressiveMode = true
+            useExperimentalAnnotation("kotlin.Experimental")
+            useExperimentalAnnotation('kotlin.ExperimentalUnsignedTypes')
+            useExperimentalAnnotation('kotlinx.io.core.ExperimentalIoApi')
         }
     }
 
@@ -94,37 +76,8 @@ kotlin {
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-runtime-native', version: serialization_version
             }
         }
-
-        if (project.property("lanark.sdl2.enable") == "true") {
-            sdl2macosMain {
-                kotlin.srcDirs = ["sdl2/src"]
-                resources.srcDirs = ["sdl2/resources"]
-                dependsOn nativeMain
-            }
-            if (project.property("lanark.sdl2.ios") == "true") {
-                sdl2iosMain {
-                    if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2/src"]
-                        resources.srcDirs = ["sdl2/resources"]
-                        dependsOn nativeMain
-                    } else {
-                        dependsOn.clear()
-                    }
-                }
-                sdl2isimMain {
-                    if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["sdl2/src"]
-                        resources.srcDirs = ["sdl2/resources"]
-                        dependsOn nativeMain
-                    } else {
-                        dependsOn.clear()
-                    }
-                }
-            }
-        }
-
-        lwjglMain {
-            kotlin.srcDirs = ["lwjgl/src"]
+        
+        jvmMain {
             dependencies {
                 api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-io-jvm', version: io_version
@@ -144,37 +97,23 @@ kotlin {
             }
         }
 
-        lwjglTest {
-            kotlin.srcDirs = ["lwjgl/test"]
+        jvmTest {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test'
                 implementation 'org.jetbrains.kotlin:kotlin-test-junit'
             }
         }
 
-        webMain {
-            kotlin.srcDirs = ["web/src"]
+        jsMain {
             dependencies {
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-js', version: coroutines_version
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-io-js', version: io_version
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-runtime-js', version: serialization_version
             }
         }
-        webTest {
-            kotlin.srcDirs = ["web/test"]
+        jsTest {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-js'
-            }
-        }
-    }
-}
-
-if (project.property("lanark.sdl2.enable") == "true") {
-    afterEvaluate {
-        kotlin.targets.sdl2macos.compilations.test.getLinkTask("EXECUTABLE", "DEBUG").doLast { task ->
-            copy {
-                from file('testResources')
-                into task.outputFile.get().parent
             }
         }
     }

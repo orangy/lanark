@@ -2,13 +2,10 @@ package org.lanark.drawing
 
 import org.khronos.webgl.*
 import org.lanark.application.*
-import org.lanark.diagnostics.*
 import org.lanark.geometry.*
-import org.lanark.io.*
-import org.lanark.media.*
+import org.lanark.media.Image
 import org.lanark.system.*
 import org.w3c.dom.*
-import kotlin.browser.*
 
 typealias gl = WebGLRenderingContext
 

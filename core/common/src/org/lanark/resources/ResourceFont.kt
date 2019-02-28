@@ -28,7 +28,7 @@ class ResourceFont(name: String, val location: FileLocation) :
     override fun load(context: ResourceContext, progress: (Double) -> Unit): Image {
         val (path, fileSystem) = location
         val text = fileSystem.open(path, FileOpenMode.Read).use { it.input().readText() }
-        fontFile = JSON.nonstrict.parse(FontFile.serializer(), text)
+        fontFile = Json.nonstrict.parse(FontFile.serializer(), text)
         val texturePath = fileSystem.sibling(path, fontFile.config.textureFile)
         return context.loadImage(texturePath, fileSystem)
     }

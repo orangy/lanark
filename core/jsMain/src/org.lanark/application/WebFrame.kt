@@ -2,7 +2,7 @@ package org.lanark.application
 
 import org.lanark.drawing.*
 import org.lanark.geometry.*
-import org.lanark.media.*
+import org.lanark.media.Image
 import org.lanark.system.*
 import org.w3c.dom.*
 

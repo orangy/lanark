@@ -8,23 +8,50 @@ buildscript {
         jcenter()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-        maven { url 'https://teamcity.jetbrains.com/guestAuth/repository/download/Kotlin_dev_CompilerAllPlugins/1750279:id/maven' }
+        maven { url "../kotlin-libraries-infra/build/maven" }
+//        maven { url "https://dl.bintray.com/orangy/maven" }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        classpath "kotlinx.team:kotlinx.team.infra:0.1.0"
     }
 }
 
-// Load unversioned `local.properties` file
-def localProperties = new Properties()
-localProperties.load(new FileInputStream("$project.rootDir/local.properties"))
-localProperties.each { prop -> project.ext.set(prop.key, prop.value) }
+apply plugin: 'kotlinx.team.infra'
 
-apply plugin: 'kotlin-multiplatform'
-apply plugin: 'kotlinx-serialization'
+infra {
+    teamcity {
+        bintrayUser = "orangy"
+        bintrayToken = "credentialsJSON:9a48193c-d16d-46c7-8751-2fb434b09e07"
+    }
 
-allprojects {
+    publishing {
+        include(":core")
+/*
+        include(":ui")
+        include(":playground")
+*/
+
+        bintray {
+            organization = 'orangy'
+            repository = 'maven'
+            library = 'lanark'
+
+            username = findProperty('bintrayUser')
+            password = findProperty('bintrayApiKey')
+        }
+    }
+
+    node {
+        version = '10.15.1'
+        mocha('4.1.0')
+        install("source-map-support", "0.5.3")
+        install("mocha-teamcity-reporter", "2.2.2")
+    }
+}
+
+subprojects {
     repositories {
         mavenCentral()
         mavenLocal()
@@ -32,22 +59,5 @@ allprojects {
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
         maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
         maven { url 'https://dl.bintray.com/kotlin/kotlinx' }
-        maven { url 'https://teamcity.jetbrains.com/guestAuth/repository/download/Kotlin_dev_CompilerAllPlugins/1750279:id/maven' }
-    }
-
-    afterEvaluate {
-        kotlin.sourceSets.all {
-            it.languageSettings.useExperimentalAnnotation('kotlin.ExperimentalUnsignedTypes')
-        }
-        kotlin.targets.matching { it.platformType.name == 'native' }.all {
-            compilations.all {
-                cinterops.all {
-                    configurations[dependencyConfigurationName].attributes.attribute(
-                            Usage.USAGE_ATTRIBUTE,
-                            objects.named(Usage, 'kotlin-api')
-                    )
-                }
-            }
-        }
     }
 }

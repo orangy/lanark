@@ -1,64 +1,72 @@
 apply plugin: 'kotlin-multiplatform'
 
 kotlin {
-    targets {
-        if (project.property("lanark.sdl2.enable") == "true") {
-            fromPreset(presets.macosX64, 'sdl2macos') {
-                compilations.all {
-                    buildTypes = [DEBUG]
-                    extraOpts '-Xdisable=devirtualization'
-                    linkerOpts += ["-macosx_version_min 10.13"]
-                }
-                compilations.main {
-                    outputKinds = [EXECUTABLE]
-                }
+    infra {
+        target('macosX64') {
+            compilations.all {
+                linkerOpts += ["-macosx_version_min 10.13"]
             }
-
-            if (project.property("lanark.sdl2.ios") == "true") {
-                fromPreset(presets.iosX64, 'sdl2isim') {
-                    compilations.all {
-                        buildTypes = [DEBUG]
-                        extraOpts '-Xdisable=devirtualization'
-                        linkerOpts += ["-ios_simulator_version_min 11.0"]
-                    }
-                    compilations.main {
-                        outputKinds = [EXECUTABLE]
-                        extraOpts "-nomain"
-                    }
-                }
-                fromPreset(presets.iosArm64, 'sdl2ios') {
-                    compilations.all {
-                        buildTypes = [DEBUG]
-                        extraOpts '-Xdisable=devirtualization'
-                        linkerOpts += ["-ios_version_min 11.0"]
-                    }
-                    compilations.main {
-                        outputKinds = [EXECUTABLE]
-                        extraOpts "-nomain"
-                    }
-                }
+            binaries {
+                executable()
             }
         }
+        target('iosX64') {
+            compilations.all {
+                linkerOpts += ["-ios_simulator_version_min 11.0"]
+            }
+            compilations.main {
+                extraOpts "-nomain"
+            }
+        }
+        target('iosArm64') {
+            compilations.all {
+                linkerOpts += ["-ios_version_min 11.0"]
+            }
+            compilations.main {
+                extraOpts "-nomain"
+            }
+        }
+        target('linuxX64') {
+            compilations.all {
+            }
+        }
+        target('mingwX64') {
+            compilations.all {
+            }
+        }
+    }
 
-        fromPreset(presets.jvm, 'lwjgl')
-        fromPreset(presets.js, 'web')
-
-        configure([lwjgl]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+    jvm {
+        compilations.all {
+            kotlinOptions {
                 jvmTarget = '1.8'
             }
         }
-        configure([web]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+    }
+
+    js {
+        compilations.all {
+            kotlinOptions {
                 sourceMap = true
+                moduleKind = "umd"
+                metaInfo = true
             }
+        }
+    }
+
+    sourceSets.all {
+        kotlin.srcDirs = ["$it.name/src"]
+        resources.srcDirs = ["$it.name/resources"]
+        languageSettings {
+            progressiveMode = true
+            useExperimentalAnnotation("kotlin.Experimental")
+            useExperimentalAnnotation('kotlin.ExperimentalUnsignedTypes')
+            useExperimentalAnnotation('kotlinx.io.core.ExperimentalIoApi')
         }
     }
 
     sourceSets {
         commonMain {
-            kotlin.srcDirs = ["common/src"]
-            resources.srcDirs = ["common/resources"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib'
                 implementation project(":core")
@@ -66,42 +74,19 @@ kotlin {
             }
         }
         commonTest {
-            kotlin.srcDirs = ["common/test"]
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test-common'
                 implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
             }
         }
 
-        if (project.property("lanark.sdl2.enable") == "true") {
-            sdl2macosMain {
-                kotlin.srcDirs = ["macOS/src"]
-            }
-            sdl2isimMain {
-                kotlin.srcDirs = ["iOS/src"]
-            }
-
-            if (project.property("lanark.sdl2.ios") == "true") {
-                sdl2iosMain {
-                    if (System.getProperty("idea.active") != "true") {
-                        kotlin.srcDirs = ["iOS/src"]
-                    } else {
-                        dependsOn.clear()
-                    }
-                }
-            }
-        }
-
-        lwjglMain {
-            kotlin.srcDirs = ["lwjgl/src"]
+        jvmMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-reflect'
             }
         }
 
-        webMain {
-            kotlin.srcDirs = ["web/src"]
-            resources.srcDirs = ["web/resources"]
+        jsMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
             }
@@ -121,6 +106,7 @@ task shutdownSimulator(type: Exec) {
     args "-c", "xcrun simctl shutdown booted"
 }
 
+/*
 afterEvaluate {
     task webAssembleWeb(type: Sync, dependsOn: compileKotlinWeb) {
         configurations.webCompileClasspath.each { File file ->
@@ -133,7 +119,7 @@ afterEvaluate {
                 }
             })
         }
-        
+
         from file('web/resources')
         from file('common/resources')
 
@@ -152,19 +138,19 @@ if (project.property("lanark.sdl2.enable") == "true") {
 
     afterEvaluate {
         task bundleResourcesDebugExecutableSdl2macos(type: Copy, dependsOn: [sdl2macosProcessResources]) {
-            def target = linkDebugExecutableSdl2macos.target
+            def target = linkMainDebugExecutableSdl2macos.target
             from sdl2macosProcessResources.destinationDir
             into file("build/bundle/$target/${project.name}.app/Contents/Resources")
         }
 
-        task bundleExecutableDebugExecutableSdl2macos(type: Copy, dependsOn: [linkDebugExecutableSdl2macos]) {
-            def target = linkDebugExecutableSdl2macos.target
-            from linkDebugExecutableSdl2macos.outputFile.get()
+        task bundleExecutableDebugExecutableSdl2macos(type: Copy, dependsOn: [linkMainDebugExecutableSdl2macos]) {
+            def target = linkMainDebugExecutableSdl2macos.target
+            from linkMainDebugExecutableSdl2macos.outputFile.get()
             into file("build/bundle/$target/${project.name}.app/Contents/MacOS")
         }
 
-        task bundleInfoDebugExecutableSdl2macos(type: Copy, dependsOn: [linkDebugExecutableSdl2macos]) {
-            def target = linkDebugExecutableSdl2macos.target
+        task bundleInfoDebugExecutableSdl2macos(type: Copy, dependsOn: [linkMainDebugExecutableSdl2macos]) {
+            def target = linkMainDebugExecutableSdl2macos.target
             // add the following to your local.properties file
             // apple_application_id=lanark.playground
             // apple_team_id=<your apple TeamID>
@@ -174,7 +160,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
         }
 
         task signDebugExecutableSdl2macos(type: Exec, dependsOn: [bundleInfoDebugExecutableSdl2macos, bundleResourcesDebugExecutableSdl2macos, bundleExecutableDebugExecutableSdl2macos]) {
-            def target = linkDebugExecutableSdl2macos.target
+            def target = linkMainDebugExecutableSdl2macos.target
             def appBundle = "build/bundle/$target/${project.name}.app"
             // run "security find-identity -pcodesigning -v" to find your apple.identity and put it into local.properties
             def identity = project.property("macos.identity")
@@ -183,28 +169,28 @@ if (project.property("lanark.sdl2.enable") == "true") {
         }
 
         task runDebugExecutableSdl2macos(type: Exec, group: RUN_GROUP, dependsOn: [bundleInfoDebugExecutableSdl2macos, bundleResourcesDebugExecutableSdl2macos, bundleExecutableDebugExecutableSdl2macos]) {
-            def outputFile = linkDebugExecutableSdl2macos.outputFile.get()
+            def outputFile = linkMainDebugExecutableSdl2macos.outputFile.get()
             workingDir = bundleResourcesDebugExecutableSdl2macos.destinationDir
             executable file("${bundleExecutableDebugExecutableSdl2macos.destinationDir}/${outputFile.name}")
         }
 
         if (project.property("lanark.sdl2.ios") == "true") {
-            task resourcesDebugExecutableSdl2ios(type: Copy, dependsOn: [linkDebugExecutableSdl2ios, sdl2iosProcessResources]) {
-                def target = linkDebugExecutableSdl2ios.target
-                from linkDebugExecutableSdl2ios.outputFile.get()
-                from sdl2iosProcessResources.destinationDir 
+            task resourcesDebugExecutableSdl2ios(type: Copy, dependsOn: [linkMainDebugExecutableSdl2ios, sdl2iosProcessResources]) {
+                def target = linkMainDebugExecutableSdl2ios.target
+                from linkMainDebugExecutableSdl2ios.outputFile.get()
+                from sdl2iosProcessResources.destinationDir
                 into file("build/bundle/$target/${project.name}.app/")
             }
 
-            task resourcesDebugExecutableSdl2isim(type: Copy, dependsOn: [linkDebugExecutableSdl2isim, sdl2isimProcessResources]) {
-                def target = linkDebugExecutableSdl2isim.target
-                from linkDebugExecutableSdl2isim.outputFile.get()
+            task resourcesDebugExecutableSdl2isim(type: Copy, dependsOn: [linkMainDebugExecutableSdl2isim, sdl2isimProcessResources]) {
+                def target = linkMainDebugExecutableSdl2isim.target
+                from linkMainDebugExecutableSdl2isim.outputFile.get()
                 from file('build/processedResources/sdl2isim/main')
                 into file("build/bundle/$target/${project.name}.app/")
             }
 
             task bundleDebugExecutableSdl2ios(type: Copy, dependsOn: [resourcesDebugExecutableSdl2ios]) {
-                def target = linkDebugExecutableSdl2ios.target
+                def target = linkMainDebugExecutableSdl2ios.target
                 // add the following to your local.properties file
                 // apple_application_id=lanark.playground
                 // apple_team_id=<your apple TeamID>
@@ -214,7 +200,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
             }
 
             task bundleDebugExecutableSdl2isim(type: Copy, dependsOn: [resourcesDebugExecutableSdl2isim]) {
-                def target = linkDebugExecutableSdl2isim.target
+                def target = linkMainDebugExecutableSdl2isim.target
                 expand(project.properties)
                 from file('ios/bundle')
                 into file("build/bundle/$target/${project.name}.app/")
@@ -231,7 +217,7 @@ if (project.property("lanark.sdl2.enable") == "true") {
             }
 
             task signDebugExecutableSdl2ios(type: Exec, dependsOn: [bundleDebugExecutableSdl2ios, compilePlistDebugExecutableSdl2ios]) {
-                def target = linkDebugExecutableSdl2ios.target
+                def target = linkMainDebugExecutableSdl2ios.target
                 def appBundle = bundleDebugExecutableSdl2ios.destinationDir
                 // run "security find-identity -pcodesigning -v" to find your apple.identity and put it into local.properties
                 def identity = project.property("ios.identity")
@@ -283,4 +269,4 @@ if (project.property("lanark.sdl2.enable") == "true") {
             }
         }
     }
-}
+}*/
