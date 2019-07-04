@@ -6,3 +6,4 @@ bin
 *.iml
 build
 local.properties
+.gradle

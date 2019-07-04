@@ -1,0 +1,9 @@
+plugins {
+    id 'xcode'
+    id 'org.gradle.samples.cmake-library' version '1.0'
+}
+
+cmake {
+    projectDirectory = layout.projectDirectory.dir("sdl2")
+    binary = "libsdl.a"
+}

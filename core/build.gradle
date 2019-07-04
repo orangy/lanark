@@ -29,13 +29,8 @@ kotlin {
     }
 
     js {
-        compilations.all {
-            kotlinOptions {
-                sourceMap = true
-                moduleKind = "umd"
-                metaInfo = true
-            }
-        }
+        nodejs()
+        browser()
     }
 
     sourceSets.all {
@@ -54,10 +49,11 @@ kotlin {
             kotlin.srcDirs = ["common/src"]
             resources.srcDirs = ["common/resources"]
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+                api 'org.jetbrains.kotlin:kotlin-stdlib'
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: coroutines_version
                 api group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-io', version: io_version
-                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-runtime', version: serialization_version
+                //api group: 'org.jetbrains.kotlinx', name: 'kotlinx-files', version: files_version
+                api group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-runtime-common', version: serialization_version
             }
         }
         commonTest {

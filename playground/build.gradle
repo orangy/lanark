@@ -3,11 +3,10 @@ apply plugin: 'kotlin-multiplatform'
 kotlin {
     infra {
         target('macosX64') {
-            compilations.all {
-                linkerOpts += ["-macosx_version_min 10.13"]
-            }
             binaries {
-                executable()
+                executable {
+                    linkerOpts += ["-macosx_version_min 10.13"]
+                }
             }
         }
         target('iosX64') {
@@ -45,13 +44,8 @@ kotlin {
     }
 
     js {
-        compilations.all {
-            kotlinOptions {
-                sourceMap = true
-                moduleKind = "umd"
-                metaInfo = true
-            }
-        }
+        nodejs()
+        browser()
     }
 
     sourceSets.all {

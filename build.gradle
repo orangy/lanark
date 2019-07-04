@@ -8,13 +8,13 @@ buildscript {
         jcenter()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-        maven { url "../kotlin-libraries-infra/build/maven" }
-//        maven { url "https://dl.bintray.com/orangy/maven" }
+//        maven { url "../kotlin-libraries-infra/build/maven" }
+        maven { url "https://dl.bintray.com/orangy/maven" }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-        classpath "kotlinx.team:kotlinx.team.infra:0.1.0"
+        classpath "kotlinx.team:kotlinx.team.infra:$infra_version"
     }
 }
 
@@ -42,13 +42,6 @@ infra {
             password = findProperty('bintrayApiKey')
         }
     }
-
-    node {
-        version = '10.15.1'
-        mocha('4.1.0')
-        install("source-map-support", "0.5.3")
-        install("mocha-teamcity-reporter", "2.2.2")
-    }
 }
 
 subprojects {
@@ -59,5 +52,6 @@ subprojects {
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
         maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
         maven { url 'https://dl.bintray.com/kotlin/kotlinx' }
+        maven { url 'https://dl.bintray.com/orangy/maven' }
     }
 }

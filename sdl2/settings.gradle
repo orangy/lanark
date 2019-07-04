@@ -1,0 +1,6 @@
+includeBuild ("build-wrapper-plugin") {
+    dependencySubstitution {
+        substitute module('org.gradle.samples.cmake-library:org.gradle.samples.cmake-library.gradle.plugin') with project(':')
+        substitute module('org.gradle.samples.wrapped-native-library:org.gradle.samples.wrapped-native-library.gradle.plugin') with project(':')
+    }
+}

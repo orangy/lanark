@@ -18,13 +18,8 @@ kotlin {
     }
 
     js {
-        compilations.all {
-            kotlinOptions {
-                sourceMap = true
-                moduleKind = "umd"
-                metaInfo = true
-            }
-        }
+        nodejs()
+        browser()
     }
 
     sourceSets.all {
